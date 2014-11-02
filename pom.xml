@@ -14,6 +14,28 @@
     <name>Base Services project</name>
     <description>A base classes for business logic implementation</description>
 
+    <licenses>
+        <license>
+            <name>The MIT License (MIT)</name>
+            <url>http://opensource.org/licenses/MIT</url>
+        </license>
+    </licenses>
+
+    <scm>
+        <connection>scm:git:ssh://@github.com/anr-ru/base.services.git</connection>
+        <url>https://github.com/anr-ru/base.services/</url>
+        <tag>HEAD</tag>
+    </scm>
+
+    <developers>
+        <developer>
+            <id>alex</id>
+            <name>Alexey Romanchuk</name>
+            <email>alexey.p.romanchuk@gmail.com</email>
+            <timezone>5</timezone>
+        </developer>
+    </developers>
+
 
     <dependencies>
         <!-- Spring framework base -->
