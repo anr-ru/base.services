@@ -36,7 +36,7 @@ public class BaseServiceImpl extends BaseParent implements BaseService {
      * 
      * @return true, if 'production' profile found
      */
-    public boolean isProdMode() {
+    protected boolean isProdMode() {
 
         Set<String> profiles = set(env.getActiveProfiles());
         return profiles.contains(PRODUCTION_PROFILE);
