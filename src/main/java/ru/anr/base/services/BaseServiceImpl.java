@@ -5,10 +5,10 @@ package ru.anr.base.services;
 
 import java.util.Set;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
-import ru.anr.base.BaseParent;
+import ru.anr.base.BaseSpringParent;
 
 /**
  * Implementation of Base Service.
@@ -18,18 +18,13 @@ import ru.anr.base.BaseParent;
  * @created Oct 29, 2014
  * 
  */
-public class BaseServiceImpl extends BaseParent implements BaseService {
+@Transactional(propagation = Propagation.REQUIRED)
+public class BaseServiceImpl extends BaseSpringParent implements BaseService {
 
     /**
      * Default name for production profile
      */
     public static final String PRODUCTION_PROFILE = "production";
-
-    /**
-     * Environment injection
-     */
-    @Autowired
-    private Environment env;
 
     /**
      * Checking for 'Production' mode
@@ -38,7 +33,7 @@ public class BaseServiceImpl extends BaseParent implements BaseService {
      */
     protected boolean isProdMode() {
 
-        Set<String> profiles = set(env.getActiveProfiles());
+        Set<String> profiles = getProfiles();
         return profiles.contains(PRODUCTION_PROFILE);
     }
 
@@ -46,11 +41,4 @@ public class BaseServiceImpl extends BaseParent implements BaseService {
     // /// getters/setters
     // /////////////////////////////////////////////////////////////////////////
 
-    /**
-     * @return the env
-     */
-    public Environment getEnv() {
-
-        return env;
-    }
 }
