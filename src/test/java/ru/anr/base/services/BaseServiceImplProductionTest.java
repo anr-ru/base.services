@@ -17,11 +17,11 @@ import ru.anr.base.tests.BaseTestCase;
  *
  *
  * @author Alexey Romanchuk
- * @created 03 нояб. 2014 г.
+ * @created Nov 3, 2014
  *
  */
 @ActiveProfiles("production")
-@ContextConfiguration(classes = BaseServiceImplProductionTest.class)
+@ContextConfiguration(classes = { BaseServiceImplProductionTest.class, MessagePropertiesConfig.class })
 public class BaseServiceImplProductionTest extends BaseTestCase {
 
     /**

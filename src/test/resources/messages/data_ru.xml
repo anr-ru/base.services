@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+    <entry key="hello.world">Привет, мир!</entry>
+    <entry key="hello.world.param">Привет, {0} мир!</entry>
+</properties>

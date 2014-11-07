@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence xmlns="http://xmlns.jcp.org/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd"
+    version="2.1">
+
+    <persistence-unit name="TestUnit" transaction-type="RESOURCE_LOCAL">
+
+        <provider>org.hibernate.ejb.HibernatePersistence</provider>
+
+        <class>ru.anr.base.samples.domain.Samples</class>
+        
+        <!-- converter -->
+        <class>ru.anr.base.samples.domain.LocalDateTimePersistenceConverter</class>        
+
+        <exclude-unlisted-classes>true</exclude-unlisted-classes>
+
+        <properties>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.HSQLDialect" />
+            <property name="hibernate.show_sql" value="true" />
+            <property name="hibernate.connection.driver_class" value="org.hsqldb.jdbcDriver" />
+            <!-- ddl auto update for hsql test database -->
+            <property name="hibernate.hbm2ddl.auto" value="update"/>            
+            
+            <property name="hibernate.connection.charSet" value="UTF-8" />
+            <property name="hibernate.format_sql" value="false" />
+
+            <property name="hibernate.cache.use_second_level_cache" value="true" />
+            <property name="hibernate.cache.use_query_cache" value="true" />
+            <property name="hibernate.cache.use_structured_entries" value="true" />
+
+            <property name="hibernate.cache.region.factory_class" value="org.hibernate.cache.ehcache.SingletonEhCacheRegionFactory" />
+
+            <property name="net.sf.ehcache.configurationResourceName" value="ehcache.xml" />
+            <property name="hibernate.generate_statistics" value="true" />
+
+        </properties>
+
+    </persistence-unit>
+</persistence>
+

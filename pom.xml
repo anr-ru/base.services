@@ -36,7 +36,6 @@
         </developer>
     </developers>
 
-
     <dependencies>
         <!-- Spring framework base -->
         <dependency>
@@ -53,9 +52,86 @@
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
+            <artifactId>spring-context-support</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
             <artifactId>spring-tx</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-aop</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjrt</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjweaver</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-entitymanager</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-orm</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.data</groupId>
+            <artifactId>spring-data-jpa</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-aspects</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-jdbc</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>net.sf.ehcache</groupId>
+            <artifactId>ehcache-core</artifactId>
+        </dependency>       
+        <dependency>
+            <artifactId>hibernate-ehcache</artifactId>
+            <groupId>org.hibernate</groupId>
+        </dependency>        
 
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-config</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-core</artifactId>
+        </dependency>
+        
+        <!-- JSON/XML serializarion tools -->
+        <dependency>
+        	<groupId>com.fasterxml.jackson.core</groupId>
+        	<artifactId>jackson-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.module</groupId>
+            <artifactId>jackson-module-jaxb-annotations</artifactId>
+        </dependency>
+        <dependency>
+          <groupId>com.fasterxml.jackson.dataformat</groupId>
+          <artifactId>jackson-dataformat-xml</artifactId>
+        </dependency>        
+        <dependency>
+        	<groupId>org.codehaus.woodstox</groupId>
+        	<artifactId>woodstox-core-asl</artifactId>
+        </dependency>
+        
+
+        <!-- Internal dependencies -->
         <dependency>
             <groupId>ru.anr</groupId>
             <artifactId>base.utils</artifactId>
@@ -72,12 +148,32 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-test</artifactId>
         </dependency>
+        <dependency>  
+            <groupId>hsqldb</groupId>  
+            <artifactId>hsqldb</artifactId>  
+            <version>${hsqldb.version}</version>  
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.mchange</groupId>
+            <artifactId>c3p0</artifactId>
+            <scope>test</scope>
+        </dependency>
 
     </dependencies>
 
     <properties>
+        <!-- internal deps -->
         <base.utils.version>0.0.1-SNAPSHOT</base.utils.version>
         <base.tests.version>0.0.1-SNAPSHOT</base.tests.version>
+        
+        <!-- external deps -->
+        <hsqldb.version>1.8.0.10</hsqldb.version>        
+        
+        <jdbc.url>jdbc:hsqldb:mem:testdb</jdbc.url>
+        <jdbc.user>sa</jdbc.user>
+        <jdbc.password></jdbc.password>
+        
     </properties>
 
 </project>

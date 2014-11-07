@@ -5,8 +5,12 @@ package ru.anr.base.services;
 
 import java.util.Set;
 
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.NoSuchMessageException;
+import org.springframework.context.support.MessageSourceAccessor;
 
 import ru.anr.base.BaseSpringParent;
 
@@ -18,8 +22,12 @@ import ru.anr.base.BaseSpringParent;
  * @created Oct 29, 2014
  * 
  */
-@Transactional(propagation = Propagation.REQUIRED)
 public class BaseServiceImpl extends BaseSpringParent implements BaseService {
+
+    /**
+     * Logger
+     */
+    private static final Logger logger = LoggerFactory.getLogger(BaseServiceImpl.class);
 
     /**
      * Default name for production profile
@@ -37,6 +45,36 @@ public class BaseServiceImpl extends BaseSpringParent implements BaseService {
         return profiles.contains(PRODUCTION_PROFILE);
     }
 
+    /**
+     * A ref to a text resource service
+     */
+    @Autowired
+    @Qualifier("messageSourceAccessor")
+    private MessageSourceAccessor messages;
+
+    /**
+     * A template of string is returned in case when message with code not found
+     */
+    private static final String MSG_ERROR_DECORATION = "[xxx%sxxx]";
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String text(String code, Object... args) {
+
+        String txt = null;
+
+        try {
+            txt = messages.getMessage(code, args);
+
+        } catch (NoSuchMessageException ex) {
+
+            logger.error("Message resource error: {}", ex.getMessage());
+            txt = String.format(MSG_ERROR_DECORATION, code);
+        }
+        return txt;
+    }
     // /////////////////////////////////////////////////////////////////////////
     // /// getters/setters
     // /////////////////////////////////////////////////////////////////////////
