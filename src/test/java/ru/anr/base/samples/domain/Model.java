@@ -3,6 +3,8 @@
  */
 package ru.anr.base.samples.domain;
 
+import java.math.BigDecimal;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlAttribute;
@@ -31,13 +33,59 @@ public class Model {
     private String field;
 
     /**
+     * Time field
+     */
+    private ZonedDateTime time;
+
+    /**
      * Submodels
      */
     private List<SubModel> subs;
 
+    /**
+     * Decimal
+     */
+    private BigDecimal sum;
+
     // /////////////////////////////////////////////////////////////////////////
     // /// getters/setters
     // /////////////////////////////////////////////////////////////////////////
+
+    /**
+     * @return the time field
+     */
+    @XmlAttribute(name = "time")
+    public ZonedDateTime getTime() {
+
+        return time;
+    }
+
+    /**
+     * @return the sum
+     */
+    @XmlAttribute(name = "sum")
+    public BigDecimal getSum() {
+
+        return sum;
+    }
+
+    /**
+     * @param sum
+     *            the sum to set
+     */
+    public void setSum(BigDecimal sum) {
+
+        this.sum = sum;
+    }
+
+    /**
+     * @param time
+     *            the time field to set
+     */
+    public void setTime(ZonedDateTime time) {
+
+        this.time = time;
+    }
 
     /**
      * @return the field

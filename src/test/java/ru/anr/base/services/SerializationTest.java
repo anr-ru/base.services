@@ -4,23 +4,18 @@
 package ru.anr.base.services;
 
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 
 import org.junit.Assert;
 import org.junit.Test;
 
 import ru.anr.base.samples.domain.Model;
 import ru.anr.base.samples.domain.SubModel;
-
-import com.fasterxml.jackson.databind.AnnotationIntrospector;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.databind.introspect.AnnotationIntrospectorPair;
-import com.fasterxml.jackson.databind.introspect.JacksonAnnotationIntrospector;
-import com.fasterxml.jackson.dataformat.xml.JacksonXmlModule;
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;
-import com.fasterxml.jackson.module.jaxb.JaxbAnnotationIntrospector;
+import ru.anr.base.services.serializer.JSONSerializerImpl;
+import ru.anr.base.services.serializer.Serializer;
+import ru.anr.base.services.serializer.XMLSerializerImpl;
 
 /**
  * Tests for serialization services.
@@ -37,7 +32,8 @@ public class SerializationTest extends BaseServiceTestCase {
      * XML etalon
      */
     private static final String TEST_XML = "<?xml version=\'1.0\' encoding=\'UTF-8\'?>"
-            + "<model field=\"xxx\"><subs><sub>1</sub><sub>2</sub></subs></model>";
+            + "<model field=\"xxx\" time=\"2014-09-11T10:30Z[GMT]\" sum=\"322.032329300\">"
+            + "<subs><sub>1</sub><sub>2</sub></subs></model>";
 
     /**
      * @return A model instance
@@ -46,6 +42,8 @@ public class SerializationTest extends BaseServiceTestCase {
 
         Model m = new Model();
         m.setField("xxx");
+        m.setSum(new BigDecimal("322.032329300"));
+        m.setTime(ZonedDateTime.of(2014, 9, 11, 10, 30, 0, 0, ZoneId.of("GMT")));
         m.setSubs(list(new SubModel(1), new SubModel(2)));
 
         return m;
@@ -54,7 +52,8 @@ public class SerializationTest extends BaseServiceTestCase {
     /**
      * JSON etalon
      */
-    private static final String TEST_JSON = "{\"model\":{\"field\":\"xxx\",\"sub\":[{\"value\":1},{\"value\":2}]}}";
+    private static final String TEST_JSON = "{\"model\":{\"field\":\"xxx\",\"time\":\"2014-09-11T10:30Z[GMT]\","
+            + "\"sub\":[{\"value\":1},{\"value\":2}],\"sum\":322.032329300}}";
 
     /**
      * JSON Tests
@@ -67,25 +66,16 @@ public class SerializationTest extends BaseServiceTestCase {
 
         Model m = newModel();
 
-        ObjectMapper mapper = new ObjectMapper();
+        Serializer s = new JSONSerializerImpl();
 
-        mapper.configure(SerializationFeature.WRAP_ROOT_VALUE, true);
-        mapper.configure(DeserializationFeature.UNWRAP_ROOT_VALUE, true);
-
-        AnnotationIntrospector introspector = new JaxbAnnotationIntrospector(mapper.getTypeFactory());
-        // if ONLY using JAXB annotations:
-        mapper.setAnnotationIntrospector(introspector);
-        // if using BOTH JAXB annotations AND Jackson annotations:
-
-        AnnotationIntrospector secondary = new JacksonAnnotationIntrospector();
-        mapper.setAnnotationIntrospector(new AnnotationIntrospectorPair(introspector, secondary));
-
-        String value = mapper.writeValueAsString(m);
+        String value = s.to(m);
         logger.info("JSON: {}", value);
 
         Assert.assertEquals(TEST_JSON, value);
 
-        Model mx = mapper.readValue(value, Model.class);
+        Model mx = s.from(value, Model.class);
+
+        Assert.assertEquals(m.getTime(), mx.getTime());
         Assert.assertEquals(m, mx);
     }
 
@@ -100,25 +90,14 @@ public class SerializationTest extends BaseServiceTestCase {
 
         Model m = newModel();
 
-        JacksonXmlModule module = new JacksonXmlModule();
-        // and then configure, for example:
-        module.setDefaultUseWrapper(true);
+        Serializer s = new XMLSerializerImpl();
 
-        XmlMapper mapper = new XmlMapper(module);
-        // and you can also configure AnnotationIntrospectors etc here:
-
-        AnnotationIntrospector introspector = new JaxbAnnotationIntrospector(mapper.getTypeFactory());
-        // if ONLY using JAXB annotations:
-        mapper.setAnnotationIntrospector(introspector);
-
-        mapper.configure(ToXmlGenerator.Feature.WRITE_XML_DECLARATION, true);
-
-        String value = mapper.writeValueAsString(m);
+        String value = s.to(m);
         logger.info("XML: {}", value);
 
         Assert.assertEquals(TEST_XML, value);
 
-        Model mx = mapper.readValue(value, Model.class);
+        Model mx = s.from(value, Model.class);
         Assert.assertEquals(m, mx);
     }
 }
