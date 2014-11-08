@@ -10,7 +10,7 @@
         <class>ru.anr.base.samples.domain.Samples</class>
         
         <!-- converter -->
-        <class>ru.anr.base.samples.domain.LocalDateTimePersistenceConverter</class>        
+        <class>ru.anr.base.domain.LocalDateTimePersistenceConverter</class>        
 
         <exclude-unlisted-classes>true</exclude-unlisted-classes>
 

@@ -28,21 +28,6 @@ import com.mchange.v2.c3p0.ComboPooledDataSource;
 public class DaoConfig extends AbstractJPADaoConfig {
 
     /**
-     * Connection userName
-     */
-    private String userName;
-
-    /**
-     * Password
-     */
-    private String password;
-
-    /**
-     * JDBC url
-     */
-    private String jdbcUrl;
-
-    /**
      * {@inheritDoc}
      */
     @Override
@@ -53,9 +38,9 @@ public class DaoConfig extends AbstractJPADaoConfig {
         try {
 
             ds.setDriverClass(jdbcDriver.class.getName());
-            ds.setJdbcUrl(jdbcUrl);
-            ds.setUser(userName);
-            ds.setPassword(password);
+            ds.setJdbcUrl(getJdbcUrl());
+            ds.setUser(getUserName());
+            ds.setPassword(getPassword());
 
             ds.setInitialPoolSize(1);
             ds.setMinPoolSize(1);
@@ -66,36 +51,5 @@ public class DaoConfig extends AbstractJPADaoConfig {
         }
 
         return ds;
-    }
-
-    // /////////////////////////////////////////////////////////////////////////
-    // /// getters/setters
-    // /////////////////////////////////////////////////////////////////////////
-
-    /**
-     * @param userName
-     *            the userName to set
-     */
-    public void setUserName(String userName) {
-
-        this.userName = userName;
-    }
-
-    /**
-     * @param password
-     *            the password to set
-     */
-    public void setPassword(String password) {
-
-        this.password = password;
-    }
-
-    /**
-     * @param jdbcUrl
-     *            the jdbcUrl to set
-     */
-    public void setJdbcUrl(String jdbcUrl) {
-
-        this.jdbcUrl = jdbcUrl;
     }
 }

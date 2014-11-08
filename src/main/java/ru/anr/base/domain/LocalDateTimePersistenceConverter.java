@@ -28,17 +28,17 @@ public class LocalDateTimePersistenceConverter extends BaseParent implements
      * {@inheritDoc}
      */
     @Override
-    public Timestamp convertToDatabaseColumn(ZonedDateTime entityValue) {
+    public Timestamp convertToDatabaseColumn(ZonedDateTime entity) {
 
-        return Timestamp.valueOf(entityValue.toLocalDateTime());
+        return (entity == null) ? null : Timestamp.valueOf(entity.toLocalDateTime());
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public ZonedDateTime convertToEntityAttribute(Timestamp databaseValue) {
+    public ZonedDateTime convertToEntityAttribute(Timestamp database) {
 
-        return ZonedDateTime.of(databaseValue.toLocalDateTime(), DEFAULT_TIMEZONE);
+        return (database == null) ? null : ZonedDateTime.of(database.toLocalDateTime(), DEFAULT_TIMEZONE);
     }
 }

@@ -25,6 +25,21 @@ import org.springframework.transaction.PlatformTransactionManager;
 public abstract class AbstractJPADaoConfig extends AbstractDaoConfig {
 
     /**
+     * Connection userName
+     */
+    private String userName;
+
+    /**
+     * Password
+     */
+    private String password;
+
+    /**
+     * JDBC url
+     */
+    private String jdbcUrl;
+
+    /**
      * {@link DataSource} definition to override in descendants
      * 
      * @return A pooled datasource
@@ -62,5 +77,60 @@ public abstract class AbstractJPADaoConfig extends AbstractDaoConfig {
         txManager.setEntityManagerFactory(entityManagerFactory());
         txManager.setDataSource(dataSource());
         return txManager;
+    }
+
+    // /////////////////////////////////////////////////////////////////////////
+    // /// getters/setters
+    // /////////////////////////////////////////////////////////////////////////
+
+    /**
+     * @param userName
+     *            the userName to set
+     */
+    public void setUserName(String userName) {
+
+        this.userName = userName;
+    }
+
+    /**
+     * @param password
+     *            the password to set
+     */
+    public void setPassword(String password) {
+
+        this.password = password;
+    }
+
+    /**
+     * @param jdbcUrl
+     *            the jdbcUrl to set
+     */
+    public void setJdbcUrl(String jdbcUrl) {
+
+        this.jdbcUrl = jdbcUrl;
+    }
+
+    /**
+     * @return the userName
+     */
+    public String getUserName() {
+
+        return userName;
+    }
+
+    /**
+     * @return the password
+     */
+    public String getPassword() {
+
+        return password;
+    }
+
+    /**
+     * @return the jdbcUrl
+     */
+    public String getJdbcUrl() {
+
+        return jdbcUrl;
     }
 }
