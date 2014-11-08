@@ -28,7 +28,7 @@ public abstract class AbstractSerializerImpl extends BaseParent implements Seria
     /**
      * Mapper
      */
-    protected ObjectMapper mapper;
+    private ObjectMapper objectMapper;
 
     /**
      * Constructor. Here is performed general initialization for JSON and XML
@@ -40,24 +40,24 @@ public abstract class AbstractSerializerImpl extends BaseParent implements Seria
     public AbstractSerializerImpl(ObjectMapper origin) {
 
         super();
-        this.mapper = origin;
-        mapper.registerModule(new JSR310Module());
+        this.objectMapper = origin;
+        objectMapper.registerModule(new JSR310Module());
 
         // ISO for date/time
-        mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+        objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
 
-        AnnotationIntrospector introspector = new JaxbAnnotationIntrospector(mapper.getTypeFactory());
-        mapper.setAnnotationIntrospector(introspector);
+        AnnotationIntrospector introspector = new JaxbAnnotationIntrospector(objectMapper.getTypeFactory());
+        objectMapper.setAnnotationIntrospector(introspector);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public <S> S from(String s, Class<S> clazz) {
+    public <S> S fromStr(String s, Class<S> clazz) {
 
         try {
-            return mapper.readValue(s, clazz);
+            return objectMapper.readValue(s, clazz);
         } catch (IOException ex) {
             throw new ApplicationException(ex);
         }
@@ -67,12 +67,21 @@ public abstract class AbstractSerializerImpl extends BaseParent implements Seria
      * {@inheritDoc}
      */
     @Override
-    public String to(Object o) {
+    public String toStr(Object o) {
 
         try {
-            return mapper.writeValueAsString(o);
+            return objectMapper.writeValueAsString(o);
         } catch (IOException ex) {
             throw new ApplicationException(ex);
         }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ObjectMapper mapper() {
+
+        return objectMapper;
     }
 }

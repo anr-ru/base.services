@@ -10,12 +10,12 @@ import java.time.ZonedDateTime;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 import ru.anr.base.samples.domain.Model;
 import ru.anr.base.samples.domain.SubModel;
-import ru.anr.base.services.serializer.JSONSerializerImpl;
 import ru.anr.base.services.serializer.Serializer;
-import ru.anr.base.services.serializer.XMLSerializerImpl;
 
 /**
  * Tests for serialization services.
@@ -56,6 +56,13 @@ public class SerializationTest extends BaseServiceTestCase {
             + "\"sub\":[{\"value\":1},{\"value\":2}],\"sum\":322.032329300}}";
 
     /**
+     * A ref to JSON Serializer bean
+     */
+    @Autowired
+    @Qualifier("jsonSerializer")
+    private Serializer json;
+
+    /**
      * JSON Tests
      * 
      * @throws IOException
@@ -66,18 +73,23 @@ public class SerializationTest extends BaseServiceTestCase {
 
         Model m = newModel();
 
-        Serializer s = new JSONSerializerImpl();
-
-        String value = s.to(m);
+        String value = json.toStr(m);
         logger.info("JSON: {}", value);
 
         Assert.assertEquals(TEST_JSON, value);
 
-        Model mx = s.from(value, Model.class);
+        Model mx = json.fromStr(value, Model.class);
 
         Assert.assertEquals(m.getTime(), mx.getTime());
         Assert.assertEquals(m, mx);
     }
+
+    /**
+     * A ref to XML Serializer bean
+     */
+    @Autowired
+    @Qualifier("xmlSerializer")
+    private Serializer xml;
 
     /**
      * XML via Jackson
@@ -90,14 +102,12 @@ public class SerializationTest extends BaseServiceTestCase {
 
         Model m = newModel();
 
-        Serializer s = new XMLSerializerImpl();
-
-        String value = s.to(m);
+        String value = xml.toStr(m);
         logger.info("XML: {}", value);
 
         Assert.assertEquals(TEST_XML, value);
 
-        Model mx = s.from(value, Model.class);
+        Model mx = xml.fromStr(value, Model.class);
         Assert.assertEquals(m, mx);
     }
 }

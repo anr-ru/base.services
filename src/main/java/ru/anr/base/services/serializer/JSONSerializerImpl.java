@@ -29,12 +29,12 @@ public class JSONSerializerImpl extends AbstractSerializerImpl {
 
         super(new ObjectMapper());
 
-        mapper.configure(SerializationFeature.WRAP_ROOT_VALUE, true);
-        mapper.configure(DeserializationFeature.UNWRAP_ROOT_VALUE, true);
+        mapper().configure(SerializationFeature.WRAP_ROOT_VALUE, true);
+        mapper().configure(DeserializationFeature.UNWRAP_ROOT_VALUE, true);
 
-        AnnotationIntrospector introspector = new JaxbAnnotationIntrospector(mapper.getTypeFactory());
+        AnnotationIntrospector introspector = new JaxbAnnotationIntrospector(mapper().getTypeFactory());
         AnnotationIntrospector secondary = new JacksonAnnotationIntrospector();
 
-        mapper.setAnnotationIntrospector(new AnnotationIntrospectorPair(introspector, secondary));
+        mapper().setAnnotationIntrospector(new AnnotationIntrospectorPair(introspector, secondary));
     }
 }

@@ -32,5 +32,8 @@
         p:providers-ref="testAuthenticator"/>
 
     <bean id = "testAuthenticator" class="org.springframework.security.authentication.TestingAuthenticationProvider" />
+
+    <!-- Serialization -->
+    <bean id="serializationConfig" class="ru.anr.base.services.serializer.SerializationConfig" />
     
 </beans>

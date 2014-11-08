@@ -3,6 +3,8 @@
  */
 package ru.anr.base.services.serializer;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 /**
  * Simple serialization interface.
  *
@@ -26,7 +28,7 @@ public interface Serializer {
      * @param <S>
      *            Object class
      */
-    <S> S from(String s, Class<S> clazz);
+    <S> S fromStr(String s, Class<S> clazz);
 
     /**
      * Generates a string of given format (XML/JSON)
@@ -35,5 +37,12 @@ public interface Serializer {
      *            Object
      * @return String
      */
-    String to(Object o);
+    String toStr(Object o);
+
+    /**
+     * Returns an internal {@link ObjectMapper}.
+     * 
+     * @return Instance of {@link ObjectMapper} associated with serializer
+     */
+    ObjectMapper mapper();
 }

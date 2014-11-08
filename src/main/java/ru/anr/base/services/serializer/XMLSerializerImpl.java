@@ -28,8 +28,8 @@ public class XMLSerializerImpl extends AbstractSerializerImpl {
         JacksonXmlModule module = new JacksonXmlModule();
         module.setDefaultUseWrapper(true);
 
-        mapper.registerModule(module);
+        mapper().registerModule(module);
 
-        ((XmlMapper) mapper).configure(ToXmlGenerator.Feature.WRITE_XML_DECLARATION, true);
+        ((XmlMapper) mapper()).configure(ToXmlGenerator.Feature.WRITE_XML_DECLARATION, true);
     }
 }
