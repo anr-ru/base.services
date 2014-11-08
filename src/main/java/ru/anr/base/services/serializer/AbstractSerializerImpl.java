@@ -28,7 +28,7 @@ public abstract class AbstractSerializerImpl extends BaseParent implements Seria
     /**
      * Mapper
      */
-    private ObjectMapper objectMapper;
+    private final ObjectMapper objectMapper;
 
     /**
      * Constructor. Here is performed general initialization for JSON and XML
