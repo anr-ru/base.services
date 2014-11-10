@@ -52,8 +52,8 @@ public class SerializationTest extends BaseServiceTestCase {
     /**
      * JSON etalon
      */
-    private static final String TEST_JSON = "{\"model\":{\"field\":\"xxx\",\"time\":\"2014-09-11T10:30Z[GMT]\","
-            + "\"sub\":[{\"value\":1},{\"value\":2}],\"sum\":322.032329300}}";
+    private static final String TEST_JSON = "{\"field\":\"xxx\",\"time\":\"2014-09-11T10:30Z[GMT]\","
+            + "\"sub\":[{\"value\":1},{\"value\":2}],\"sum\":322.032329300}";
 
     /**
      * A ref to JSON Serializer bean

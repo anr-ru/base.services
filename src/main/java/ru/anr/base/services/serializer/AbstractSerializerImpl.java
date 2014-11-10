@@ -8,6 +8,7 @@ import java.io.IOException;
 import ru.anr.base.ApplicationException;
 import ru.anr.base.BaseParent;
 
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.AnnotationIntrospector;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -45,6 +46,9 @@ public abstract class AbstractSerializerImpl extends BaseParent implements Seria
 
         // ISO for date/time
         objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+        objectMapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
+
+        objectMapper.setSerializationInclusion(Include.NON_NULL);
 
         AnnotationIntrospector introspector = new JaxbAnnotationIntrospector(objectMapper.getTypeFactory());
         objectMapper.setAnnotationIntrospector(introspector);
