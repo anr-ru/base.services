@@ -35,5 +35,10 @@
 
     <!-- Serialization -->
     <bean id="serializationConfig" class="ru.anr.base.services.serializer.SerializationConfig" />
-    
+
+
+    <!-- API Commands (config + standard ping) -->
+    <bean id = "apiConfig" class = "ru.anr.base.services.api.ApiConfig" />
+    <bean id = "api_ping" class="ru.anr.base.services.api.PingV1ApiCommand" />
+
 </beans>

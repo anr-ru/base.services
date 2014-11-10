@@ -7,8 +7,7 @@
         </encoder>
     </appender>
 
-    <logger name="org.springframework" level="TRACE"/>
-    <logger name="org.springframework.security" level="TRACE"/>
+    <logger name="org.springframework" level="INFO"/>
     
     <!-- To see what a cache does -->
     <logger name="org.springframework.cache" level="INFO"/>
