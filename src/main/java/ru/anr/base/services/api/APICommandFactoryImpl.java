@@ -63,6 +63,12 @@ public class APICommandFactoryImpl extends BaseServiceImpl implements APICommand
     private Serializer xml;
 
     /**
+     * Error prefix for specific error code description, which is stored in text
+     * resources
+     */
+    private String errorCodePrefix = "api.errorcode.";
+
+    /**
      * Registration of found in spring context API commands
      * 
      * @param beans
@@ -157,13 +163,15 @@ public class APICommandFactoryImpl extends BaseServiceImpl implements APICommand
 
         ErrorModel m = new ErrorModel();
 
-        if (ex instanceof APIException) {
-            m.setCode(((APIException) ex).getErrorCode());
-        } else {
-            m.setCode(APIException.ERROR_SYSTEM); // system error
+        int code = (ex instanceof APIException) ? ((APIException) ex).getErrorCode() : APIException.ERROR_SYSTEM;
+        m.setCode(code);
+
+        String msg = text(errorCodePrefix + code);
+        if (msg.startsWith("[xxx")) {
+            msg = ex.getMessage();
         }
 
-        m.setMessage(ex.getMessage()); // TODO: read from resources by code
+        m.setMessage(msg);
         m.setDescription(ex.getMessage());
 
         cmd.setResponse(m);
@@ -255,5 +263,18 @@ public class APICommandFactoryImpl extends BaseServiceImpl implements APICommand
                 throw new UnsupportedOperationException("Unsupported format : " + format);
         }
         return s;
+    }
+
+    // /////////////////////////////////////////////////////////////////////////
+    // ///
+    // /////////////////////////////////////////////////////////////////////////
+
+    /**
+     * @param errorCodePrefix
+     *            the errorCodePrefix to set
+     */
+    public void setErrorCodePrefix(String errorCodePrefix) {
+
+        this.errorCodePrefix = errorCodePrefix;
     }
 }

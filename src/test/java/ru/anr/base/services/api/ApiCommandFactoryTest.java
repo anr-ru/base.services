@@ -72,7 +72,7 @@ public class ApiCommandFactoryTest extends BaseServiceTestCase {
             Assert.assertEquals("Version 'v3' for a command 'Ping' does not exist", ex.getMessage());
             rs = factory.error(ping, ex);
 
-            Assert.assertEquals("{\"code\":1,\"message\":\"Version 'v3' for a command 'Ping' does not exist\","
+            Assert.assertEquals("{\"code\":1,\"message\":\"A system error\","
                     + "\"description\":\"Version 'v3' for a command 'Ping' does not exist\"}", rs.getRawModel());
         }
     }
