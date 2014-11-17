@@ -40,6 +40,11 @@ public abstract class AbstractJPADaoConfig extends AbstractDaoConfig {
     private String jdbcUrl;
 
     /**
+     * Driver class for JDBC
+     */
+    private String jdbcDriverClassName;
+
+    /**
      * {@link DataSource} definition to override in descendants
      * 
      * @return A pooled datasource
@@ -60,6 +65,7 @@ public abstract class AbstractJPADaoConfig extends AbstractDaoConfig {
         LocalContainerEntityManagerFactoryBean factory = new LocalContainerEntityManagerFactoryBean();
         factory.setJpaVendorAdapter(vendorAdapter);
         factory.setDataSource(dataSource());
+        factory.setPersistenceXmlLocation("classpath:META-INF/persistence-local.xml");
         factory.afterPropertiesSet();
 
         return factory.getObject();
@@ -132,5 +138,22 @@ public abstract class AbstractJPADaoConfig extends AbstractDaoConfig {
     public String getJdbcUrl() {
 
         return jdbcUrl;
+    }
+
+    /**
+     * @return the jdbcDriverClassName
+     */
+    public String getJdbcDriverClassName() {
+
+        return jdbcDriverClassName;
+    }
+
+    /**
+     * @param jdbcDriverClassName
+     *            the jdbcDriverClassName to set
+     */
+    public void setJdbcDriverClassName(String jdbcDriverClassName) {
+
+        this.jdbcDriverClassName = jdbcDriverClassName;
     }
 }
