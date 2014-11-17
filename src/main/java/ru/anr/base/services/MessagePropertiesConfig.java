@@ -25,7 +25,7 @@ public class MessagePropertiesConfig {
     /**
      * Paths to each property file
      */
-    private String[] paths;
+    private String[] paths = new String[]{};
 
     /**
      * Defining a {@link MessageSourceAccessor} to get messages for specific
