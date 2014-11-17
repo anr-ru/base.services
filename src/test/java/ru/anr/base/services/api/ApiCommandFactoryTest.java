@@ -27,6 +27,16 @@ import ru.anr.base.services.BaseServiceTestCase;
 public class ApiCommandFactoryTest extends BaseServiceTestCase {
 
     /**
+     * the PING costant
+     */
+    private static final String PING = "Ping";
+
+    /**
+     * the GET constant
+     */
+    private static final String GET = "GET";
+
+    /**
      * The bean under tests
      */
     @Autowired
@@ -39,8 +49,8 @@ public class ApiCommandFactoryTest extends BaseServiceTestCase {
     @Test
     public void testOfPingCommand() {
 
-        APICommand ping = new APICommand("Ping", "v1");
-        ping = ping.addRaw("{\"value\": \"hello 1\"}").method("GET");
+        APICommand ping = new APICommand(PING, "v1");
+        ping = ping.addRaw("{\"value\": \"hello 1\"}").method(GET);
 
         APICommand rs = factory.process(ping);
         ResponseModel m = rs.getResponse();
@@ -49,8 +59,8 @@ public class ApiCommandFactoryTest extends BaseServiceTestCase {
         Assert.assertEquals("hello 1 GET", ((ErrorModel) m).getMessage());
 
         // Ping version 2
-        ping = new APICommand("Ping", "v2");
-        ping = ping.addRaw("{\"value\": \"hello 2\"}").method("GET");
+        ping = new APICommand(PING, "v2");
+        ping = ping.addRaw("{\"value\": \"hello 2\"}").method(GET);
 
         rs = factory.process(ping);
         m = rs.getResponse();
@@ -59,8 +69,8 @@ public class ApiCommandFactoryTest extends BaseServiceTestCase {
         Assert.assertEquals("hello 2 GET", ((ErrorModel) m).getMessage());
 
         // Ping version 3 (does not exists)
-        ping = new APICommand("Ping", "v3");
-        ping = ping.addRaw("{\"value\": \"hello\"}").method("GET");
+        ping = new APICommand(PING, "v3");
+        ping = ping.addRaw("{\"value\": \"hello\"}").method(GET);
 
         try {
 
@@ -83,11 +93,11 @@ public class ApiCommandFactoryTest extends BaseServiceTestCase {
     @Test
     public void testOfPingCommandXMLCase() {
 
-        APICommand ping = new APICommand("Ping", "v1");
+        APICommand ping = new APICommand(PING, "v1");
         ping.setRequestFormat(RawFormatTypes.XML);
         ping.setResponseFormat(RawFormatTypes.XML);
 
-        ping = ping.addRaw("<?xml version='1.0' encoding='UTF-8' ?><ping value = \"hello x\" />").method("GET");
+        ping = ping.addRaw("<?xml version='1.0' encoding='UTF-8' ?><ping value = \"hello x\" />").method(GET);
 
         APICommand rs = factory.process(ping);
         ResponseModel m = rs.getResponse();
@@ -103,7 +113,7 @@ public class ApiCommandFactoryTest extends BaseServiceTestCase {
     public void testError() {
 
         APICommand e = new APICommand("Error", "v1");
-        e = e.method("GET");
+        e = e.method(GET);
 
         APICommand rs = null;
         try {
@@ -131,7 +141,7 @@ public class ApiCommandFactoryTest extends BaseServiceTestCase {
         ping.setRequestFormat(null);
         ping.setResponseFormat(null);
 
-        ping = ping.method("GET");
+        ping = ping.method(GET);
 
         APICommand rs = factory.process(ping);
         ResponseModel m = rs.getResponse();
@@ -146,15 +156,15 @@ public class ApiCommandFactoryTest extends BaseServiceTestCase {
     public void testMethodsTest() {
 
         // GET
-        APICommand ping = new APICommand("Ping", "v1");
-        ping = ping.addRaw("{\"value\": \"hello\"}").method("GET");
+        APICommand ping = new APICommand(PING, "v1");
+        ping = ping.addRaw("{\"value\": \"hello\"}").method(GET);
 
         APICommand rs = factory.process(ping);
         ResponseModel m = rs.getResponse();
         Assert.assertEquals("hello GET", ((ErrorModel) m).getMessage());
 
         // PUT
-        ping = new APICommand("Ping", "v1");
+        ping = new APICommand(PING, "v1");
         ping = ping.addRaw("{\"value\": \"hello\"}").method("PUT");
 
         rs = factory.process(ping);
@@ -162,7 +172,7 @@ public class ApiCommandFactoryTest extends BaseServiceTestCase {
         Assert.assertEquals("hello PUT", ((ErrorModel) m).getMessage());
 
         // POST
-        ping = new APICommand("Ping", "v1");
+        ping = new APICommand(PING, "v1");
         ping = ping.addRaw("{\"value\": \"hello\"}").method("POST");
 
         rs = factory.process(ping);
@@ -170,11 +180,72 @@ public class ApiCommandFactoryTest extends BaseServiceTestCase {
         Assert.assertEquals("hello POST", ((ErrorModel) m).getMessage());
 
         // DELETE
-        ping = new APICommand("Ping", "v1");
+        ping = new APICommand(PING, "v1");
         ping = ping.addRaw("{\"value\": \"hello\"}").method("DELETE");
 
         rs = factory.process(ping);
         m = rs.getResponse();
         Assert.assertEquals("hello DELETE", ((ErrorModel) m).getMessage());
+    }
+
+    /**
+     * Invocation method for test
+     * 
+     * @param method
+     *            Name of API method
+     * @param s
+     *            Strategy instance to test
+     * @return ReponseModel code
+     */
+    private int invoke(String method, ApiCommandStrategy s) {
+
+        return s.process(new APICommand(null, null).method(method)).getResponse().getCode();
+    }
+
+    /**
+     * Tests for {@link AbstractApiCommandStrategyImpl}'s algorithm of method
+     * searching.
+     */
+    @Test
+    public void testMethodSearch() {
+
+        SampeStrategy s = new SampeStrategy();
+        s.initMethods();
+
+        // private
+        try {
+            invoke(GET, s);
+            Assert.fail();
+        } catch (UnsupportedOperationException ex) {
+            Assert.assertEquals("Method 'Get' is unsupported", ex.getMessage());
+        }
+
+        // protected
+        Assert.assertEquals(2, invoke("POST", s));
+
+        // wrong number of arguments
+        try {
+            invoke("PUT", s);
+            Assert.fail();
+        } catch (UnsupportedOperationException ex) {
+            Assert.assertEquals("Method 'Put' is unsupported", ex.getMessage());
+        }
+
+        // wrong return value
+        try {
+            invoke("DELETE", s);
+            Assert.fail();
+        } catch (UnsupportedOperationException ex) {
+            Assert.assertEquals("Method 'Delete' is unsupported", ex.getMessage());
+        }
+
+        /*
+         * Child strategy (overriding methods)
+         */
+        DerivatedSampleStrategy sx = new DerivatedSampleStrategy();
+        sx.initMethods();
+
+        // protected
+        Assert.assertEquals(100, invoke("POST", sx));
     }
 }

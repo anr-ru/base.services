@@ -3,11 +3,26 @@
  */
 package ru.anr.base.services.api;
 
-import java.io.Serializable;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.util.HashMap;
 import java.util.Map;
 
+import javax.annotation.PostConstruct;
+
+import org.apache.commons.lang3.ArrayUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.core.BridgeMethodResolver;
+import org.springframework.core.annotation.AnnotationUtils;
+import org.springframework.util.ClassUtils;
+import org.springframework.util.ReflectionUtils;
+import org.springframework.util.ReflectionUtils.MethodCallback;
+
+import ru.anr.base.ApplicationException;
 import ru.anr.base.domain.api.APICommand;
-import ru.anr.base.domain.api.models.RequestModel;
+import ru.anr.base.domain.api.MethodTypes;
 import ru.anr.base.domain.api.models.ResponseModel;
 import ru.anr.base.services.BaseServiceImpl;
 
@@ -23,88 +38,133 @@ import ru.anr.base.services.BaseServiceImpl;
 public class AbstractApiCommandStrategyImpl extends BaseServiceImpl implements ApiCommandStrategy {
 
     /**
+     * Logger
+     */
+    private static final Logger logger = LoggerFactory.getLogger(AbstractApiCommandStrategyImpl.class);
+
+    /**
      * {@inheritDoc}
      */
     @Override
     public APICommand process(APICommand cmd) {
 
-        ResponseModel rs = null;
-
-        switch (cmd.getType()) {
-            case Create:
-                rs = doCreate(cmd.getRequest(), cmd.getContexts());
-                break;
-            case Get:
-                rs = doGet(cmd.getRequest(), cmd.getContexts());
-                break;
-            case Modify:
-                rs = doModify(cmd.getRequest(), cmd.getContexts());
-                break;
-            case Delete:
-                rs = doDelete(cmd.getRequest(), cmd.getContexts());
-                break;
-            default:
-                throw new UnsupportedOperationException("Method unsupported");
-        }
-
-        cmd.setResponse(rs);
+        cmd.setResponse(doInvoke(cmd.getType(), cmd));
         return cmd;
     }
 
     /**
-     * 'Create' method (aka POST)
-     * 
-     * @param rq
-     *            Original request model
-     * @param ids
-     *            A map of request identifiers
-     * @return A response model
+     * Preloaded handler methods
      */
-    protected ResponseModel doCreate(RequestModel rq, Map<String, ? extends Serializable> ids) {
+    private final Map<MethodTypes, Method> handlers = new HashMap<>();
 
-        throw new UnsupportedOperationException("Method unsupported");
+    /**
+     * Initialization of strategy
+     */
+    @PostConstruct
+    public void initMethods() {
+
+        Class<?> clazz = target(this).getClass();
+        ReflectionUtils.doWithMethods(clazz, new MethodCallback() {
+
+            @Override
+            public void doWith(Method method) {
+
+                // This part of code found in some Spring Mvc annotation
+                // processors
+                Method specificMethod = ClassUtils.getMostSpecificMethod(method, clazz);
+                Method bridgedMethod = BridgeMethodResolver.findBridgedMethod(specificMethod);
+
+                if (isHandlerMethod(specificMethod)
+                        && (bridgedMethod == specificMethod || !isHandlerMethod(bridgedMethod))) {
+
+                    ApiMethod a = AnnotationUtils.getAnnotation(specificMethod, ApiMethod.class);
+                    if (checkHandlerMethod(specificMethod)) {
+                        handlers.put(a.value(), specificMethod);
+                    }
+                }
+            }
+        }, ReflectionUtils.USER_DECLARED_METHODS);
     }
 
     /**
-     * 'Modify' method (aka PUT)
+     * Performs checking method return type and argument with logging
+     * information if these methods are not valid.
      * 
-     * @param rq
-     *            Original request model
-     * @param ids
-     *            A map of request identifiers
-     * @return A response model
+     * @param method
+     *            Annotated method
+     * @return true, if method is valid
      */
-    protected ResponseModel doModify(RequestModel rq, Map<String, ? extends Serializable> ids) {
+    private boolean checkHandlerMethod(Method method) {
 
-        throw new UnsupportedOperationException("Method unsupported");
+        boolean rs = true;
+
+        if (Modifier.isPrivate(method.getModifiers())) {
+            logger.error("Method '{}' of class '{}' cannot be private", method.getName(), this.getClass());
+            rs = false;
+        }
+
+        if (Modifier.isAbstract(method.getModifiers())) {
+            logger.error("Method '{}' of class '{}' cannot be abstract", method.getName(), this.getClass());
+            rs = false;
+        }
+
+        if (method.getReturnType() != ResponseModel.class) {
+
+            logger.error("Method '{}' of class '{}' must have ResponseModel as return type", method.getName(),
+                    this.getClass());
+            rs = false;
+        }
+
+        Class<?>[] types = method.getParameterTypes();
+        if (ArrayUtils.isEmpty(types) || types.length > 1 || types[0] != APICommand.class) {
+
+            logger.error("Method '{}' of class '{}' must have ApiCommand as a single agrument", method.getName(),
+                    this.getClass());
+            rs = false;
+        }
+        return rs;
     }
 
     /**
-     * 'Get' method (aka GET)
+     * Checke the the method is api method handler (annotation {@link ApiMethod}
+     * is presented).
      * 
-     * @param rq
-     *            Original request model
-     * @param ids
-     *            A map of request identifiers
-     * @return A response model
+     * @param method
+     *            Method to check
+     * @return true, if method has {@link ApiMethod} annotation
      */
-    protected ResponseModel doGet(RequestModel rq, Map<String, ? extends Serializable> ids) {
+    private boolean isHandlerMethod(Method method) {
 
-        throw new UnsupportedOperationException("Method unsupported");
+        return AnnotationUtils.getAnnotation(method, ApiMethod.class) != null;
     }
 
     /**
-     * 'Delete' method (aka Delete)
+     * Handler method invocation
      * 
-     * @param rq
-     *            Original request model
-     * @param ids
-     *            A map of request identifiers
-     * @return A response model
+     * @param apiMethod
+     *            Api method type
+     * @param cmd
+     *            Api command
+     * @return Response
      */
-    protected ResponseModel doDelete(RequestModel rq, Map<String, ? extends Serializable> ids) {
+    private ResponseModel doInvoke(MethodTypes apiMethod, APICommand cmd) {
 
-        throw new UnsupportedOperationException("Method unsupported");
+        Method method = this.handlers.get(apiMethod);
+        if (method == null) {
+            throw new UnsupportedOperationException("Method '" + apiMethod.name() + "' is unsupported");
+        }
+        try {
+            return (ResponseModel) method.invoke(target(this), cmd);
+        } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
+            throw new ApplicationException(ex);
+        }
     }
 
+    /**
+     * @return the handlers
+     */
+    public Map<MethodTypes, Method> getHandlers() {
+
+        return handlers;
+    }
 }
