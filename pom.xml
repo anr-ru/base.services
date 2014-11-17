@@ -36,6 +36,34 @@
         </developer>
     </developers>
 
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>                            
+                            <goal>test-jar</goal>
+                        </goals>
+                        <configuration>
+                            <forceCreation>true</forceCreation>
+                            <includes>
+                                <include>**/META-INF/persistence-local.xml</include>
+                                <include>**/AbstractDaoTestCase*</include>
+                                <include>**/TestLocalDaoConfig*</include>
+                                <include>**/domain/Samples*</include>
+                            </includes>
+                            <skip>false</skip>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>        
+        </plugins>
+    </build>
+
+
     <dependencies>
         <!-- Spring framework base -->
         <dependency>
@@ -169,9 +197,11 @@
         <base.utils.version>0.0.1-SNAPSHOT</base.utils.version>
         <base.tests.version>0.0.1-SNAPSHOT</base.tests.version>
         
-        <jdbc.url>jdbc:hsqldb:mem:testdb</jdbc.url>
-        <jdbc.user>sa</jdbc.user>
-        <jdbc.password></jdbc.password>
+        <db.url>jdbc:hsqldb:mem:testdb</db.url>
+        <db.user>sa</db.user>
+        <db.password></db.password>
+        <db.driverClass>org.hsqldb.jdbcDriver</db.driverClass>
+        <db.hibernateDialect>org.hibernate.dialect.HSQLDialect</db.hibernateDialect>
         
     </properties>
 
