@@ -62,7 +62,7 @@ public class PingV1ApiCommand extends AbstractApiCommandStrategyImpl {
      * @return Response
      */
     @ApiMethod(MethodTypes.Put)
-    protected ResponseModel doModify(APICommand cmd) {
+    public ResponseModel doModify(APICommand cmd) {
 
         return build((PingModel) cmd.getRequest(), "PUT");
     }
@@ -75,7 +75,7 @@ public class PingV1ApiCommand extends AbstractApiCommandStrategyImpl {
      * @return Response
      */
     @ApiMethod(MethodTypes.Get)
-    protected ResponseModel doGet(APICommand cmd) {
+    public ResponseModel doGet(APICommand cmd) {
 
         return build((PingModel) cmd.getRequest(), "GET");
     }
@@ -88,7 +88,7 @@ public class PingV1ApiCommand extends AbstractApiCommandStrategyImpl {
      * @return Response
      */
     @ApiMethod(MethodTypes.Delete)
-    protected ResponseModel doDelete(APICommand cmd) {
+    public ResponseModel doDelete(APICommand cmd) {
 
         return build((PingModel) cmd.getRequest(), "DELETE");
     }

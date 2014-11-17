@@ -98,8 +98,8 @@ public class AbstractApiCommandStrategyImpl extends BaseServiceImpl implements A
 
         boolean rs = true;
 
-        if (Modifier.isPrivate(method.getModifiers())) {
-            logger.error("Method '{}' of class '{}' cannot be private", method.getName(), this.getClass());
+        if (!Modifier.isPublic(method.getModifiers())) {
+            logger.error("Method '{}' of class '{}' should be public", method.getName(), this.getClass());
             rs = false;
         }
 

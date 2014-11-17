@@ -38,7 +38,7 @@ public class SampeStrategy extends AbstractApiCommandStrategyImpl {
      * @return Response
      */
     @ApiMethod(MethodTypes.Post)
-    protected ResponseModel post(APICommand cmd) {
+    public ResponseModel post(APICommand cmd) {
 
         ResponseModel m = new ResponseModel();
         m.setCode(2);

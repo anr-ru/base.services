@@ -23,7 +23,7 @@ public class DerivatedSampleStrategy extends SampeStrategy {
      */
     @Override
     @ApiMethod(MethodTypes.Post)
-    protected ResponseModel post(APICommand cmd) {
+    public ResponseModel post(APICommand cmd) {
 
         ResponseModel m = new ResponseModel();
         m.setCode(100);
