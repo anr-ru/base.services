@@ -3,9 +3,13 @@
  */
 package ru.anr.base.services;
 
+import java.util.Locale;
+
+import org.junit.Before;
 import org.junit.Ignore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.test.context.ContextConfiguration;
 
 import ru.anr.base.dao.AbstractDaoTestCase;
@@ -28,4 +32,13 @@ public class BaseServiceTestCase extends AbstractDaoTestCase {
     @Autowired
     @Qualifier("base")
     protected BaseService base;
+
+    /**
+     * Default test settings
+     */
+    @Before
+    public void setUp() {
+
+        LocaleContextHolder.setLocale(Locale.US);
+    }
 }
