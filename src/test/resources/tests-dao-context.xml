@@ -9,7 +9,8 @@
     <context:property-placeholder location="classpath:application.properties" />
     <context:annotation-config/>
 
-    <bean id="config" class="ru.anr.base.dao.DaoConfig" 
+    <bean id="config" class="ru.anr.base.dao.TestLocalDaoConfig"
+        p:jdbcDriverClassName="${db.driverClass}" 
         p:jdbcUrl="${db.url}" 
         p:userName="${db.user}" 
         p:password="${db.password}" />

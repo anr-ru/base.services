@@ -8,7 +8,7 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
-import ru.anr.base.samples.dao.MyDao;
+import ru.anr.base.samples.dao.BaseDao;
 import ru.anr.base.samples.domain.Samples;
 
 /**
@@ -43,7 +43,9 @@ public class BaseDataAwareServiceImplTest extends BaseServiceTestCase {
         s = impl.dao().save(s);
         Assert.assertNotNull(s.getId());
 
-        MyDao<Samples> d = impl.dao();
-        Assert.assertEquals(s, d.findOne(s.getId()));
+        BaseDao d = impl.dao();
+
+        Samples e = d.findOne(s.getId());
+        Assert.assertEquals(s, e);
     }
 }

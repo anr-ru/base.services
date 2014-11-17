@@ -27,7 +27,7 @@ import ru.anr.base.samples.domain.Samples;
  * @created Oct 30, 2014
  * 
  */
-@Repository("dao")
+@Repository("mydao")
 public interface MyDao<T extends Samples> extends BaseRepository<T> {
 
     /**

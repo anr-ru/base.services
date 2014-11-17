@@ -7,11 +7,14 @@ import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
 
+import ru.anr.base.samples.dao.MyDao;
 import ru.anr.base.samples.domain.Samples;
 
 /**
@@ -25,6 +28,13 @@ import ru.anr.base.samples.domain.Samples;
 public class DaoTest extends AbstractDaoTestCase {
 
     /**
+     * Dao ref
+     */
+    @Autowired
+    @Qualifier("mydao")
+    protected MyDao<Samples> mydao;
+
+    /**
      * Query tests
      */
     @Test
@@ -32,12 +42,12 @@ public class DaoTest extends AbstractDaoTestCase {
 
         Samples s = newSample("yyy");
 
-        List<Samples> rs = dao.findCachedSamples();
+        List<Samples> rs = mydao.findCachedSamples();
         Assert.assertFalse(rs.isEmpty());
 
-        dao.updateSamples(s.getId());
+        mydao.updateSamples(s.getId());
 
-        dao.refresh(s);
+        mydao.refresh(s);
         Assert.assertEquals("xxx", s.getName());
     }
 
@@ -54,7 +64,7 @@ public class DaoTest extends AbstractDaoTestCase {
         Samples s5 = newSample("05");
 
         Pageable p = new PageRequest(0, 2);
-        Page<Samples> page = dao.pages(p);
+        Page<Samples> page = mydao.pages(p);
 
         // Page 0
         Assert.assertEquals(3, page.getTotalPages());
@@ -67,7 +77,7 @@ public class DaoTest extends AbstractDaoTestCase {
         Assert.assertTrue(rs.contains(s1));
         Assert.assertTrue(rs.contains(s2));
 
-        page = dao.pages(page.nextPageable());
+        page = mydao.pages(page.nextPageable());
 
         // Page 1
         Assert.assertEquals(3, page.getTotalPages());
@@ -80,7 +90,7 @@ public class DaoTest extends AbstractDaoTestCase {
         Assert.assertTrue(rs.contains(s3));
         Assert.assertTrue(rs.contains(s4));
 
-        page = dao.pages(page.nextPageable());
+        page = mydao.pages(page.nextPageable());
 
         // Page 2
         Assert.assertEquals(3, page.getTotalPages());
@@ -93,7 +103,7 @@ public class DaoTest extends AbstractDaoTestCase {
         Assert.assertTrue(rs.contains(s5));
 
         // Once more
-        page = dao.pages(page.nextPageable());
+        page = mydao.pages(page.nextPageable());
         Assert.assertTrue(page.hasContent());
         Assert.assertFalse(page.hasNext());
 
@@ -114,7 +124,7 @@ public class DaoTest extends AbstractDaoTestCase {
         Samples s5 = newSample("05");
 
         Pageable p = new PageRequest(0, 3, Direction.DESC, "name");
-        Page<Samples> page = dao.pages(p);
+        Page<Samples> page = mydao.pages(p);
 
         // Page 0
         Assert.assertEquals(2, page.getTotalPages());
@@ -128,7 +138,7 @@ public class DaoTest extends AbstractDaoTestCase {
         Assert.assertEquals(s4, rs.get(1));
         Assert.assertEquals(s3, rs.get(2));
 
-        page = dao.pages(page.nextPageable());
+        page = mydao.pages(page.nextPageable());
 
         // Page 1
         Assert.assertEquals(2, page.getTotalPages());
@@ -142,7 +152,7 @@ public class DaoTest extends AbstractDaoTestCase {
         Assert.assertEquals(s1, rs.get(1));
 
         // Changing order
-        page = dao.pages(new PageRequest(1, 3, Direction.ASC, "name"));
+        page = mydao.pages(new PageRequest(1, 3, Direction.ASC, "name"));
 
         Assert.assertEquals(2, page.getTotalPages());
         Assert.assertEquals(5, page.getTotalElements());
@@ -163,12 +173,12 @@ public class DaoTest extends AbstractDaoTestCase {
 
         Samples s = newSample("yyy");
 
-        List<Samples> rs = dao.query("from Samples where id = ?1", s.getId());
+        List<Samples> rs = mydao.query("from Samples where id = ?1", s.getId());
         Assert.assertEquals(1, rs.size());
 
         Assert.assertEquals(s, rs.get(0));
 
-        rs = dao.query("from Samples where id = 0");
+        rs = mydao.query("from Samples where id = 0");
         Assert.assertEquals(0, rs.size());
     }
 

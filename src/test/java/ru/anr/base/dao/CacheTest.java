@@ -15,7 +15,10 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 
+import ru.anr.base.samples.dao.MyDao;
 import ru.anr.base.samples.domain.Samples;
 
 /**
@@ -35,6 +38,13 @@ public class CacheTest extends AbstractDaoTestCase {
     private static final Logger logger = LoggerFactory.getLogger(CacheTest.class);
 
     /**
+     * Dao ref
+     */
+    @Autowired
+    @Qualifier("mydao")
+    protected MyDao<Samples> mydao;
+
+    /**
      * Cached queries tests
      */
     @Test
@@ -42,12 +52,12 @@ public class CacheTest extends AbstractDaoTestCase {
 
         newSample("yyy");
 
-        List<Samples> rs = dao.findCachedSamples();
+        List<Samples> rs = mydao.findCachedSamples();
         Assert.assertNotNull(rs);
 
-        rs = dao.findCachedSamples();
+        rs = mydao.findCachedSamples();
         Assert.assertNotNull(rs);
-        rs = dao.findCachedSamples();
+        rs = mydao.findCachedSamples();
 
         Map<String, QueryStatistics> map = getQueryStats();
         logger.debug("Query statistic: {}", map);
@@ -67,12 +77,12 @@ public class CacheTest extends AbstractDaoTestCase {
 
         Samples s = new Samples();
         s.setName("yyy");
-        s = dao.saveAndFlush(s);
+        s = mydao.saveAndFlush(s);
 
-        List<Samples> rs = dao.findSamples("xxx");
+        List<Samples> rs = mydao.findSamples("xxx");
         Assert.assertNotNull(rs);
 
-        rs = dao.findSamples("xxx");
+        rs = mydao.findSamples("xxx");
         Assert.assertNotNull(rs);
 
         Map<String, QueryStatistics> map = getQueryStats();

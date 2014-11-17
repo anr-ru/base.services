@@ -23,7 +23,7 @@
     <bean id = "base" class = "ru.anr.base.services.BaseServiceImpl" />
     
     <bean id = "baseData" class = "ru.anr.base.services.BaseDataAwareServiceImpl" 
-        p:dao-ref="dao"/>
+        p:dao-ref="sampledao"/>
 
     <context:component-scan base-package="ru.anr.base.samples.services" />
 

@@ -13,7 +13,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
-import ru.anr.base.samples.dao.MyDao;
 import ru.anr.base.samples.domain.Samples;
 import ru.anr.base.tests.BaseTestCase;
 
@@ -35,8 +34,8 @@ public abstract class AbstractDaoTestCase extends BaseTestCase {
      * Dao ref
      */
     @Autowired
-    @Qualifier("dao")
-    protected MyDao<Samples> dao;
+    @Qualifier("sampledao")
+    protected BaseRepository<Samples> dao;
 
     /**
      * Creation of new sample object
@@ -57,6 +56,6 @@ public abstract class AbstractDaoTestCase extends BaseTestCase {
      * Injection of EntityManager directly to perform some specific internal
      * ops.
      */
-    @PersistenceContext(unitName = "TestUnit")
+    @PersistenceContext(unitName = "TestUnitLocal")
     protected EntityManager em;
 }

@@ -24,7 +24,7 @@ import ru.anr.base.domain.BaseEntity;
 @Entity
 @Table(name = "samples")
 @Cacheable
-@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE, region = "sample")
+@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE, region = "samples")
 public class Samples extends BaseEntity {
 
     /**
