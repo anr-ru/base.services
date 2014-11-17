@@ -9,8 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 
 import ru.anr.base.BaseSpringParent;
+import ru.anr.base.services.serializer.SerializationConfig;
 
 /**
  * Configuration for Api commands and factory. Exports
@@ -23,6 +25,7 @@ import ru.anr.base.BaseSpringParent;
  */
 
 @Configuration
+@Import(SerializationConfig.class)
 public class ApiConfig extends BaseSpringParent {
 
     /**
