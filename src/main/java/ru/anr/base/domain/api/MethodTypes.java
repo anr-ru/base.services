@@ -15,9 +15,9 @@ package ru.anr.base.domain.api;
 public enum MethodTypes {
 
     /**
-     * Creates new data (aka http POST)
+     * Creates new data (http POST)
      */
-    Create,
+    Post,
     /**
      * Retrieves some data (http GET)
      */
@@ -25,7 +25,7 @@ public enum MethodTypes {
     /**
      * Modifies existing data (PUT)
      */
-    Modify,
+    Put,
     /**
      * Deletes some data (DELETE)
      */

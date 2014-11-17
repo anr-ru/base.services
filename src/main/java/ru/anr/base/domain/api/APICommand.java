@@ -4,12 +4,18 @@
 package ru.anr.base.domain.api;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import ru.anr.base.BaseParent;
 import ru.anr.base.domain.api.models.RequestModel;
 import ru.anr.base.domain.api.models.ResponseModel;
+import ru.anr.base.domain.api.models.SortModel;
+import ru.anr.base.domain.api.models.SortModel.SortDirection;
 
 /**
  * Representation of general API command (based on RESTful API model).
@@ -75,15 +81,15 @@ public class APICommand extends BaseParent implements Serializable {
     /**
      * Constructor of new command
      * 
-     * @param id
-     *            Identifier of command
+     * @param commandId
+     *            Identifier of a command
      * @param version
      *            Command version id
      */
-    public APICommand(String id, String version) {
+    public APICommand(String commandId, String version) {
 
         super();
-        setCommandId(id);
+        setCommandId(commandId);
         setVersion(version);
     }
 
@@ -142,10 +148,10 @@ public class APICommand extends BaseParent implements Serializable {
 
         switch (method) {
             case "POST":
-                t = MethodTypes.Create;
+                t = MethodTypes.Post;
                 break;
             case "PUT":
-                t = MethodTypes.Modify;
+                t = MethodTypes.Put;
                 break;
             case "GET":
                 t = MethodTypes.Get;
@@ -162,15 +168,13 @@ public class APICommand extends BaseParent implements Serializable {
     }
 
     /**
-     * Sets context object identifiers
-     * 
-     * @param map
-     *            Context identifiers to be used
+     * @param array
+     *            An array of pairs 'key/value'
      * @return This
      */
-    public APICommand context(Map<String, ? extends Serializable> map) {
+    public APICommand context(Object... array) {
 
-        setContexts(map);
+        setContexts(toMap(array));
         return this;
     }
 
@@ -182,13 +186,73 @@ public class APICommand extends BaseParent implements Serializable {
      *            A map of request params
      * @return This
      */
-    public APICommand params(Map<String, String> params) {
+    public APICommand params(Map<String, ?> params) {
 
         request = new RequestModel();
-        // TODO: parse all known query params (sort, fields, page, per_page, q)
-        // and sets for request
 
+        Object v = params.get("page");
+        if (v != null) {
+            request.setPage(parse(v.toString(), Integer.class));
+        }
+
+        v = params.get("per_page");
+        if (v != null) {
+            request.setPerPage(parse(v.toString(), Integer.class));
+        }
+
+        v = params.get("fields");
+        if (v != null) {
+            request.setFields(parseList(v.toString()));
+        }
+
+        v = params.get("q");
+        if (v != null) {
+            request.setSearch(v.toString());
+        }
+
+        v = params.get("sort");
+        if (v != null) {
+            request.setSorted(parseSort(parseList(v.toString())));
+        }
         return this;
+    }
+
+    /**
+     * Parsing of string fields with +/- markers to {@link SortModel}.
+     * 
+     * @param values
+     *            List of fields with expected prefixed
+     * @return List of {@link SortModel} objects
+     */
+    private List<SortModel> parseSort(List<String> values) {
+
+        List<SortModel> list = list();
+        for (String v : values) {
+            if (v.charAt(0) == '+') {
+                list.add(new SortModel(v.substring(1), SortDirection.ASC));
+            } else if (v.charAt(0) == '-') {
+                list.add(new SortModel(v.substring(1), SortDirection.DESC));
+            }
+        }
+        return list;
+    }
+
+    /**
+     * Parsing of values separated by ','
+     * 
+     * @param s
+     *            String with values
+     * @return Parsed values
+     */
+    private List<String> parseList(String s) {
+
+        List<String> list = null;
+        String[] array = StringUtils.split(s, ",");
+
+        if (!ArrayUtils.isEmpty(array)) {
+            list = list(array);
+        }
+        return list;
     }
 
     // /////////////////////////////////////////////////////////////////////////
