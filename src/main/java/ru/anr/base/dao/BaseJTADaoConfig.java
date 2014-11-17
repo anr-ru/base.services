@@ -4,6 +4,7 @@
 package ru.anr.base.dao;
 
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.config.JtaTransactionManagerFactoryBean;
 
@@ -17,6 +18,7 @@ import org.springframework.transaction.config.JtaTransactionManagerFactoryBean;
  * @created Nov 6, 2014
  *
  */
+@Configuration
 public class BaseJTADaoConfig extends AbstractDaoConfig {
 
     /**
