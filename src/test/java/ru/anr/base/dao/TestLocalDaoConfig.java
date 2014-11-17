@@ -7,7 +7,6 @@ import java.beans.PropertyVetoException;
 
 import javax.sql.DataSource;
 
-import org.hsqldb.jdbcDriver;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
@@ -25,7 +24,7 @@ import com.mchange.v2.c3p0.ComboPooledDataSource;
  */
 @Configuration
 @EnableJpaRepositories(basePackages = { "ru.anr.base.samples.dao" }, repositoryFactoryBeanClass = BaseRepositoryFactoryBean.class)
-public class DaoConfig extends AbstractJPADaoConfig {
+public class TestLocalDaoConfig extends AbstractJPADaoConfig {
 
     /**
      * {@inheritDoc}
@@ -37,7 +36,7 @@ public class DaoConfig extends AbstractJPADaoConfig {
 
         try {
 
-            ds.setDriverClass(jdbcDriver.class.getName());
+            ds.setDriverClass(getJdbcDriverClassName());
             ds.setJdbcUrl(getJdbcUrl());
             ds.setUser(getUserName());
             ds.setPassword(getPassword());
