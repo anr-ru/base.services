@@ -3,16 +3,15 @@
  */
 package ru.anr.base.services.api;
 
-import java.io.Serializable;
-import java.util.Map;
-
+import ru.anr.base.domain.api.APICommand;
 import ru.anr.base.domain.api.ErrorModel;
+import ru.anr.base.domain.api.MethodTypes;
 import ru.anr.base.domain.api.models.PingModel;
-import ru.anr.base.domain.api.models.RequestModel;
 import ru.anr.base.domain.api.models.ResponseModel;
 
 /**
- * A 'ping' api command. It's always successful.
+ * A 'ping' api command. It's always successful, inspite of using
+ * {@link ErrorModel} :-)
  *
  *
  * @author Alexey Romanchuk
@@ -43,38 +42,54 @@ public class PingV1ApiCommand extends AbstractApiCommandStrategyImpl {
     }
 
     /**
-     * {@inheritDoc}
+     * Supporting POST method
+     * 
+     * @param cmd
+     *            Command
+     * @return Response
      */
-    @Override
-    protected ResponseModel doCreate(RequestModel rq, Map<String, ? extends Serializable> ids) {
+    @ApiMethod(MethodTypes.Post)
+    public ResponseModel doCreate(APICommand cmd) {
 
-        return build((PingModel) rq, "POST");
+        return build((PingModel) cmd.getRequest(), "POST");
     }
 
     /**
-     * {@inheritDoc}
+     * Supporting PUT method
+     * 
+     * @param cmd
+     *            Command
+     * @return Response
      */
-    @Override
-    protected ResponseModel doModify(RequestModel rq, Map<String, ? extends Serializable> ids) {
+    @ApiMethod(MethodTypes.Put)
+    protected ResponseModel doModify(APICommand cmd) {
 
-        return build((PingModel) rq, "PUT");
+        return build((PingModel) cmd.getRequest(), "PUT");
     }
 
     /**
-     * {@inheritDoc}
+     * Supporting GET method
+     * 
+     * @param cmd
+     *            Command
+     * @return Response
      */
-    @Override
-    protected ResponseModel doGet(RequestModel rq, Map<String, ? extends Serializable> ids) {
+    @ApiMethod(MethodTypes.Get)
+    protected ResponseModel doGet(APICommand cmd) {
 
-        return build((PingModel) rq, "GET");
+        return build((PingModel) cmd.getRequest(), "GET");
     }
 
     /**
-     * {@inheritDoc}
+     * Supporing DELETE method
+     * 
+     * @param cmd
+     *            Command
+     * @return Response
      */
-    @Override
-    protected ResponseModel doDelete(RequestModel rq, Map<String, ? extends Serializable> ids) {
+    @ApiMethod(MethodTypes.Delete)
+    protected ResponseModel doDelete(APICommand cmd) {
 
-        return build((PingModel) rq, "DELETE");
+        return build((PingModel) cmd.getRequest(), "DELETE");
     }
 }
