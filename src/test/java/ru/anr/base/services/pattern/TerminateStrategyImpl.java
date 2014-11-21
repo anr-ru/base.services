@@ -14,7 +14,7 @@ import ru.anr.base.services.pattern.StrategyConfig.StrategyModes;
  *
  */
 
-public class TerminateStrategyImpl implements Strategy {
+public class TerminateStrategyImpl implements Strategy<Object> {
 
     /**
      * {@inheritDoc}
@@ -29,7 +29,7 @@ public class TerminateStrategyImpl implements Strategy {
      * {@inheritDoc}
      */
     @Override
-    public <S> S process(S o, StrategyConfig cfg) {
+    public Object process(Object o, StrategyConfig cfg) {
 
         return o;
     }

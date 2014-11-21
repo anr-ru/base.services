@@ -14,7 +14,7 @@ import ru.anr.base.services.pattern.StrategyConfig.StrategyModes;
  *
  */
 
-public class FalseStrategyImpl implements Strategy {
+public class FalseStrategyImpl implements Strategy<Object> {
 
     /**
      * {@inheritDoc}
@@ -29,7 +29,7 @@ public class FalseStrategyImpl implements Strategy {
      * {@inheritDoc}
      */
     @Override
-    public <S> S process(S o, StrategyConfig cfg) {
+    public Object process(Object o, StrategyConfig cfg) {
 
         return null;
     }

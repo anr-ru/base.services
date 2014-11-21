@@ -86,7 +86,7 @@ public class BaseServiceImpl extends BaseSpringParent implements BaseService {
     /**
      * List of additional extentions of the service
      */
-    private List<Strategy> extentions = list();
+    private List<Strategy<Object>> extentions = list();
 
     /**
      * A factory which manages by extentions execution
@@ -131,7 +131,7 @@ public class BaseServiceImpl extends BaseSpringParent implements BaseService {
      * @param extentions
      *            the extentions to set
      */
-    public void setExtentions(List<Strategy> extentions) {
+    public void setExtentions(List<Strategy<Object>> extentions) {
 
         this.extentions = extentions;
     }

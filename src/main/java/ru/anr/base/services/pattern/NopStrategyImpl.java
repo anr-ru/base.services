@@ -15,7 +15,7 @@ import ru.anr.base.services.pattern.StrategyConfig.StrategyModes;
  *
  */
 
-public class NopStrategyImpl extends BaseServiceImpl implements Strategy {
+public class NopStrategyImpl extends BaseServiceImpl implements Strategy<Object> {
 
     /**
      * {@inheritDoc}
@@ -30,7 +30,7 @@ public class NopStrategyImpl extends BaseServiceImpl implements Strategy {
      * {@inheritDoc}
      */
     @Override
-    public <S> S process(S o, StrategyConfig cfg) {
+    public Object process(Object o, StrategyConfig cfg) {
 
         return o;
     }
