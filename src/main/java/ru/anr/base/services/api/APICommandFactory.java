@@ -39,4 +39,14 @@ public interface APICommandFactory {
      * @return API Command with built error response
      */
     APICommand error(APICommand cmd, Exception ex);
+
+    /**
+     * A special entry point for handling global errors, not for specific
+     * command.
+     * 
+     * @param ex
+     *            AN exception
+     * @return API Command with built error response
+     */
+    APICommand error(Exception ex);
 }

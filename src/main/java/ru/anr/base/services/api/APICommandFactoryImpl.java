@@ -15,6 +15,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.util.Assert;
 
+import ru.anr.base.ApplicationException;
 import ru.anr.base.domain.api.APICommand;
 import ru.anr.base.domain.api.APIException;
 import ru.anr.base.domain.api.ErrorModel;
@@ -159,11 +160,34 @@ public class APICommandFactoryImpl extends BaseServiceImpl implements APICommand
      * {@inheritDoc}
      */
     @Override
+    public APICommand error(Exception ex) {
+
+        return error(new APICommand("", ""), ex);
+    }
+
+    /**
+     * Getting an error code. If an exception is {@link APIException},
+     * extracting the code from it, otherwise using a system exception code.
+     * 
+     * @param ex
+     *            An exception
+     * @return integer code
+     */
+    private int resolveErrorCode(Exception ex) {
+
+        Throwable reason = new ApplicationException(ex).getRootCause();
+        return (reason instanceof APIException) ? ((APIException) reason).getErrorCode() : APIException.ERROR_SYSTEM;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public APICommand error(APICommand cmd, Exception ex) {
 
         ErrorModel m = new ErrorModel();
 
-        int code = (ex instanceof APIException) ? ((APIException) ex).getErrorCode() : APIException.ERROR_SYSTEM;
+        int code = resolveErrorCode(ex);
         m.setCode(code);
 
         String msg = text(errorCodePrefix + code);
