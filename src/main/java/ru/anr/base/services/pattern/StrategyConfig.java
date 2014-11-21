@@ -86,7 +86,7 @@ public class StrategyConfig {
      */
     public Object[] getParams() {
 
-        return params;
+        return ArrayUtils.clone(params);
     }
 
     /**
@@ -99,8 +99,8 @@ public class StrategyConfig {
          */
         Normal,
         /**
-         * After this strategy further strategies execution must be stopped (the
-         * current strategy is the last)
+         * After this strategy, further execution must be stopped (current
+         * strategy is the last)
          */
         TerminateAfter;
     }
