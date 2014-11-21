@@ -53,6 +53,11 @@ public abstract class AbstractJPADaoConfig extends AbstractDaoConfig {
     public abstract DataSource dataSource();
 
     /**
+     * Persistence file location
+     */
+    private String persistenceFileLocation = "classpath:META-INF/persistence-local.xml";
+
+    /**
      * Definition of {@link EntityManagerFactory}
      * 
      * @return Bean instance
@@ -65,7 +70,7 @@ public abstract class AbstractJPADaoConfig extends AbstractDaoConfig {
         LocalContainerEntityManagerFactoryBean factory = new LocalContainerEntityManagerFactoryBean();
         factory.setJpaVendorAdapter(vendorAdapter);
         factory.setDataSource(dataSource());
-        factory.setPersistenceXmlLocation("classpath:META-INF/persistence-local.xml");
+        factory.setPersistenceXmlLocation(persistenceFileLocation);
         factory.afterPropertiesSet();
 
         return factory.getObject();
@@ -156,4 +161,14 @@ public abstract class AbstractJPADaoConfig extends AbstractDaoConfig {
 
         this.jdbcDriverClassName = jdbcDriverClassName;
     }
+
+    /**
+     * @param persistenceFileLocation
+     *            the persistenceFileLocation to set
+     */
+    public void setPersistenceFileLocation(String persistenceFileLocation) {
+
+        this.persistenceFileLocation = persistenceFileLocation;
+    }
+
 }

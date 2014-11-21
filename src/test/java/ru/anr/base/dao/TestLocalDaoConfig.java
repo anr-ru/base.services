@@ -23,7 +23,8 @@ import com.mchange.v2.c3p0.ComboPooledDataSource;
  *
  */
 @Configuration
-@EnableJpaRepositories(basePackages = { "ru.anr.base.samples.dao" }, repositoryFactoryBeanClass = BaseRepositoryFactoryBean.class)
+@EnableJpaRepositories(basePackages = { "ru.anr.base.samples.dao", "ru.anr.base.dao.repository" }, //
+repositoryFactoryBeanClass = BaseRepositoryFactoryBean.class)
 public class TestLocalDaoConfig extends AbstractJPADaoConfig {
 
     /**

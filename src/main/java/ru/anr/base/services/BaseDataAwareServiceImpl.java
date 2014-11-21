@@ -3,11 +3,10 @@
  */
 package ru.anr.base.services;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import ru.anr.base.dao.BaseRepository;
+import ru.anr.base.dao.repository.BaseRepository;
 import ru.anr.base.domain.BaseEntity;
 
 /**
@@ -35,7 +34,6 @@ public class BaseDataAwareServiceImpl extends BaseServiceImpl {
      * @param dao
      *            the dao to set
      */
-    @Autowired
     public void setDao(BaseRepository<BaseEntity> dao) {
 
         this.repository = dao;
@@ -47,13 +45,13 @@ public class BaseDataAwareServiceImpl extends BaseServiceImpl {
      * @return the dao param
      * 
      * @param <T>
-     *            Object class
-     * @param <R>
-     *            Repository class
+     *            Entity class
+     * @param <S>
+     *            Dao class
      */
     @SuppressWarnings("unchecked")
-    protected <T extends BaseEntity, R extends BaseRepository<T>> R dao() {
+    protected <T extends BaseEntity, S extends BaseRepository<T>> S dao() {
 
-        return (R) repository;
+        return (S) repository;
     }
 }

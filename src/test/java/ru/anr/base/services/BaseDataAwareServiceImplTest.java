@@ -34,7 +34,7 @@ public class BaseDataAwareServiceImplTest extends BaseServiceTestCase {
     @Test
     public void testDaoAccess() {
 
-        BaseDataAwareServiceImpl impl = (BaseDataAwareServiceImpl) target(service);
+        BaseDataAwareServiceImpl impl = target(service);
 
         Samples s = new Samples();
         s.setName("xxx");
@@ -47,5 +47,22 @@ public class BaseDataAwareServiceImplTest extends BaseServiceTestCase {
 
         Samples e = d.findOne(s.getId());
         Assert.assertEquals(s, e);
+    }
+
+    /**
+     * 
+     */
+    @Autowired
+    @Qualifier("TestDataService")
+    private BaseService testService;
+
+    /**
+     * Check dao access methods
+     */
+    @Test
+    public void testAutowired() {
+
+        BaseDataAwareServiceImpl impl = target(testService);
+        Assert.assertNotNull(impl.dao());
     }
 }

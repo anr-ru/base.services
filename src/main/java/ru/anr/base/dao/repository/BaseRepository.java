@@ -1,11 +1,12 @@
 /**
  * 
  */
-package ru.anr.base.dao;
+package ru.anr.base.dao.repository;
 
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 import ru.anr.base.domain.BaseEntity;
 
@@ -17,7 +18,7 @@ import ru.anr.base.domain.BaseEntity;
  * @created Nov 6, 2014
  *
  */
-
+@Repository("BaseRepository")
 public interface BaseRepository<T extends BaseEntity> extends JpaRepository<T, Long> {
 
     /**

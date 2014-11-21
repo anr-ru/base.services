@@ -10,6 +10,7 @@ import javax.persistence.Query;
 
 import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 
+import ru.anr.base.dao.repository.BaseRepository;
 import ru.anr.base.domain.BaseEntity;
 
 /**

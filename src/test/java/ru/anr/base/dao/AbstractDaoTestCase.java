@@ -13,6 +13,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
+import ru.anr.base.dao.repository.BaseRepository;
 import ru.anr.base.samples.domain.Samples;
 import ru.anr.base.tests.BaseTestCase;
 

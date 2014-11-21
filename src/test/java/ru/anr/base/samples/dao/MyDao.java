@@ -16,7 +16,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import ru.anr.base.dao.BaseRepository;
+import ru.anr.base.dao.repository.BaseRepository;
 import ru.anr.base.samples.domain.Samples;
 
 /**
