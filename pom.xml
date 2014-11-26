@@ -160,7 +160,11 @@
 		<dependency>
 		    <groupId>com.fasterxml.jackson.datatype</groupId>
 		    <artifactId>jackson-datatype-jsr310</artifactId>
-		</dependency>        
+		</dependency>
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>        
+        </dependency>        
 
         <!-- Internal dependencies -->
         <dependency>
