@@ -9,15 +9,15 @@
     </parent>
 
     <artifactId>base.services</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.5-SNAPSHOT</version>
 
     <name>Base Services project</name>
     <description>A base classes for business logic implementation</description>
 
     <licenses>
         <license>
-            <name>The MIT License (MIT)</name>
-            <url>http://opensource.org/licenses/MIT</url>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
         </license>
     </licenses>
 
@@ -198,8 +198,8 @@
 
     <properties>
         <!-- internal deps -->
-        <base.utils.version>0.0.1-SNAPSHOT</base.utils.version>
-        <base.tests.version>0.0.1-SNAPSHOT</base.tests.version>
+        <base.utils.version>0.5-SNAPSHOT</base.utils.version>
+        <base.tests.version>0.5-SNAPSHOT</base.tests.version>
         
         <db.url>jdbc:hsqldb:mem:testdb</db.url>
         <db.user>sa</db.user>
