@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+    <entry key="hello.world">Hello, world!</entry>
+    <entry key="api.errorcode.1">A system error</entry>
+    
+</properties>

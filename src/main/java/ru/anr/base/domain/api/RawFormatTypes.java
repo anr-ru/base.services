@@ -13,29 +13,25 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package ru.anr.base.services;
+package ru.anr.base.domain.api;
 
 /**
- * A 'Service' interface
- * 
- * 
+ * Defining format types for request/response models.
+ *
+ *
  * @author Alexey Romanchuk
- * @created Oct 29, 2014
- * 
+ * @created Nov 10, 2014
+ *
  */
-public interface BaseService {
+
+public enum RawFormatTypes {
 
     /**
-     * Retrieves a text message from resource with provided code. If no message
-     * found with specified code, it returns a spring in format [xxxCODExxx]. If
-     * exists {@link org.springframework.context.i18n.LocaleContextHolder} the
-     * current locale is used, otherwise default jvm settings.
-     * 
-     * @param code
-     *            A Message code
-     * @param args
-     *            Message arguments
-     * @return A text with parameters replaced with the arguments
+     * Json representation (default)
      */
-    String text(String code, Object... args);
+    JSON,
+    /**
+     * XML representation (supported yet)
+     */
+    XML;
 }

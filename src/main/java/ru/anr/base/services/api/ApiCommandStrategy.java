@@ -13,29 +13,27 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package ru.anr.base.services;
+package ru.anr.base.services.api;
+
+import ru.anr.base.domain.api.APICommand;
 
 /**
- * A 'Service' interface
- * 
- * 
+ * Interface for Api command strategy.
+ *
+ *
  * @author Alexey Romanchuk
- * @created Oct 29, 2014
- * 
+ * @created Nov 10, 2014
+ *
  */
-public interface BaseService {
+
+public interface ApiCommandStrategy {
 
     /**
-     * Retrieves a text message from resource with provided code. If no message
-     * found with specified code, it returns a spring in format [xxxCODExxx]. If
-     * exists {@link org.springframework.context.i18n.LocaleContextHolder} the
-     * current locale is used, otherwise default jvm settings.
+     * Process an API Command. Parsed and prepared
      * 
-     * @param code
-     *            A Message code
-     * @param args
-     *            Message arguments
-     * @return A text with parameters replaced with the arguments
+     * @param cmd
+     *            API Command
+     * @return Resulted command (with embedded response model)
      */
-    String text(String code, Object... args);
+    APICommand process(APICommand cmd);
 }

@@ -5,13 +5,11 @@ package ru.anr.base.services;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import ru.anr.base.tests.BaseTestCase;
 
 /**
  * Testing for {@link org.springframework.core.env.Environment} access to get
@@ -19,13 +17,12 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
  *
  *
  * @author Alexey Romanchuk
- * @created 03 нояб. 2014 г.
+ * @created Nov 3, 2014
  *
  */
-@RunWith(SpringJUnit4ClassRunner.class)
 @ActiveProfiles("production")
-@ContextConfiguration(classes = BaseServiceImplProductionTest.class)
-public class BaseServiceImplProductionTest {
+@ContextConfiguration(classes = { BaseServiceImplProductionTest.class, MessagePropertiesConfig.class })
+public class BaseServiceImplProductionTest extends BaseTestCase {
 
     /**
      * Configuring a bean
@@ -39,18 +36,12 @@ public class BaseServiceImplProductionTest {
     }
 
     /**
-     * A ref to context
-     */
-    @Autowired
-    private ApplicationContext ctx;
-
-    /**
      * Test method for {@link ru.anr.base.services.BaseServiceImpl#isProdMode()}
      */
     @Test
     public void testIsProdMode() {
 
-        BaseServiceImpl s1 = ctx.getBean("beanProd", BaseServiceImpl.class);
+        BaseServiceImpl s1 = bean("beanProd", BaseServiceImpl.class);
         Assert.assertTrue(s1.isProdMode());
     }
 }

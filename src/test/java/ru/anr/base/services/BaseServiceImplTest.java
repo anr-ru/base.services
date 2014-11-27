@@ -3,15 +3,12 @@
  */
 package ru.anr.base.services;
 
+import java.util.Locale;
+import java.util.TimeZone;
+
 import org.junit.Assert;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.Bean;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.context.i18n.LocaleContextHolder;
 
 /**
  * Test for checking Spring {@link org.springframework.core.env.Environment} to
@@ -19,30 +16,10 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
  *
  *
  * @author Alexey Romanchuk
- * @created 03 нояб. 2014 г.
+ * @created Nov, 3 2014
  *
  */
-@RunWith(SpringJUnit4ClassRunner.class)
-@ActiveProfiles("tests")
-@ContextConfiguration(classes = BaseServiceImplTest.class)
-public class BaseServiceImplTest {
-
-    /**
-     * Getting a bean instance
-     * 
-     * @return Bean instance
-     */
-    @Bean(name = "beanDev")
-    public BaseServiceImpl instance() {
-
-        return new BaseServiceImpl();
-    }
-
-    /**
-     * A ref to context
-     */
-    @Autowired
-    private ApplicationContext ctx;
+public class BaseServiceImplTest extends BaseServiceTestCase {
 
     /**
      * Test method for {@link ru.anr.base.services.BaseServiceImpl#isProdMode()}
@@ -50,7 +27,29 @@ public class BaseServiceImplTest {
     @Test
     public void testIsProdMode() {
 
-        BaseServiceImpl s1 = ctx.getBean("beanDev", BaseServiceImpl.class);
-        Assert.assertFalse(s1.isProdMode());
+        BaseServiceImpl impl = (BaseServiceImpl) base;
+        Assert.assertFalse(impl.isProdMode());
     }
+
+    /**
+     * Test method for {@link BaseService#text(String)}
+     */
+    @Test
+    public void tesTextResources() {
+
+        LocaleContextHolder.setTimeZone(TimeZone.getTimeZone(DEFAULT_TIMEZONE));
+
+        LocaleContextHolder.setLocale(new Locale("ru", "RU")); // Russia
+
+        BaseServiceImpl impl = (BaseServiceImpl) base;
+        Assert.assertEquals("Привет, мир!", impl.text("hello.world"));
+
+        Assert.assertEquals("Привет, добрый мир!", impl.text("hello.world.param", "добрый"));
+
+        LocaleContextHolder.setLocale(new Locale("en", "US")); // USA
+
+        Assert.assertEquals("Hello, world!", impl.text("hello.world"));
+        Assert.assertEquals("[xxxhello.world.noxxx]", impl.text("hello.world.no", "xxx"));
+    }
+
 }

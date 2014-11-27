@@ -1,14 +1,37 @@
-/**
+/*
+ * Copyright 2014 the original author or authors.
  * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  */
 package ru.anr.base.services;
 
+import java.util.List;
 import java.util.Set;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
+import javax.annotation.PostConstruct;
 
-import ru.anr.base.BaseParent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.NoSuchMessageException;
+import org.springframework.context.support.MessageSourceAccessor;
+
+import ru.anr.base.BaseSpringParent;
+import ru.anr.base.services.pattern.Strategy;
+import ru.anr.base.services.pattern.StrategyFactory;
+import ru.anr.base.services.pattern.StrategyFactoryImpl;
+import ru.anr.base.services.pattern.StrategyStatistic;
 
 /**
  * Implementation of Base Service.
@@ -18,18 +41,17 @@ import ru.anr.base.BaseParent;
  * @created Oct 29, 2014
  * 
  */
-public class BaseServiceImpl extends BaseParent implements BaseService {
+public class BaseServiceImpl extends BaseSpringParent implements BaseService {
+
+    /**
+     * Logger
+     */
+    private static final Logger logger = LoggerFactory.getLogger(BaseServiceImpl.class);
 
     /**
      * Default name for production profile
      */
     public static final String PRODUCTION_PROFILE = "production";
-
-    /**
-     * Environment injection
-     */
-    @Autowired
-    private Environment env;
 
     /**
      * Checking for 'Production' mode
@@ -38,8 +60,79 @@ public class BaseServiceImpl extends BaseParent implements BaseService {
      */
     protected boolean isProdMode() {
 
-        Set<String> profiles = set(env.getActiveProfiles());
+        Set<String> profiles = getProfiles();
         return profiles.contains(PRODUCTION_PROFILE);
+    }
+
+    /**
+     * A ref to a text resource service
+     */
+    @Autowired
+    @Qualifier("messageSourceAccessor")
+    private MessageSourceAccessor messages;
+
+    /**
+     * A template of string is returned in case when message with code not found
+     */
+    private static final String MSG_ERROR_DECORATION = "[xxx%sxxx]";
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String text(String code, Object... args) {
+
+        String txt = null;
+
+        try {
+            txt = messages.getMessage(code, args);
+
+        } catch (NoSuchMessageException ex) {
+
+            logger.error("Message resource error: {}", ex.getMessage());
+            txt = String.format(MSG_ERROR_DECORATION, code);
+        }
+        return txt;
+    }
+
+    /**
+     * List of additional extentions of the service
+     */
+    private List<Strategy<Object>> extentions = list();
+
+    /**
+     * A factory which manages by extentions execution
+     */
+    private StrategyFactory extentionFactory;
+
+    /**
+     * Initialization
+     */
+    @PostConstruct
+    public void init() {
+
+        extentionFactory = new StrategyFactoryImpl(extentions);
+    }
+
+    /**
+     * A point of extention of the current service with sort of plugins.
+     * Delegates an additional processing to some strategies, defined for the
+     * service.
+     * 
+     * @param object
+     *            Original object to process
+     * @param params
+     *            Additional parameters
+     * @return Possible updated original object
+     */
+    protected Object processExtentions(Object object, Object... params) {
+
+        StrategyStatistic stat = extentionFactory.process(object, params);
+
+        if (logger.isDebugEnabled()) {
+            logger.debug("List of applied strategies: {}", stat.getAppliedStrategies());
+        }
+        return stat.getObject();
     }
 
     // /////////////////////////////////////////////////////////////////////////
@@ -47,10 +140,11 @@ public class BaseServiceImpl extends BaseParent implements BaseService {
     // /////////////////////////////////////////////////////////////////////////
 
     /**
-     * @return the env
+     * @param extentions
+     *            the extentions to set
      */
-    public Environment getEnv() {
+    public void setExtentions(List<Strategy<Object>> extentions) {
 
-        return env;
+        this.extentions = extentions;
     }
 }

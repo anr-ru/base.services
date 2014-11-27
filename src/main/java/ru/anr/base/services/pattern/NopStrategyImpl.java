@@ -13,29 +13,37 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package ru.anr.base.services;
+package ru.anr.base.services.pattern;
+
+import ru.anr.base.services.BaseServiceImpl;
+import ru.anr.base.services.pattern.StrategyConfig.StrategyModes;
 
 /**
- * A 'Service' interface
- * 
- * 
+ * No operation strategy. Just do nothing and can be used for test purposes.
+ *
+ *
  * @author Alexey Romanchuk
- * @created Oct 29, 2014
- * 
+ * @created Nov 10, 2014
+ *
  */
-public interface BaseService {
+
+public class NopStrategyImpl extends BaseServiceImpl implements Strategy<Object> {
 
     /**
-     * Retrieves a text message from resource with provided code. If no message
-     * found with specified code, it returns a spring in format [xxxCODExxx]. If
-     * exists {@link org.springframework.context.i18n.LocaleContextHolder} the
-     * current locale is used, otherwise default jvm settings.
-     * 
-     * @param code
-     *            A Message code
-     * @param args
-     *            Message arguments
-     * @return A text with parameters replaced with the arguments
+     * {@inheritDoc}
      */
-    String text(String code, Object... args);
+    @Override
+    public StrategyConfig check(Object o, Object... params) {
+
+        return new StrategyConfig(true, o, StrategyModes.Normal);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Object process(Object o, StrategyConfig cfg) {
+
+        return o;
+    }
 }

@@ -9,15 +9,15 @@
     </parent>
 
     <artifactId>base.services</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.5-SNAPSHOT</version>
 
     <name>Base Services project</name>
     <description>A base classes for business logic implementation</description>
 
     <licenses>
         <license>
-            <name>The MIT License (MIT)</name>
-            <url>http://opensource.org/licenses/MIT</url>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
         </license>
     </licenses>
 
@@ -36,6 +36,33 @@
         </developer>
     </developers>
 
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>                            
+                            <goal>test-jar</goal>
+                        </goals>
+                        <configuration>
+                            <forceCreation>true</forceCreation>
+                            <includes>
+                                <include>**/META-INF/persistence-local.xml</include>
+                                <include>**/AbstractDaoTestCase*</include>
+                                <include>**/TestLocalDaoConfig*</include>
+                                <include>**/domain/Samples*</include>
+                            </includes>
+                            <skip>false</skip>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>        
+        </plugins>
+    </build>
+
 
     <dependencies>
         <!-- Spring framework base -->
@@ -51,11 +78,104 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-context</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context-support</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-tx</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-aop</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjrt</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjweaver</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-entitymanager</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-orm</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.data</groupId>
+            <artifactId>spring-data-jpa</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-aspects</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-jdbc</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>net.sf.ehcache</groupId>
+            <artifactId>ehcache-core</artifactId>
+        </dependency>       
+        <dependency>
+            <artifactId>hibernate-ehcache</artifactId>
+            <groupId>org.hibernate</groupId>
+        </dependency>        
 
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-config</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-core</artifactId>
+        </dependency>
+        
+        <!-- JSON/XML serializarion tools -->
+        <dependency>
+        	<groupId>com.fasterxml.jackson.core</groupId>
+        	<artifactId>jackson-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.module</groupId>
+            <artifactId>jackson-module-jaxb-annotations</artifactId>
+        </dependency>
+        <dependency>
+          <groupId>com.fasterxml.jackson.dataformat</groupId>
+          <artifactId>jackson-dataformat-xml</artifactId>
+        </dependency>        
+        <dependency>
+        	<groupId>org.codehaus.woodstox</groupId>
+        	<artifactId>woodstox-core-asl</artifactId>
+        </dependency>
+		<dependency>
+		    <groupId>com.fasterxml.jackson.datatype</groupId>
+		    <artifactId>jackson-datatype-jsr310</artifactId>
+		</dependency>
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>        
+        </dependency>        
+
+        <!-- Internal dependencies -->
         <dependency>
             <groupId>ru.anr</groupId>
             <artifactId>base.utils</artifactId>
             <version>${base.utils.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>ru.anr</groupId>
+            <artifactId>base.tests</artifactId>
+            <version>${base.tests.version}</version>
         </dependency>
 
         <!-- TESTS -->
@@ -63,11 +183,30 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-test</artifactId>
         </dependency>
+        <dependency>  
+            <groupId>hsqldb</groupId>  
+            <artifactId>hsqldb</artifactId>  
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.mchange</groupId>
+            <artifactId>c3p0</artifactId>
+            <scope>test</scope>
+        </dependency>
 
     </dependencies>
 
     <properties>
-        <base.utils.version>0.0.1-SNAPSHOT</base.utils.version>
+        <!-- internal deps -->
+        <base.utils.version>0.5-SNAPSHOT</base.utils.version>
+        <base.tests.version>0.5-SNAPSHOT</base.tests.version>
+        
+        <db.url>jdbc:hsqldb:mem:testdb</db.url>
+        <db.user>sa</db.user>
+        <db.password></db.password>
+        <db.driverClass>org.hsqldb.jdbcDriver</db.driverClass>
+        <db.hibernateDialect>org.hibernate.dialect.HSQLDialect</db.hibernateDialect>
+        
     </properties>
 
 </project>

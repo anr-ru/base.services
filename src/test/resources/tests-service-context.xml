@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:jpa="http://www.springframework.org/schema/data/jpa" xmlns:p="http://www.springframework.org/schema/p"
+    xmlns:util="http://www.springframework.org/schema/util"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.1.xsd
+        http://www.springframework.org/schema/data/jpa http://www.springframework.org/schema/data/jpa/spring-jpa-1.3.xsd
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.1.xsd">
+
+    <import resource="classpath:tests-dao-context.xml"/>
+
+    <bean id="messageConfig" 
+        class="ru.anr.base.services.MessagePropertiesConfig" 
+        p:paths-ref="messages"/>
+                
+    <util:list id="messages">
+        <value>classpath:/messages/data</value>
+    </util:list>
+    
+    
+    <!-- Test service -->
+    <bean id = "base" class = "ru.anr.base.services.BaseServiceImpl" />
+    
+    <bean id = "baseData" class = "ru.anr.base.services.BaseDataAwareServiceImpl" 
+        p:dao-ref="sampledao"/>
+
+    <context:component-scan base-package="ru.anr.base.samples.services" />
+
+    <!-- Security -->
+    <bean id="securityConfig" class="ru.anr.base.services.SecurityConfig" 
+        p:providers-ref="testAuthenticator"/>
+
+    <bean id = "testAuthenticator" class="org.springframework.security.authentication.TestingAuthenticationProvider" />
+
+    <!-- API Commands (config + standard ping) -->
+    <bean id = "apiConfig" class = "ru.anr.base.services.api.ApiConfig" />
+    <bean id = "api_ping" class="ru.anr.base.services.api.PingV1ApiCommand" />
+
+</beans>

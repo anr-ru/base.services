@@ -13,29 +13,29 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package ru.anr.base.services;
+package ru.anr.base.services.pattern;
 
 /**
- * A 'Service' interface
- * 
- * 
+ * An interface - the main entry point for procecessing an object via specific
+ * chain of strategies.
+ *
+ *
  * @author Alexey Romanchuk
- * @created Oct 29, 2014
- * 
+ * @created Nov 10, 2014
+ *
  */
-public interface BaseService {
+
+public interface StrategyFactory {
 
     /**
-     * Retrieves a text message from resource with provided code. If no message
-     * found with specified code, it returns a spring in format [xxxCODExxx]. If
-     * exists {@link org.springframework.context.i18n.LocaleContextHolder} the
-     * current locale is used, otherwise default jvm settings.
+     * Starts execution of strategy chain for specific object
      * 
-     * @param code
-     *            A Message code
-     * @param args
-     *            Message arguments
-     * @return A text with parameters replaced with the arguments
+     * @param object
+     *            An object
+     * @param params
+     *            An array of additional params
+     * @return Result of processing (contains a result object and information
+     *         about applied strategies)
      */
-    String text(String code, Object... args);
+    StrategyStatistic process(Object object, Object... params);
 }
