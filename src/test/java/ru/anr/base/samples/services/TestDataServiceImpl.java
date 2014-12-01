@@ -20,7 +20,7 @@ import ru.anr.base.services.BaseDataAwareServiceImpl;
  *
  */
 @Component("TestDataService")
-public class TestDataServiceImple extends BaseDataAwareServiceImpl {
+public class TestDataServiceImpl extends BaseDataAwareServiceImpl {
 
     /**
      * {@inheritDoc}
