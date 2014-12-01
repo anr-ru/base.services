@@ -18,6 +18,7 @@ package ru.anr.base.services.api;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -93,7 +94,7 @@ public class APICommandFactoryImpl extends BaseServiceImpl implements APICommand
 
         for (Entry<String, ApiCommandStrategy> e : beans.entrySet()) {
 
-            ApiStrategy a = getAnnotation(e.getValue());
+            ApiStrategy a = getAnnotation(target(e.getValue()));
             if (a != null) {
                 register(a, e.getValue());
             }
@@ -123,15 +124,18 @@ public class APICommandFactoryImpl extends BaseServiceImpl implements APICommand
      */
     private void register(ApiStrategy a, ApiCommandStrategy s) {
 
-        Map<String, ApiCommandStrategy> versions = commands.get(a.id());
+        String aId = a.id().toLowerCase();
+        String aV = a.version().toLowerCase();
+
+        Map<String, ApiCommandStrategy> versions = commands.get(aId);
 
         if (versions == null) {
             versions = new HashMap<>();
-            commands.put(a.id(), versions);
+            commands.put(aId, versions);
         }
 
-        Assert.isTrue(!versions.containsKey(a.version()), "Duplicate version " + a.version() + " for " + a.id());
-        versions.put(a.version(), s);
+        Assert.isTrue(!versions.containsKey(aV), "Duplicate version " + aV + " for " + aId);
+        versions.put(aV, s);
     }
 
     /**
@@ -141,12 +145,48 @@ public class APICommandFactoryImpl extends BaseServiceImpl implements APICommand
     public APICommand process(APICommand cmd) {
 
         ApiCommandStrategy s = findStrategy(cmd);
-        processRequestModel(cmd, getAnnotation(s));
+        processRequestModel(cmd, getAnnotation(target(s)));
 
-        APICommand c = s.process(cmd);
-        processResponseModel(c);
+        Object rs = doInvoke(s, cmd);
+        cmd.setResponse(rs);
 
-        return c;
+        processResponseModel(cmd);
+
+        return cmd;
+    }
+
+    /**
+     * Invokes specific API Strategy method
+     * 
+     * @param s
+     *            Found strategy
+     * @param cmd
+     *            A command
+     * @return A model of response
+     */
+    private Object doInvoke(ApiCommandStrategy s, APICommand cmd) {
+
+        Object rs = null;
+        logger.debug("Invoking {} method for {} / {}", cmd.getType(), cmd.getCommandId(), cmd.getVersion());
+
+        switch (cmd.getType()) {
+            case Get:
+                rs = s.get(cmd);
+                break;
+            case Delete:
+                rs = s.delete(cmd);
+                break;
+            case Post:
+                rs = s.post(cmd);
+                break;
+            case Put:
+                rs = s.put(cmd);
+                break;
+            default:
+                throw new UnsupportedOperationException();
+        }
+        return rs;
+
     }
 
     /**
@@ -159,13 +199,17 @@ public class APICommandFactoryImpl extends BaseServiceImpl implements APICommand
      */
     private ApiCommandStrategy findStrategy(APICommand cmd) {
 
-        Assert.isTrue(commands.containsKey(cmd.getCommandId()), "Command '" + cmd.getCommandId() + "' not found");
-        Map<String, ApiCommandStrategy> versions = commands.get(cmd.getCommandId());
+        Objects.requireNonNull(cmd.getCommandId(), "Command ID is null");
+        Objects.requireNonNull(cmd.getVersion(), "Version ID is null");
 
-        Assert.isTrue(versions.containsKey(cmd.getVersion()), "Version '" + cmd.getVersion() + "' for a command '"
-                + cmd.getCommandId() + "' does not exist");
+        String id = cmd.getCommandId().toLowerCase();
+        String v = cmd.getVersion().toLowerCase();
 
-        return versions.get(cmd.getVersion());
+        Assert.isTrue(commands.containsKey(id), "Command '" + id + "' not found");
+        Map<String, ApiCommandStrategy> versions = commands.get(id);
+
+        Assert.isTrue(versions.containsKey(v), "Version '" + v + "' for a command '" + id + "' does not exist");
+        return versions.get(v);
     }
 
     /**
@@ -242,8 +286,12 @@ public class APICommandFactoryImpl extends BaseServiceImpl implements APICommand
                 m.setPerPage(cmd.getRequest().getPerPage());
                 m.setSearch(cmd.getRequest().getSearch());
                 m.setSorted(cmd.getRequest().getSorted());
+            } else {
+                logger.info("Unable to parse request model for {}", cmd);
             }
             cmd.setRequest(m);
+        } else {
+            logger.debug("Raw model is null for {}", cmd);
         }
     }
 
@@ -256,7 +304,7 @@ public class APICommandFactoryImpl extends BaseServiceImpl implements APICommand
      */
     private void processResponseModel(APICommand cmd) {
 
-        ResponseModel m = cmd.getResponse();
+        Object m = cmd.getResponse();
         if (m == null) {
             /*
              * This is specific case. If no response was generated, we suppose

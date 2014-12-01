@@ -29,11 +29,38 @@ import ru.anr.base.domain.api.APICommand;
 public interface ApiCommandStrategy {
 
     /**
-     * Process an API Command. Parsed and prepared
+     * GET method
      * 
      * @param cmd
-     *            API Command
-     * @return Resulted command (with embedded response model)
+     *            Command
+     * @return Model of response
      */
-    APICommand process(APICommand cmd);
+    Object get(APICommand cmd);
+
+    /**
+     * POST method
+     * 
+     * @param cmd
+     *            Command
+     * @return Model of response
+     */
+    Object post(APICommand cmd);
+
+    /**
+     * PUT method
+     * 
+     * @param cmd
+     *            Command
+     * @return Model of response
+     */
+    Object put(APICommand cmd);
+
+    /**
+     * DELETE method
+     * 
+     * @param cmd
+     *            Command
+     * @return Model of response
+     */
+    Object delete(APICommand cmd);
 }

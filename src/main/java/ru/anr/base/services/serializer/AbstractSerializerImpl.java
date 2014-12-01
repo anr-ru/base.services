@@ -21,6 +21,7 @@ import ru.anr.base.ApplicationException;
 import ru.anr.base.BaseParent;
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.AnnotationIntrospector;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -74,6 +75,19 @@ public abstract class AbstractSerializerImpl extends BaseParent implements Seria
 
         try {
             return objectMapper.readValue(s, clazz);
+        } catch (IOException ex) {
+            throw new ApplicationException(ex);
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public <S> S fromStr(String s, TypeReference<S> ref) {
+
+        try {
+            return objectMapper.readValue(s, ref);
         } catch (IOException ex) {
             throw new ApplicationException(ex);
         }

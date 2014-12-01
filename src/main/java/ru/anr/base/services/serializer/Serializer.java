@@ -15,6 +15,7 @@
  */
 package ru.anr.base.services.serializer;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
@@ -41,6 +42,29 @@ public interface Serializer {
      *            Object class
      */
     <S> S fromStr(String s, Class<S> clazz);
+
+    /**
+     * Generates a complex generic object from String, for example
+     * 
+     * <PRE>
+     * 
+     * 
+     * 
+     * 
+     * TypeReference&lt;List&lt;ErrorModel&gt;&gt; ref = new TypeReference&lt;List&lt;ErrorModel&gt;&gt;() {
+     * };
+     * </PRE>
+     * 
+     * @param s
+     *            String value
+     * @param ref
+     *            Type description
+     * @return Deserialized object
+     * 
+     * @param <S>
+     *            Object class
+     */
+    <S> S fromStr(String s, TypeReference<S> ref);
 
     /**
      * Generates a string of given format (XML/JSON)

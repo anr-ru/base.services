@@ -3,6 +3,8 @@
  */
 package ru.anr.base.services.api;
 
+import java.util.List;
+
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +17,8 @@ import ru.anr.base.domain.api.models.SortModel;
 import ru.anr.base.domain.api.models.SortModel.SortDirection;
 import ru.anr.base.services.BaseServiceTestCase;
 import ru.anr.base.services.serializer.Serializer;
+
+import com.fasterxml.jackson.core.type.TypeReference;
 
 /**
  * Tests for serialization of API command models
@@ -57,7 +61,7 @@ public class ApiSerializationTest extends BaseServiceTestCase {
         String value = json.toStr(m);
         logger.info("JSON: {}", value);
 
-        Assert.assertEquals("{}", value);
+        Assert.assertEquals("{\"code\":0}", value);
 
         RequestModel mx = json.fromStr(value, RequestModel.class);
         Assert.assertEquals(m, mx);
@@ -72,7 +76,7 @@ public class ApiSerializationTest extends BaseServiceTestCase {
         value = xml.toStr(m);
         logger.info("XML: {}", value);
 
-        Assert.assertEquals("<?xml version='1.0' encoding='UTF-8'?><request/>", value);
+        Assert.assertEquals("<?xml version='1.0' encoding='UTF-8'?><request code=\"0\"/>", value);
 
         mx = xml.fromStr(value, RequestModel.class);
         Assert.assertEquals(m, mx);
@@ -108,6 +112,32 @@ public class ApiSerializationTest extends BaseServiceTestCase {
 
         mx = xml.fromStr(value, ResponseModel.class);
         Assert.assertEquals(m, mx);
+    }
+
+    /**
+     * Examples for serialization/deserializarion of complex types like String
+     * of models
+     */
+    @Test
+    public void testListSerialization() {
+
+        ErrorModel e1 = new ErrorModel();
+        e1.setCode(1);
+
+        ErrorModel e2 = new ErrorModel();
+        e2.setCode(2);
+
+        List<ErrorModel> errors = list(e1, e2);
+        Assert.assertEquals("[{\"code\":1},{\"code\":2}]", json.toStr(errors));
+
+        TypeReference<List<ErrorModel>> ref = new TypeReference<List<ErrorModel>>() {
+        };
+
+        String js = "[{\"code\":1},{\"code\":2}]";
+
+        errors = json.fromStr(js, ref);
+        Assert.assertEquals(1, errors.get(0).getCode());
+        Assert.assertEquals(2, errors.get(1).getCode());
     }
 
     /**

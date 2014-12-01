@@ -3,7 +3,9 @@
     xmlns:context="http://www.springframework.org/schema/context"
     xmlns:jpa="http://www.springframework.org/schema/data/jpa" xmlns:p="http://www.springframework.org/schema/p"
     xmlns:util="http://www.springframework.org/schema/util"
-    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+    xmlns:security="http://www.springframework.org/schema/security"
+    xsi:schemaLocation="http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.2.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.1.xsd
         http://www.springframework.org/schema/data/jpa http://www.springframework.org/schema/data/jpa/spring-jpa-1.3.xsd
         http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.1.xsd">
@@ -27,14 +29,90 @@
 
     <context:component-scan base-package="ru.anr.base.samples.services" />
 
-    <!-- Security -->
-    <bean id="securityConfig" class="ru.anr.base.services.SecurityConfig" 
-        p:providers-ref="testAuthenticator"/>
-
-    <bean id = "testAuthenticator" class="org.springframework.security.authentication.TestingAuthenticationProvider" />
-
     <!-- API Commands (config + standard ping) -->
     <bean id = "apiConfig" class = "ru.anr.base.services.api.ApiConfig" />
     <bean id = "api_ping" class="ru.anr.base.services.api.PingV1ApiCommand" />
+
+
+
+    <!-- SECURITY AND ACL -->
+    
+    <bean id="securityConfig" class="ru.anr.base.services.SecurityConfig" 
+        p:providers-ref="testAuthenticator"/>
+    <bean id = "testAuthenticator" class="org.springframework.security.authentication.TestingAuthenticationProvider" />
+    
+    <security:global-method-security 
+        pre-post-annotations="enabled" secured-annotations="enabled"
+        authentication-manager-ref="authenticationManager">
+        <security:expression-handler ref="expressionHandler" />
+    </security:global-method-security>
+    
+    <bean id="expressionHandler"
+        class="org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler">
+        <property name="permissionEvaluator" ref="aclPermissionEvaluator" />
+    </bean>
+
+    <bean name="aclPermissionEvaluator"
+        class="org.springframework.security.acls.AclPermissionEvaluator">
+        <constructor-arg name="aclService" ref="aclService" />
+    </bean>
+
+    <bean id="aclCache" class="org.springframework.security.acls.domain.SpringCacheBasedAclCache">
+        <constructor-arg index="0">
+            <bean factory-bean="cacheManager" factory-method="getCache">
+                <constructor-arg value="samples" />
+            </bean>
+        </constructor-arg>
+        <constructor-arg index="1" ref="permissionGrantingStrategy" />
+        <constructor-arg index="2" ref="aclAuthorizationStrategy" />
+    </bean>
+
+    <bean id="aclAuthorizationStrategy"
+        class="org.springframework.security.acls.domain.AclAuthorizationStrategyImpl">
+        <constructor-arg name="auths">
+            <list>
+                <!-- authority for taking ownership -->
+                <bean
+                    class="org.springframework.security.core.authority.SimpleGrantedAuthority">
+                    <constructor-arg value="ACL_ADMIN" />
+                </bean>
+                <!-- authority to modify auditing -->
+                <bean
+                    class="org.springframework.security.core.authority.SimpleGrantedAuthority">
+                    <constructor-arg value="ACL_ADMIN" />
+                </bean>
+                <!-- authority to make general changes -->
+                <bean
+                    class="org.springframework.security.core.authority.SimpleGrantedAuthority">
+                    <constructor-arg value="ACL_ADMIN" />
+                </bean>
+            </list>
+        </constructor-arg>
+    </bean>
+
+    <bean id="auditLogger"
+        class="org.springframework.security.acls.domain.ConsoleAuditLogger" />
+
+    <bean id="permissionGrantingStrategy" class="org.springframework.security.acls.domain.DefaultPermissionGrantingStrategy">
+        <constructor-arg ref="auditLogger" />
+    </bean>
+
+    <bean id="lookupStrategy"
+        class="org.springframework.security.acls.jdbc.BasicLookupStrategy">
+        <constructor-arg name="dataSource" ref="datasource" />
+        <constructor-arg name="aclCache" ref="aclCache" />
+        <constructor-arg name="aclAuthorizationStrategy" ref="aclAuthorizationStrategy" />
+        <constructor-arg name="auditLogger" ref="auditLogger" />
+    </bean>
+
+    <bean id="aclService"
+        class="org.springframework.security.acls.jdbc.JdbcMutableAclService">
+        <constructor-arg name="dataSource" ref="datasource" />
+        <constructor-arg name="lookupStrategy" ref="lookupStrategy" />
+        <constructor-arg name="aclCache" ref="aclCache" />
+        <!--property name="sidIdentityQuery" value="SELECT HIBERNATE_SEQUENCE.CURRVAL FROM DUAL" />
+        <property name="classIdentityQuery" value="SELECT HIBERNATE_SEQUENCE.CURRVAL FROM DUAL" /-->
+    </bean>
+
 
 </beans>

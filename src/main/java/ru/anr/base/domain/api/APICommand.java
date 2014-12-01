@@ -22,10 +22,10 @@ import java.util.Objects;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import ru.anr.base.BaseParent;
 import ru.anr.base.domain.api.models.RequestModel;
-import ru.anr.base.domain.api.models.ResponseModel;
 import ru.anr.base.domain.api.models.SortModel;
 import ru.anr.base.domain.api.models.SortModel.SortDirection;
 
@@ -88,7 +88,7 @@ public class APICommand extends BaseParent implements Serializable {
     /**
      * Prepared response model
      */
-    private ResponseModel response;
+    private Object response;
 
     /**
      * Constructor of new command
@@ -280,6 +280,15 @@ public class APICommand extends BaseParent implements Serializable {
     }
 
     /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String toString() {
+
+        return new ToStringBuilder(this).append("id", commandId).append("v", version).append("t", type).toString();
+    }
+
+    /**
      * @param type
      *            the type to set
      */
@@ -392,10 +401,14 @@ public class APICommand extends BaseParent implements Serializable {
 
     /**
      * @return the request
+     * 
+     * @param <S>
+     *            Expected class
      */
-    public RequestModel getRequest() {
+    @SuppressWarnings("unchecked")
+    public <S extends RequestModel> S getRequest() {
 
-        return request;
+        return (S) request;
     }
 
     /**
@@ -409,17 +422,21 @@ public class APICommand extends BaseParent implements Serializable {
 
     /**
      * @return the response
+     * 
+     * @param <S>
+     *            Expected class
      */
-    public ResponseModel getResponse() {
+    @SuppressWarnings("unchecked")
+    public <S> S getResponse() {
 
-        return response;
+        return (S) response;
     }
 
     /**
      * @param response
      *            the response to set
      */
-    public void setResponse(ResponseModel response) {
+    public void setResponse(Object response) {
 
         this.response = response;
     }
