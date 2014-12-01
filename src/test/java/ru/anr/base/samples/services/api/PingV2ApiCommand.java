@@ -6,7 +6,9 @@ package ru.anr.base.samples.services.api;
 import org.springframework.stereotype.Component;
 
 import ru.anr.base.domain.api.APICommand;
+import ru.anr.base.domain.api.ErrorModel;
 import ru.anr.base.domain.api.models.PingModel;
+import ru.anr.base.domain.api.models.ResponseModel;
 import ru.anr.base.services.api.ApiStrategy;
 import ru.anr.base.services.api.PingV1ApiCommand;
 
@@ -26,11 +28,12 @@ public class PingV2ApiCommand extends PingV1ApiCommand {
      * {@inheritDoc}
      */
     @Override
-    public APICommand process(APICommand cmd) {
+    public ResponseModel get(APICommand cmd) {
 
-        APICommand c = super.process(cmd);
-        c.getResponse().setCode(-1);
+        ErrorModel r = new ErrorModel();
+        r.setCode(-1);
+        r.setMessage(((PingModel) cmd.getRequest()).getValue() + " " + cmd.getType());
 
-        return cmd;
+        return r;
     }
 }

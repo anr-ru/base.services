@@ -33,7 +33,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
  *
  */
 @XmlRootElement(name = "request")
-public class RequestModel implements Serializable {
+public class RequestModel extends ResponseModel implements Serializable {
 
     /**
      * Serial ID
@@ -44,16 +44,6 @@ public class RequestModel implements Serializable {
      * List of field for sorting
      */
     private List<SortModel> sorted;
-
-    /**
-     * Current page number
-     */
-    private Integer page;
-
-    /**
-     * Number of items per page
-     */
-    private Integer perPage;
 
     /**
      * Full-text search query
@@ -72,10 +62,11 @@ public class RequestModel implements Serializable {
     /**
      * @return the page
      */
+    @Override
     @XmlTransient
     public Integer getPage() {
 
-        return page;
+        return super.getPage();
     }
 
     /**
@@ -97,31 +88,13 @@ public class RequestModel implements Serializable {
     }
 
     /**
-     * @param page
-     *            the page to set
-     */
-    @XmlTransient
-    public void setPage(Integer page) {
-
-        this.page = page;
-    }
-
-    /**
      * @return the perPage
      */
+    @Override
     @XmlTransient
     public Integer getPerPage() {
 
-        return perPage;
-    }
-
-    /**
-     * @param perPage
-     *            the perPage to set
-     */
-    public void setPerPage(Integer perPage) {
-
-        this.perPage = perPage;
+        return super.getPerPage();
     }
 
     /**

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 import ru.anr.base.domain.api.APICommand;
 import ru.anr.base.domain.api.APIException;
 import ru.anr.base.domain.api.models.PingModel;
+import ru.anr.base.domain.api.models.ResponseModel;
 import ru.anr.base.services.api.AbstractApiCommandStrategyImpl;
 import ru.anr.base.services.api.ApiStrategy;
 
@@ -27,7 +28,7 @@ public class ErrorV1ApiCommand extends AbstractApiCommandStrategyImpl {
      * {@inheritDoc}
      */
     @Override
-    public APICommand process(APICommand cmd) {
+    public ResponseModel get(APICommand cmd) {
 
         throw new APIException("Exception", 5);
     }

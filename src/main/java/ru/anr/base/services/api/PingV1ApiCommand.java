@@ -17,7 +17,6 @@ package ru.anr.base.services.api;
 
 import ru.anr.base.domain.api.APICommand;
 import ru.anr.base.domain.api.ErrorModel;
-import ru.anr.base.domain.api.MethodTypes;
 import ru.anr.base.domain.api.models.PingModel;
 import ru.anr.base.domain.api.models.ResponseModel;
 
@@ -60,8 +59,8 @@ public class PingV1ApiCommand extends AbstractApiCommandStrategyImpl {
      *            Command
      * @return Response
      */
-    @ApiMethod(MethodTypes.Post)
-    public ResponseModel doCreate(APICommand cmd) {
+    @Override
+    public ResponseModel post(APICommand cmd) {
 
         return build((PingModel) cmd.getRequest(), "POST");
     }
@@ -73,8 +72,8 @@ public class PingV1ApiCommand extends AbstractApiCommandStrategyImpl {
      *            Command
      * @return Response
      */
-    @ApiMethod(MethodTypes.Put)
-    public ResponseModel doModify(APICommand cmd) {
+    @Override
+    public ResponseModel put(APICommand cmd) {
 
         return build((PingModel) cmd.getRequest(), "PUT");
     }
@@ -86,8 +85,8 @@ public class PingV1ApiCommand extends AbstractApiCommandStrategyImpl {
      *            Command
      * @return Response
      */
-    @ApiMethod(MethodTypes.Get)
-    public ResponseModel doGet(APICommand cmd) {
+    @Override
+    public ResponseModel get(APICommand cmd) {
 
         return build((PingModel) cmd.getRequest(), "GET");
     }
@@ -99,8 +98,8 @@ public class PingV1ApiCommand extends AbstractApiCommandStrategyImpl {
      *            Command
      * @return Response
      */
-    @ApiMethod(MethodTypes.Delete)
-    public ResponseModel doDelete(APICommand cmd) {
+    @Override
+    public ResponseModel delete(APICommand cmd) {
 
         return build((PingModel) cmd.getRequest(), "DELETE");
     }

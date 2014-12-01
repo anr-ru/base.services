@@ -66,7 +66,7 @@ public class ApiCommandFactoryTest extends BaseServiceTestCase {
         m = rs.getResponse();
 
         Assert.assertEquals(-1, m.getCode()); // Yes!
-        Assert.assertEquals("hello 2 GET", ((ErrorModel) m).getMessage());
+        Assert.assertEquals("hello 2 Get", ((ErrorModel) m).getMessage());
 
         // Ping version 3 (does not exists)
         ping = new APICommand(PING, "v3");
@@ -79,11 +79,11 @@ public class ApiCommandFactoryTest extends BaseServiceTestCase {
 
         } catch (IllegalArgumentException ex) {
 
-            Assert.assertEquals("Version 'v3' for a command 'Ping' does not exist", ex.getMessage());
+            Assert.assertEquals("Version 'v3' for a command 'ping' does not exist", ex.getMessage());
             rs = factory.error(ping, ex);
 
             Assert.assertEquals("{\"code\":1,\"message\":\"A system error\","
-                    + "\"description\":\"Version 'v3' for a command 'Ping' does not exist\"}", rs.getRawModel());
+                    + "\"description\":\"Version 'v3' for a command 'ping' does not exist\"}", rs.getRawModel());
         }
     }
 
@@ -186,66 +186,5 @@ public class ApiCommandFactoryTest extends BaseServiceTestCase {
         rs = factory.process(ping);
         m = rs.getResponse();
         Assert.assertEquals("hello DELETE", ((ErrorModel) m).getMessage());
-    }
-
-    /**
-     * Invocation method for test
-     * 
-     * @param method
-     *            Name of API method
-     * @param s
-     *            Strategy instance to test
-     * @return ReponseModel code
-     */
-    private int invoke(String method, ApiCommandStrategy s) {
-
-        return s.process(new APICommand(null, null).method(method)).getResponse().getCode();
-    }
-
-    /**
-     * Tests for {@link AbstractApiCommandStrategyImpl}'s algorithm of method
-     * searching.
-     */
-    @Test
-    public void testMethodSearch() {
-
-        SampeStrategy s = new SampeStrategy();
-        s.initMethods();
-
-        // private
-        try {
-            invoke(GET, s);
-            Assert.fail();
-        } catch (UnsupportedOperationException ex) {
-            Assert.assertEquals("Method 'Get' is unsupported", ex.getMessage());
-        }
-
-        // protected
-        Assert.assertEquals(2, invoke("POST", s));
-
-        // wrong number of arguments
-        try {
-            invoke("PUT", s);
-            Assert.fail();
-        } catch (UnsupportedOperationException ex) {
-            Assert.assertEquals("Method 'Put' is unsupported", ex.getMessage());
-        }
-
-        // wrong return value
-        try {
-            invoke("DELETE", s);
-            Assert.fail();
-        } catch (UnsupportedOperationException ex) {
-            Assert.assertEquals("Method 'Delete' is unsupported", ex.getMessage());
-        }
-
-        /*
-         * Child strategy (overriding methods)
-         */
-        DerivatedSampleStrategy sx = new DerivatedSampleStrategy();
-        sx.initMethods();
-
-        // protected
-        Assert.assertEquals(100, invoke("POST", sx));
     }
 }
