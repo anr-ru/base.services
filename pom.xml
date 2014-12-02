@@ -4,12 +4,11 @@
 
     <parent>
         <groupId>ru.anr</groupId>
-        <artifactId>config.java</artifactId>
-        <version>0.9-SNAPSHOT</version>
+        <artifactId>base.platform.parent</artifactId>
+        <version>0.5-SNAPSHOT</version>
     </parent>
 
     <artifactId>base.services</artifactId>
-    <version>0.5-SNAPSHOT</version>
 
     <name>Base Services project</name>
     <description>A base classes for business logic implementation</description>
@@ -48,14 +47,12 @@
                             <goal>test-jar</goal>
                         </goals>
                         <configuration>
-                            <forceCreation>true</forceCreation>
                             <includes>
                                 <include>**/META-INF/persistence-local.xml</include>
                                 <include>**/AbstractDaoTestCase*</include>
                                 <include>**/TestLocalDaoConfig*</include>
                                 <include>**/domain/Samples*</include>
                             </includes>
-                            <skip>false</skip>
                         </configuration>
                     </execution>
                 </executions>
@@ -66,18 +63,6 @@
 
     <dependencies>
         <!-- Spring framework base -->
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-beans</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-context</artifactId>
-        </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context-support</artifactId>
@@ -103,14 +88,6 @@
           <artifactId>spring-security-acl</artifactId>        
         </dependency>                    
         <dependency>
-            <groupId>org.aspectj</groupId>
-            <artifactId>aspectjrt</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.aspectj</groupId>
-            <artifactId>aspectjweaver</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-entitymanager</artifactId>
         </dependency>
@@ -121,10 +98,6 @@
         <dependency>
             <groupId>org.springframework.data</groupId>
             <artifactId>spring-data-jpa</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-aspects</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
@@ -182,19 +155,13 @@
         <dependency>
             <groupId>ru.anr</groupId>
             <artifactId>base.utils</artifactId>
-            <version>${base.utils.version}</version>
         </dependency>
         <dependency>
             <groupId>ru.anr</groupId>
             <artifactId>base.tests</artifactId>
-            <version>${base.tests.version}</version>
         </dependency>
 
         <!-- TESTS -->
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-test</artifactId>
-        </dependency>
         <dependency>  
             <groupId>org.hsqldb</groupId>  
             <artifactId>hsqldb</artifactId>  
@@ -209,9 +176,6 @@
     </dependencies>
 
     <properties>
-        <!-- internal deps -->
-        <base.utils.version>0.5-SNAPSHOT</base.utils.version>
-        <base.tests.version>0.5-SNAPSHOT</base.tests.version>
         
         <db.url>jdbc:hsqldb:mem:testdb</db.url>
         <db.user>sa</db.user>
