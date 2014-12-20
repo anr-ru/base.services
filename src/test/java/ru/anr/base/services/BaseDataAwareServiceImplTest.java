@@ -19,7 +19,7 @@ import ru.anr.base.samples.domain.Samples;
  * @created Nov 7, 2014
  *
  */
-public class BaseDataAwareServiceImplTest extends BaseServiceTestCase {
+public class BaseDataAwareServiceImplTest extends BaseLocalServiceTestCase {
 
     /**
      * 

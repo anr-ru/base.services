@@ -7,7 +7,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import ru.anr.base.samples.domain.Samples;
-import ru.anr.base.services.BaseServiceTestCase;
+import ru.anr.base.services.BaseLocalServiceTestCase;
 
 /**
  * Tests for strategy factory
@@ -17,7 +17,7 @@ import ru.anr.base.services.BaseServiceTestCase;
  * @created Nov 10, 2014
  *
  */
-public class StrategyFactoryImplTest extends BaseServiceTestCase {
+public class StrategyFactoryImplTest extends BaseLocalServiceTestCase {
 
     /**
      * An etalon object

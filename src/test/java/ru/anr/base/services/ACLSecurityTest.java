@@ -31,7 +31,7 @@ import ru.anr.base.samples.services.ACLSecured;
  *
  */
 
-public class ACLSecurityTest extends BaseServiceTestCase {
+public class ACLSecurityTest extends BaseLocalServiceTestCase {
 
     /**
      * This bean has no security settings
@@ -82,7 +82,7 @@ public class ACLSecurityTest extends BaseServiceTestCase {
          */
         Authentication token = authenticate("user");
 
-        Samples s = newSample("xxx");
+        Samples s = create(Samples.class, "name", "xxx");
         MutableAcl acl = acls.createAcl(new ObjectIdentityImpl(Samples.class, s.getId()));
         acl.insertAce(0, BasePermission.READ, new PrincipalSid(token), true);
 

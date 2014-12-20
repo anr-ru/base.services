@@ -57,12 +57,20 @@ public abstract class AbstractJPADaoConfig extends AbstractDaoConfig {
     private String jdbcDriverClassName;
 
     /**
+     * Data source (if provided)
+     */
+    private DataSource jndiDataSource;
+
+    /**
      * {@link DataSource} definition to override in descendants
      * 
      * @return A pooled datasource
      */
     @Bean(name = "datasource")
-    public abstract DataSource dataSource();
+    public DataSource dataSource() {
+
+        return jndiDataSource;
+    }
 
     /**
      * Persistence file location
@@ -181,6 +189,15 @@ public abstract class AbstractJPADaoConfig extends AbstractDaoConfig {
     public void setPersistenceFileLocation(String persistenceFileLocation) {
 
         this.persistenceFileLocation = persistenceFileLocation;
+    }
+
+    /**
+     * @param jndiDataSource
+     *            the jndiDataSource to set
+     */
+    public void setJndiDataSource(DataSource jndiDataSource) {
+
+        this.jndiDataSource = jndiDataSource;
     }
 
 }

@@ -26,7 +26,7 @@ import ru.anr.base.services.serializer.Serializer;
  *
  */
 
-public class SerializationTest extends BaseServiceTestCase {
+public class SerializationTest extends BaseLocalServiceTestCase {
 
     /**
      * XML etalon
