@@ -16,7 +16,6 @@
 package ru.anr.base.services.api;
 
 import ru.anr.base.domain.api.APICommand;
-import ru.anr.base.domain.api.ErrorModel;
 import ru.anr.base.domain.api.models.PingModel;
 import ru.anr.base.domain.api.models.ResponseModel;
 
@@ -43,7 +42,7 @@ public class PingV1ApiCommand extends AbstractApiCommandStrategyImpl {
      */
     private ResponseModel build(PingModel rq, String method) {
 
-        ErrorModel m = new ErrorModel();
+        ResponseModel m = new ResponseModel();
         m.setCode(0);
 
         if (rq != null) {

@@ -26,7 +26,7 @@ import org.springframework.core.io.ClassPathResource;
 import ru.anr.base.ApplicationException;
 import ru.anr.base.BaseSpringParent;
 import ru.anr.base.domain.api.APICommand;
-import ru.anr.base.domain.api.ErrorModel;
+import ru.anr.base.domain.api.models.ResponseModel;
 import ru.anr.base.services.serializer.SerializationConfig;
 import ru.anr.base.services.serializer.Serializer;
 
@@ -111,7 +111,7 @@ public class MockJSONAPICommandFactoryImpl extends BaseSpringParent implements A
 
         APICommand cmd = new APICommand(null, null);
 
-        ErrorModel m = new ErrorModel();
+        ResponseModel m = new ResponseModel();
         m.setCode(64);
         m.setDescription("A system error description");
         m.setMessage("System error");

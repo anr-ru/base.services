@@ -18,13 +18,16 @@ package ru.anr.base.domain.api.models;
 import java.io.Serializable;
 
 import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 /**
- * Base content model of reponse body (parsed from JSON or XML)
+ * Base content model of reponse body (parsed from JSON or XML). It also
+ * contains fields for representation of error response (with code and error
+ * message).
  *
  *
  * @author Alexey Romanchuk
@@ -53,6 +56,16 @@ public class ResponseModel implements Serializable {
      * Number of items on the page
      */
     private Integer perPage;
+
+    /**
+     * A user-friedly message for error
+     */
+    private String message;
+
+    /**
+     * Description gives some details about error
+     */
+    private String description;
 
     // /////////////////////////////////////////////////////////////////////////
     // /// getters/setters
@@ -110,6 +123,42 @@ public class ResponseModel implements Serializable {
     public void setCode(int code) {
 
         this.code = code;
+    }
+
+    /**
+     * @return the message
+     */
+    @XmlElement(name = "message")
+    public String getMessage() {
+
+        return message;
+    }
+
+    /**
+     * @param message
+     *            the message to set
+     */
+    public void setMessage(String message) {
+
+        this.message = message;
+    }
+
+    /**
+     * @return the description
+     */
+    @XmlElement(name = "description")
+    public String getDescription() {
+
+        return description;
+    }
+
+    /**
+     * @param description
+     *            the description to set
+     */
+    public void setDescription(String description) {
+
+        this.description = description;
     }
 
     /**

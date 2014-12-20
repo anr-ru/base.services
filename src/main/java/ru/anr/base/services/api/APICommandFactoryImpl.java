@@ -31,7 +31,6 @@ import org.springframework.util.Assert;
 import ru.anr.base.ApplicationException;
 import ru.anr.base.domain.api.APICommand;
 import ru.anr.base.domain.api.APIException;
-import ru.anr.base.domain.api.ErrorModel;
 import ru.anr.base.domain.api.RawFormatTypes;
 import ru.anr.base.domain.api.models.RequestModel;
 import ru.anr.base.domain.api.models.ResponseModel;
@@ -241,7 +240,7 @@ public class APICommandFactoryImpl extends BaseServiceImpl implements APICommand
     @Override
     public APICommand error(APICommand cmd, Exception ex) {
 
-        ErrorModel m = new ErrorModel();
+        ResponseModel m = new ResponseModel();
 
         int code = resolveErrorCode(ex);
         m.setCode(code);
