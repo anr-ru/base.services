@@ -38,7 +38,7 @@ public class XMLSerializerImpl extends AbstractSerializerImpl {
         super(new XmlMapper());
 
         JacksonXmlModule module = new JacksonXmlModule();
-        module.setDefaultUseWrapper(true);
+        module.setDefaultUseWrapper(false);
 
         mapper().registerModule(module);
 
