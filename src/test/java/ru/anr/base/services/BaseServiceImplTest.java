@@ -8,6 +8,8 @@ import java.util.TimeZone;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.i18n.LocaleContextHolder;
 
 /**
@@ -19,7 +21,14 @@ import org.springframework.context.i18n.LocaleContextHolder;
  * @created Nov, 3 2014
  *
  */
-public class BaseServiceImplTest extends BaseServiceTestCase {
+public class BaseServiceImplTest extends BaseLocalServiceTestCase {
+
+    /**
+     * The bean under test
+     */
+    @Autowired
+    @Qualifier("base")
+    protected BaseService base;
 
     /**
      * Test method for {@link ru.anr.base.services.BaseServiceImpl#isProdMode()}

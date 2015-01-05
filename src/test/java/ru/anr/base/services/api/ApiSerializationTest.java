@@ -10,12 +10,11 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
-import ru.anr.base.domain.api.ErrorModel;
 import ru.anr.base.domain.api.models.RequestModel;
 import ru.anr.base.domain.api.models.ResponseModel;
 import ru.anr.base.domain.api.models.SortModel;
 import ru.anr.base.domain.api.models.SortModel.SortDirection;
-import ru.anr.base.services.BaseServiceTestCase;
+import ru.anr.base.services.BaseLocalServiceTestCase;
 import ru.anr.base.services.serializer.Serializer;
 
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -29,7 +28,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
  *
  */
 
-public class ApiSerializationTest extends BaseServiceTestCase {
+public class ApiSerializationTest extends BaseLocalServiceTestCase {
 
     /**
      * A ref to JSON Serializer bean
@@ -121,16 +120,16 @@ public class ApiSerializationTest extends BaseServiceTestCase {
     @Test
     public void testListSerialization() {
 
-        ErrorModel e1 = new ErrorModel();
+        ResponseModel e1 = new ResponseModel();
         e1.setCode(1);
 
-        ErrorModel e2 = new ErrorModel();
+        ResponseModel e2 = new ResponseModel();
         e2.setCode(2);
 
-        List<ErrorModel> errors = list(e1, e2);
+        List<ResponseModel> errors = list(e1, e2);
         Assert.assertEquals("[{\"code\":1},{\"code\":2}]", json.toStr(errors));
 
-        TypeReference<List<ErrorModel>> ref = new TypeReference<List<ErrorModel>>() {
+        TypeReference<List<ResponseModel>> ref = new TypeReference<List<ResponseModel>>() {
         };
 
         String js = "[{\"code\":1},{\"code\":2}]";
@@ -146,7 +145,7 @@ public class ApiSerializationTest extends BaseServiceTestCase {
     @Test
     public void testErrorModel() {
 
-        ErrorModel m = new ErrorModel();
+        ResponseModel m = new ResponseModel();
         m.setCode(64);
 
         m.setMessage("Ошибка");
@@ -157,7 +156,7 @@ public class ApiSerializationTest extends BaseServiceTestCase {
 
         Assert.assertEquals("{\"code\":64,\"message\":\"Ошибка\",\"description\":\"Description of Ошибка\"}", value);
 
-        ErrorModel mx = json.fromStr(value, ErrorModel.class);
+        ResponseModel mx = json.fromStr(value, ResponseModel.class);
         Assert.assertEquals(m, mx);
 
         /*
@@ -169,7 +168,7 @@ public class ApiSerializationTest extends BaseServiceTestCase {
         Assert.assertEquals("<?xml version='1.0' encoding='UTF-8'?><response code=\"64\">"
                 + "<message>Ошибка</message><description>Description of Ошибка</description></response>", value);
 
-        mx = xml.fromStr(value, ErrorModel.class);
+        mx = xml.fromStr(value, ResponseModel.class);
         Assert.assertEquals(m, mx);
     }
 }

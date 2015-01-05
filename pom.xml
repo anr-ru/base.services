@@ -49,8 +49,8 @@
                         <configuration>
                             <includes>
                                 <include>**/META-INF/persistence-local.xml</include>
-                                <include>**/AbstractDaoTestCase*</include>
-                                <include>**/TestLocalDaoConfig*</include>
+                                <include>**/BaseLocal*TestCase*</include>
+                                <include>**/BaseLocalDaoConfig*</include>
                                 <include>**/domain/Samples*</include>
                             </includes>
                         </configuration>
@@ -149,6 +149,11 @@
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>        
+        </dependency>
+        <dependency>
+            <groupId>commons-beanutils</groupId>
+            <artifactId>commons-beanutils</artifactId>
+            <scope>test</scope>
         </dependency>        
 
         <!-- Internal dependencies -->

@@ -10,10 +10,9 @@ import org.springframework.beans.factory.annotation.Qualifier;
 
 import ru.anr.base.domain.api.APICommand;
 import ru.anr.base.domain.api.APIException;
-import ru.anr.base.domain.api.ErrorModel;
 import ru.anr.base.domain.api.RawFormatTypes;
 import ru.anr.base.domain.api.models.ResponseModel;
-import ru.anr.base.services.BaseServiceTestCase;
+import ru.anr.base.services.BaseLocalServiceTestCase;
 
 /**
  * Tests for api commmand
@@ -24,7 +23,7 @@ import ru.anr.base.services.BaseServiceTestCase;
  *
  */
 
-public class ApiCommandFactoryTest extends BaseServiceTestCase {
+public class ApiCommandFactoryTest extends BaseLocalServiceTestCase {
 
     /**
      * the PING costant
@@ -56,7 +55,7 @@ public class ApiCommandFactoryTest extends BaseServiceTestCase {
         ResponseModel m = rs.getResponse();
 
         Assert.assertEquals(0, m.getCode());
-        Assert.assertEquals("hello 1 GET", ((ErrorModel) m).getMessage());
+        Assert.assertEquals("hello 1 GET", m.getMessage());
 
         // Ping version 2
         ping = new APICommand(PING, "v2");
@@ -66,7 +65,7 @@ public class ApiCommandFactoryTest extends BaseServiceTestCase {
         m = rs.getResponse();
 
         Assert.assertEquals(-1, m.getCode()); // Yes!
-        Assert.assertEquals("hello 2 Get", ((ErrorModel) m).getMessage());
+        Assert.assertEquals("hello 2 Get", m.getMessage());
 
         // Ping version 3 (does not exists)
         ping = new APICommand(PING, "v3");
@@ -103,7 +102,7 @@ public class ApiCommandFactoryTest extends BaseServiceTestCase {
         ResponseModel m = rs.getResponse();
 
         Assert.assertEquals(0, m.getCode());
-        Assert.assertEquals("hello x GET", ((ErrorModel) m).getMessage());
+        Assert.assertEquals("hello x GET", m.getMessage());
     }
 
     /**
@@ -161,7 +160,7 @@ public class ApiCommandFactoryTest extends BaseServiceTestCase {
 
         APICommand rs = factory.process(ping);
         ResponseModel m = rs.getResponse();
-        Assert.assertEquals("hello GET", ((ErrorModel) m).getMessage());
+        Assert.assertEquals("hello GET", m.getMessage());
 
         // PUT
         ping = new APICommand(PING, "v1");
@@ -169,7 +168,7 @@ public class ApiCommandFactoryTest extends BaseServiceTestCase {
 
         rs = factory.process(ping);
         m = rs.getResponse();
-        Assert.assertEquals("hello PUT", ((ErrorModel) m).getMessage());
+        Assert.assertEquals("hello PUT", m.getMessage());
 
         // POST
         ping = new APICommand(PING, "v1");
@@ -177,7 +176,7 @@ public class ApiCommandFactoryTest extends BaseServiceTestCase {
 
         rs = factory.process(ping);
         m = rs.getResponse();
-        Assert.assertEquals("hello POST", ((ErrorModel) m).getMessage());
+        Assert.assertEquals("hello POST", m.getMessage());
 
         // DELETE
         ping = new APICommand(PING, "v1");
@@ -185,6 +184,6 @@ public class ApiCommandFactoryTest extends BaseServiceTestCase {
 
         rs = factory.process(ping);
         m = rs.getResponse();
-        Assert.assertEquals("hello DELETE", ((ErrorModel) m).getMessage());
+        Assert.assertEquals("hello DELETE", m.getMessage());
     }
 }

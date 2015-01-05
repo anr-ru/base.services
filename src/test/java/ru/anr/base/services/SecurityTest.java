@@ -25,7 +25,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
  *
  */
 
-public class SecurityTest extends BaseServiceTestCase {
+public class SecurityTest extends BaseLocalServiceTestCase {
 
     /**
      * This bean has no security settings

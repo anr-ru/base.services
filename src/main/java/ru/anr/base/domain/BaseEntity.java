@@ -17,7 +17,8 @@
 package ru.anr.base.domain;
 
 import java.io.Serializable;
-import java.time.ZonedDateTime;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.UUID;
 
 import javax.persistence.Column;
@@ -28,6 +29,8 @@ import javax.persistence.MappedSuperclass;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.SequenceGenerator;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.persistence.Version;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
@@ -77,12 +80,12 @@ public class BaseEntity extends BaseParent implements Serializable {
     /**
      * Time of creation
      */
-    private ZonedDateTime created;
+    private Calendar created;
 
     /**
      * Time of modification
      */
-    private ZonedDateTime modified;
+    private Calendar modified;
 
     /**
      * Name of object state
@@ -92,7 +95,7 @@ public class BaseEntity extends BaseParent implements Serializable {
     /**
      * The time when a state changed
      */
-    private ZonedDateTime stateChanged;
+    private Calendar stateChanged;
 
     /**
      * Performing pre-create actions
@@ -100,7 +103,7 @@ public class BaseEntity extends BaseParent implements Serializable {
     @PrePersist
     public void prePersist() {
 
-        setCreated(now());
+        setCreated(GregorianCalendar.from(now()));
 
     }
 
@@ -110,7 +113,7 @@ public class BaseEntity extends BaseParent implements Serializable {
     @PreUpdate
     public void preUpdate() {
 
-        setModified(now());
+        setModified(GregorianCalendar.from(now()));
     }
 
     /**
@@ -125,7 +128,7 @@ public class BaseEntity extends BaseParent implements Serializable {
         String oldState = getState();
 
         setState(newState);
-        setStateChanged(now());
+        setStateChanged(GregorianCalendar.from(now()));
 
         return oldState;
     }
@@ -178,27 +181,28 @@ public class BaseEntity extends BaseParent implements Serializable {
      * @return the created
      */
     @Column(name = "i_created")
-    public ZonedDateTime getCreated() {
+    @Temporal(TemporalType.TIMESTAMP)
+    public Calendar getCreated() {
 
-        return created;
+        return clone(created);
     }
 
     /**
      * @param created
      *            the created to set
      */
-    public void setCreated(ZonedDateTime created) {
+    public void setCreated(Calendar created) {
 
-        this.created = created;
+        this.created = clone(created);
     }
 
     /**
      * @return the modified
      */
     @Column(name = "i_modified")
-    public ZonedDateTime getModified() {
+    public Calendar getModified() {
 
-        return modified;
+        return clone(modified);
     }
 
     /**
@@ -223,27 +227,27 @@ public class BaseEntity extends BaseParent implements Serializable {
      * @return the stateChanged
      */
     @Column(name = "i_state_changed")
-    public ZonedDateTime getStateChanged() {
+    public Calendar getStateChanged() {
 
-        return stateChanged;
+        return clone(stateChanged);
     }
 
     /**
      * @param stateChanged
      *            the stateChanged to set
      */
-    public void setStateChanged(ZonedDateTime stateChanged) {
+    public void setStateChanged(Calendar stateChanged) {
 
-        this.stateChanged = stateChanged;
+        this.stateChanged = clone(stateChanged);
     }
 
     /**
      * @param modified
      *            the modified to set
      */
-    public void setModified(ZonedDateTime modified) {
+    public void setModified(Calendar modified) {
 
-        this.modified = modified;
+        this.modified = clone(modified);
     }
 
     // /////////////////////////////////////////////////////////////////////////

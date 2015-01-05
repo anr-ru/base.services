@@ -114,5 +114,4 @@
         <property name="classIdentityQuery" value="SELECT HIBERNATE_SEQUENCE.CURRVAL FROM DUAL" /-->
     </bean>
 
-
 </beans>

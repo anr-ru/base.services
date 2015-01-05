@@ -10,12 +10,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.transaction.TransactionConfiguration;
-import org.springframework.transaction.annotation.Transactional;
 
 import ru.anr.base.dao.repository.BaseRepository;
 import ru.anr.base.samples.domain.Samples;
-import ru.anr.base.tests.BaseTestCase;
+import ru.anr.base.tests.BaseLocalDaoTestCase;
 
 /**
  * Abstract parent for different tests.
@@ -27,16 +25,14 @@ import ru.anr.base.tests.BaseTestCase;
  */
 @ActiveProfiles(value = "test")
 @ContextConfiguration(locations = "classpath:/tests-dao-context.xml")
-@TransactionConfiguration(transactionManager = "transactionManager")
-@Transactional
-public abstract class AbstractDaoTestCase extends BaseTestCase {
+public abstract class AbstractDaoTestCase extends BaseLocalDaoTestCase {
 
     /**
      * Dao ref
      */
     @Autowired
     @Qualifier("sampledao")
-    protected BaseRepository<Samples> dao;
+    protected BaseRepository<Samples> sampleDao;
 
     /**
      * Creation of new sample object
@@ -50,7 +46,7 @@ public abstract class AbstractDaoTestCase extends BaseTestCase {
         Samples s = new Samples();
         s.setName(name);
 
-        return dao.saveAndFlush(s);
+        return sampleDao.saveAndFlush(s);
     }
 
     /**

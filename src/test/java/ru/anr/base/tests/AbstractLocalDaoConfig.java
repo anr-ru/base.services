@@ -1,31 +1,33 @@
 /**
  * 
  */
-package ru.anr.base.dao;
+package ru.anr.base.tests;
 
 import java.beans.PropertyVetoException;
 
 import javax.sql.DataSource;
 
-import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 import ru.anr.base.ApplicationException;
+import ru.anr.base.dao.AbstractJPADaoConfig;
+import ru.anr.base.dao.BaseRepositoryFactoryBean;
 
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 
 /**
- * Test JPA configuration, which uses HSQL database datasource.
+ * Test JPA configuration, which uses pooled data source.
+ * 
+ * Unfortunately, repositoryFactoryBeanClass should be repeated in all
+ * descendants of this class.
  *
  *
  * @author Alexey Romanchuk
  * @created Nov 6, 2014
  *
  */
-@Configuration
-@EnableJpaRepositories(basePackages = { "ru.anr.base.samples.dao", "ru.anr.base.dao.repository" }, //
-repositoryFactoryBeanClass = BaseRepositoryFactoryBean.class)
-public class TestLocalDaoConfig extends AbstractJPADaoConfig {
+@EnableJpaRepositories(repositoryFactoryBeanClass = BaseRepositoryFactoryBean.class)
+public abstract class AbstractLocalDaoConfig extends AbstractJPADaoConfig {
 
     /**
      * {@inheritDoc}
