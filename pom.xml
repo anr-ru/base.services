@@ -10,7 +10,7 @@
 
     <artifactId>base.services</artifactId>
 
-    <name>Base Services project</name>
+    <name>Base Services</name>
     <description>A base classes for business logic implementation</description>
 
     <licenses>
