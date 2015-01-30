@@ -4,4 +4,9 @@
     <entry key="hello.world">Hello, world!</entry>
     <entry key="api.errorcode.1">A system error</entry>
     
+    
+    <!-- Validation -->
+    <entry key="not.null.value">The value is expected to be NOT NULL</entry>    
+    <entry key="javax.validation.constraints.Min.message">The value ${validatedValue} must be greater then {value}</entry>
+    
 </properties>
