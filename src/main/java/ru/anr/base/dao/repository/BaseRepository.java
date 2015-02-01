@@ -56,4 +56,18 @@ public interface BaseRepository<T extends BaseEntity> extends JpaRepository<T, L
      *            A result set object types
      */
     <S extends BaseEntity> List<S> query(String queryStr, Object... params);
+
+    /**
+     * Searches an entity by class and id.
+     * 
+     * @param entityClass
+     *            Entity class
+     * @param id
+     *            Identified of entity
+     * @return Found object or null if nothing found
+     * 
+     * @param <S>
+     *            Object type
+     */
+    <S extends BaseEntity> S find(Class<S> entityClass, Long id);
 }

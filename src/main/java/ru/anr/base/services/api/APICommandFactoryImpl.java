@@ -19,6 +19,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
+import java.util.Set;
+
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -257,6 +261,21 @@ public class APICommandFactoryImpl extends BaseServiceImpl implements APICommand
         processResponseModel(cmd);
 
         return cmd;
+    }
+
+    private String getExceptionMessage(Exception ex) {
+
+        String rs = null;
+
+        Throwable e = new ApplicationException(ex).getMostSpecificCause();
+        if (e instanceof ConstraintViolationException) {
+
+            Set<ConstraintViolation<?>> violations = ((ConstraintViolationException) e).getConstraintViolations();
+            rs = getAllErrorsAsString(violations);
+        } else {
+            rs = ex.getMessage();
+        }
+        return rs;
     }
 
     /**

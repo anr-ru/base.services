@@ -3,7 +3,7 @@
  */
 package ru.anr.base.samples.services;
 
-import java.util.Collection;
+import java.util.Set;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
@@ -62,5 +62,5 @@ public interface ValidatedMethods {
      * @param <S>
      *            Type of object
      */
-    <S> void method5(Collection<ConstraintViolation<Object>> constraints);
+    <S> void method5(Set<ConstraintViolation<?>> constraints);
 }

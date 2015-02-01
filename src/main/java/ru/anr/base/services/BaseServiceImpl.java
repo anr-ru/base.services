@@ -15,7 +15,6 @@
  */
 package ru.anr.base.services;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -178,13 +177,25 @@ public class BaseServiceImpl extends BaseSpringParent implements BaseService {
      * @param violations
      *            A collection with violations
      */
-    protected void rejectIfNeed(Collection<ConstraintViolation<Object>> violations) {
+    protected <S> void rejectIfNeed(Set<ConstraintViolation<?>> violations) {
 
         if (!CollectionUtils.isEmpty(violations)) {
 
-            List<String> list = violations.stream().map(v -> v.getMessage()).collect(Collectors.toList());
-            throw new ApplicationException(list.toString());
+            throw new ApplicationException(getAllErrorsAsString(violations));
         }
+    }
+
+    /**
+     * Extract all error message from {@link ConstraintViolation} as a single
+     * string
+     * 
+     * @param violations
+     *            collection of violations
+     * @return All errors as a comma-separated string
+     */
+    protected <S> String getAllErrorsAsString(Set<ConstraintViolation<?>> violations) {
+
+        return violations.stream().map(v -> v.getMessage()).collect(Collectors.toList()).toString();
     }
 
     // /////////////////////////////////////////////////////////////////////////

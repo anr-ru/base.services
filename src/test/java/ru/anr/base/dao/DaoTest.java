@@ -52,6 +52,19 @@ public class DaoTest extends AbstractDaoTestCase {
     }
 
     /**
+     * Tests for
+     * {@link ru.anr.base.dao.repository.BaseRepository#find(Class, Long)}
+     */
+    @Test
+    public void testFindMethod() {
+
+        Samples s = newSample("xx");
+        Samples x = mydao.find(Samples.class, s.getId());
+
+        Assert.assertEquals(s, x);
+    }
+
+    /**
      * Understanding of paging
      */
     @Test
