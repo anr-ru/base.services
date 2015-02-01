@@ -186,4 +186,26 @@ public class ApiCommandFactoryTest extends BaseLocalServiceTestCase {
         m = rs.getResponse();
         Assert.assertEquals("hello DELETE", m.getMessage());
     }
+
+    /**
+     * Use case : command with constraint violation inside
+     */
+    @Test
+    public void testConstraintViolationException() {
+
+        APICommand ping = new APICommand("Constraint.Violation", "v1");
+        ping = ping.addRaw("{\"value\": \"hello\"}").method(GET).context("x", 25);
+
+        try {
+
+            factory.process(ping);
+            Assert.fail();
+
+        } catch (Exception ex) {
+
+            APICommand rs = factory.error(ex);
+            Assert.assertEquals("{\"code\":1,\"message\":\"A system error\","
+                    + "\"description\":\"[The value is expected to be NOT NULL]\"}", rs.getRawModel());
+        }
+    }
 }

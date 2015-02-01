@@ -184,7 +184,7 @@ public class BaseEntity extends BaseParent implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     public Calendar getCreated() {
 
-        return clone(created);
+        return cloneObject(created);
     }
 
     /**
@@ -193,7 +193,7 @@ public class BaseEntity extends BaseParent implements Serializable {
      */
     public void setCreated(Calendar created) {
 
-        this.created = clone(created);
+        this.created = cloneObject(created);
     }
 
     /**
@@ -202,7 +202,7 @@ public class BaseEntity extends BaseParent implements Serializable {
     @Column(name = "i_modified")
     public Calendar getModified() {
 
-        return clone(modified);
+        return cloneObject(modified);
     }
 
     /**
@@ -229,7 +229,7 @@ public class BaseEntity extends BaseParent implements Serializable {
     @Column(name = "i_state_changed")
     public Calendar getStateChanged() {
 
-        return clone(stateChanged);
+        return cloneObject(stateChanged);
     }
 
     /**
@@ -238,7 +238,7 @@ public class BaseEntity extends BaseParent implements Serializable {
      */
     public void setStateChanged(Calendar stateChanged) {
 
-        this.stateChanged = clone(stateChanged);
+        this.stateChanged = cloneObject(stateChanged);
     }
 
     /**
@@ -247,7 +247,7 @@ public class BaseEntity extends BaseParent implements Serializable {
      */
     public void setModified(Calendar modified) {
 
-        this.modified = clone(modified);
+        this.modified = cloneObject(modified);
     }
 
     // /////////////////////////////////////////////////////////////////////////

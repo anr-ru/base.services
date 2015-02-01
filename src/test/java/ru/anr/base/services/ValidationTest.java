@@ -3,6 +3,7 @@
  */
 package ru.anr.base.services;
 
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
@@ -148,13 +149,22 @@ public class ValidationTest extends BaseLocalServiceTestCase {
         SomeValidated v = new SomeValidated();
         v.setDigit(4);
 
-        Set<ConstraintViolation<Object>> errors = validator.validate(v);
-
         try {
-            service.method5(errors);
+
+            Set<ConstraintViolation<SomeValidated>> errors = validator.validate(v);
+
+            /*
+             * I didn't cope with 'generic' in this case
+             */
+            Set<ConstraintViolation<?>> errors2 = new HashSet<ConstraintViolation<?>>();
+            errors2.addAll(errors);
+
+            service.method5(errors2);
+
             Assert.fail();
+
         } catch (ApplicationException ex) {
-            Assert.assertEquals("[The value 4 must be greater then 5, The value is expected to be NOT NULL]",
+            Assert.assertEquals("[The value is expected to be NOT NULL, The value 4 must be greater then 5]",
                     ex.getMessage());
         }
     }

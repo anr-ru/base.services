@@ -255,7 +255,7 @@ public class APICommandFactoryImpl extends BaseServiceImpl implements APICommand
         }
 
         m.setMessage(msg);
-        m.setDescription(ex.getMessage());
+        m.setDescription(getExceptionMessage(ex));
 
         cmd.setResponse(m);
         processResponseModel(cmd);
@@ -263,15 +263,26 @@ public class APICommandFactoryImpl extends BaseServiceImpl implements APICommand
         return cmd;
     }
 
+    /**
+     * A special processing for
+     * {@link org.hibernate.exception.ConstraintViolationException}, whick
+     * occurs in validations.
+     * 
+     * @param ex
+     *            An exception
+     * @return Exception message
+     */
     private String getExceptionMessage(Exception ex) {
 
         String rs = null;
+        logger.debug("Processing an exception", ex);
 
         Throwable e = new ApplicationException(ex).getMostSpecificCause();
         if (e instanceof ConstraintViolationException) {
 
             Set<ConstraintViolation<?>> violations = ((ConstraintViolationException) e).getConstraintViolations();
             rs = getAllErrorsAsString(violations);
+
         } else {
             rs = ex.getMessage();
         }

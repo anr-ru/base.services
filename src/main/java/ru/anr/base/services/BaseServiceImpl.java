@@ -193,7 +193,7 @@ public class BaseServiceImpl extends BaseSpringParent implements BaseService {
      *            collection of violations
      * @return All errors as a comma-separated string
      */
-    protected <S> String getAllErrorsAsString(Set<ConstraintViolation<?>> violations) {
+    protected String getAllErrorsAsString(Set<ConstraintViolation<?>> violations) {
 
         return violations.stream().map(v -> v.getMessage()).collect(Collectors.toList()).toString();
     }
