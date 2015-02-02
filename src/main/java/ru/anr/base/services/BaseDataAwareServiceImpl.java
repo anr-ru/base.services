@@ -15,6 +15,8 @@
  */
 package ru.anr.base.services;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -43,9 +45,13 @@ public class BaseDataAwareServiceImpl extends BaseServiceImpl {
     // /////////////////////////////////////////////////////////////////////////
 
     /**
+     * Injecting 'BaseRepository' bean if only it exists.
+     * 
      * @param dao
      *            the dao to set
      */
+    @Autowired(required = false)
+    @Qualifier("BaseRepository")
     public void setDao(BaseRepository<BaseEntity> dao) {
 
         this.repository = dao;

@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
 import ru.anr.base.dao.repository.BaseRepository;
+import ru.anr.base.domain.BaseEntity;
 import ru.anr.base.samples.domain.Samples;
 
 /**
@@ -50,6 +51,13 @@ public class BaseDataAwareServiceImplTest extends BaseLocalServiceTestCase {
     }
 
     /**
+     * Testing injection for not existing bean
+     */
+    @Autowired(required = false)
+    @Qualifier("SomeUnknownRepository")
+    private BaseRepository<BaseEntity> bean;
+
+    /**
      * 
      */
     @Autowired
@@ -64,5 +72,7 @@ public class BaseDataAwareServiceImplTest extends BaseLocalServiceTestCase {
 
         BaseDataAwareServiceImpl impl = target(testService);
         Assert.assertNotNull(impl.dao());
+
+        Assert.assertNull(bean);
     }
 }

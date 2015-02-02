@@ -86,4 +86,13 @@ public class BaseRepositoryImpl<T extends BaseEntity> extends SimpleJpaRepositor
         }
         return q.getResultList();
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public <S extends BaseEntity> S find(Class<S> entityClass, Long id) {
+
+        return entityManager.find(entityClass, id);
+    }
 }

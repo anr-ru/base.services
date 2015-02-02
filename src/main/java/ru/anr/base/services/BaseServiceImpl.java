@@ -17,8 +17,11 @@ package ru.anr.base.services;
 
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
+import javax.validation.ConstraintViolation;
+import javax.validation.Validator;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,7 +29,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.NoSuchMessageException;
 import org.springframework.context.support.MessageSourceAccessor;
+import org.springframework.util.CollectionUtils;
 
+import ru.anr.base.ApplicationException;
 import ru.anr.base.BaseSpringParent;
 import ru.anr.base.services.pattern.Strategy;
 import ru.anr.base.services.pattern.StrategyFactory;
@@ -133,6 +138,64 @@ public class BaseServiceImpl extends BaseSpringParent implements BaseService {
             logger.debug("List of applied strategies: {}", stat.getAppliedStrategies());
         }
         return stat.getObject();
+    }
+
+    /**
+     * Getting validator instance if configured (requires
+     * {@link ValidationConfig} to be loaded)
+     * 
+     * @return {@link Validator}
+     */
+    protected Validator validator() {
+
+        Validator bean = null;
+
+        if (hasBean("validator")) {
+            bean = bean("validator", Validator.class);
+        }
+        return bean;
+    }
+
+    /**
+     * Throws an exception with specified message taken from resources
+     * 
+     * @param msgCode
+     *            A code
+     * @param args
+     *            Message arguments
+     */
+    protected void reject(String msgCode, Object... args) {
+
+        throw new ApplicationException(text(msgCode, args));
+
+    }
+
+    /**
+     * Throws an exception if specified validator contains some violations,
+     * joining all error messages
+     * 
+     * @param violations
+     *            A collection with violations
+     */
+    protected void rejectIfNeed(Set<ConstraintViolation<?>> violations) {
+
+        if (!CollectionUtils.isEmpty(violations)) {
+
+            throw new ApplicationException(getAllErrorsAsString(violations));
+        }
+    }
+
+    /**
+     * Extract all error message from {@link ConstraintViolation} as a single
+     * string
+     * 
+     * @param violations
+     *            collection of violations
+     * @return All errors as a comma-separated string
+     */
+    protected String getAllErrorsAsString(Set<ConstraintViolation<?>> violations) {
+
+        return violations.stream().map(v -> v.getMessage()).collect(Collectors.toList()).toString();
     }
 
     // /////////////////////////////////////////////////////////////////////////
