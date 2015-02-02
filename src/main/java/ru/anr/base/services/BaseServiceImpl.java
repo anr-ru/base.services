@@ -177,7 +177,7 @@ public class BaseServiceImpl extends BaseSpringParent implements BaseService {
      * @param violations
      *            A collection with violations
      */
-    protected <S> void rejectIfNeed(Set<ConstraintViolation<?>> violations) {
+    protected void rejectIfNeed(Set<ConstraintViolation<?>> violations) {
 
         if (!CollectionUtils.isEmpty(violations)) {
 
