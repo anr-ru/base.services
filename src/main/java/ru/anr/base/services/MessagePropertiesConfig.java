@@ -82,4 +82,12 @@ public class MessagePropertiesConfig {
 
         this.paths = ArrayUtils.clone(paths);
     }
+
+    /**
+     * @return the paths
+     */
+    protected String[] getPaths() {
+
+        return ArrayUtils.clone(paths);
+    }
 }
