@@ -164,8 +164,10 @@ public class ValidationTest extends BaseLocalServiceTestCase {
             Assert.fail();
 
         } catch (ApplicationException ex) {
-            Assert.assertEquals("[The value is expected to be NOT NULL, The value 4 must be greater then 5]",
-                    ex.getMessage());
+
+            String s = ex.getMessage();
+            Assert.assertTrue(s.contains("The value is expected to be NOT NULL"));
+            Assert.assertTrue(s.contains("The value 4 must be greater then 5"));
         }
     }
 }
