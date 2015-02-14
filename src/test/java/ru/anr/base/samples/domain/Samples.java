@@ -6,6 +6,9 @@ package ru.anr.base.samples.domain;
 import javax.persistence.Cacheable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.Cache;
@@ -37,6 +40,11 @@ public class Samples extends BaseEntity {
      */
     private String name;
 
+    /**
+     * Ref to parent
+     */
+    private Samples parent;
+
     // /////////////////////////////////////////////////////////////////////////
     // /// getters/setters
     // /////////////////////////////////////////////////////////////////////////
@@ -48,6 +56,25 @@ public class Samples extends BaseEntity {
     public String getName() {
 
         return name;
+    }
+
+    /**
+     * @return the parent
+     */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_parent")
+    public Samples getParent() {
+
+        return parent;
+    }
+
+    /**
+     * @param parent
+     *            the parent to set
+     */
+    public void setParent(Samples parent) {
+
+        this.parent = parent;
     }
 
     /**

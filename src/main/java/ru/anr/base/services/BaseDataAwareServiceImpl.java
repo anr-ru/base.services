@@ -40,6 +40,18 @@ public class BaseDataAwareServiceImpl extends BaseServiceImpl {
      */
     private BaseRepository<BaseEntity> repository;
 
+    /**
+     * Returns an entity (may be proxied) class
+     * 
+     * @param e
+     *            Entity
+     * @return Class
+     */
+    protected Class<?> entityClass(BaseEntity e) {
+
+        return repository.entityClass(e);
+    }
+
     // /////////////////////////////////////////////////////////////////////////
     // /// getters/setters
     // /////////////////////////////////////////////////////////////////////////
