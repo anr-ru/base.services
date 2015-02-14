@@ -195,4 +195,19 @@ public class DaoTest extends AbstractDaoTestCase {
         Assert.assertEquals(0, rs.size());
     }
 
+    /**
+     * Entity class
+     */
+    @Test
+    public void testLazyClass() {
+
+        Samples p = newSample("yyy");
+        Samples s = newSample("yyy");
+        s.setParent(p);
+        s = mydao.save(s);
+
+        Samples x = mydao.getOne(s.getId());
+        // TODO: can't create a HibernateProxy
+        Assert.assertEquals(Samples.class, dao.entityClass(x.getParent()));
+    }
 }

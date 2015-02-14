@@ -3,7 +3,7 @@
  */
 package ru.anr.base.samples.services;
 
-import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
 
 import ru.anr.base.services.BaseDataAwareServiceImpl;
@@ -23,7 +23,7 @@ public class RoleSecuredImpl extends BaseDataAwareServiceImpl {
      * {@inheritDoc}
      */
     @Override
-    @Secured("ROLE_USER")
+    @PreAuthorize("hasRole('ROLE_USER')")
     public String text(String code, Object... args) {
 
         return super.text(code, args);

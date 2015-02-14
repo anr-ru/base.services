@@ -3,8 +3,6 @@
  */
 package ru.anr.base.samples.services;
 
-import org.springframework.security.access.annotation.Secured;
-
 import ru.anr.base.samples.domain.Samples;
 
 /**
@@ -21,11 +19,10 @@ public interface ACLSecured {
     /**
      * Testing ACL access
      * 
-     * @param o
+     * @param object
      *            Sample object
      */
-    @Secured({ "ACL_OBJECT_WRITE" })
-    void apply(Samples o);
+    void apply(Samples object);
 
     /**
      * Testing ACL access
@@ -34,6 +31,5 @@ public interface ACLSecured {
      *            Identier
      * @return Object
      */
-    @Secured({ "ACL_READ" })
     Samples getObject(Long id);
 }

@@ -38,81 +38,15 @@
 
     <!-- SECURITY AND ACL -->
     
-    <bean id="securityConfig" class="ru.anr.base.services.SecurityConfig" 
+    <bean id="securityConfig" class="ru.anr.base.services.security.SecurityConfig"  
         p:providers-ref="testAuthenticator"/>
     <bean id = "testAuthenticator" class="org.springframework.security.authentication.TestingAuthenticationProvider" />
     
-    <security:global-method-security 
-        pre-post-annotations="enabled" secured-annotations="enabled"
-        authentication-manager-ref="authenticationManager">
-        <security:expression-handler ref="expressionHandler" />
-    </security:global-method-security>
-    
-    <bean id="expressionHandler"
-        class="org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler">
-        <property name="permissionEvaluator" ref="aclPermissionEvaluator" />
-    </bean>
-
-    <bean name="aclPermissionEvaluator"
-        class="org.springframework.security.acls.AclPermissionEvaluator">
-        <constructor-arg name="aclService" ref="aclService" />
-    </bean>
-
-    <bean id="aclCache" class="org.springframework.security.acls.domain.SpringCacheBasedAclCache">
-        <constructor-arg index="0">
-            <bean factory-bean="cacheManager" factory-method="getCache">
-                <constructor-arg value="samples" />
-            </bean>
-        </constructor-arg>
-        <constructor-arg index="1" ref="permissionGrantingStrategy" />
-        <constructor-arg index="2" ref="aclAuthorizationStrategy" />
-    </bean>
-
-    <bean id="aclAuthorizationStrategy"
-        class="org.springframework.security.acls.domain.AclAuthorizationStrategyImpl">
-        <constructor-arg name="auths">
-            <list>
-                <!-- authority for taking ownership -->
-                <bean
-                    class="org.springframework.security.core.authority.SimpleGrantedAuthority">
-                    <constructor-arg value="ACL_ADMIN" />
-                </bean>
-                <!-- authority to modify auditing -->
-                <bean
-                    class="org.springframework.security.core.authority.SimpleGrantedAuthority">
-                    <constructor-arg value="ACL_ADMIN" />
-                </bean>
-                <!-- authority to make general changes -->
-                <bean
-                    class="org.springframework.security.core.authority.SimpleGrantedAuthority">
-                    <constructor-arg value="ACL_ADMIN" />
-                </bean>
-            </list>
-        </constructor-arg>
-    </bean>
-
-    <bean id="auditLogger"
-        class="org.springframework.security.acls.domain.ConsoleAuditLogger" />
-
-    <bean id="permissionGrantingStrategy" class="org.springframework.security.acls.domain.DefaultPermissionGrantingStrategy">
-        <constructor-arg ref="auditLogger" />
-    </bean>
-
-    <bean id="lookupStrategy"
-        class="org.springframework.security.acls.jdbc.BasicLookupStrategy">
-        <constructor-arg name="dataSource" ref="datasource" />
-        <constructor-arg name="aclCache" ref="aclCache" />
-        <constructor-arg name="aclAuthorizationStrategy" ref="aclAuthorizationStrategy" />
-        <constructor-arg name="auditLogger" ref="auditLogger" />
-    </bean>
-
-    <bean id="aclService"
-        class="org.springframework.security.acls.jdbc.JdbcMutableAclService">
-        <constructor-arg name="dataSource" ref="datasource" />
-        <constructor-arg name="lookupStrategy" ref="lookupStrategy" />
-        <constructor-arg name="aclCache" ref="aclCache" />
-        <!--property name="sidIdentityQuery" value="SELECT HIBERNATE_SEQUENCE.CURRVAL FROM DUAL" />
-        <property name="classIdentityQuery" value="SELECT HIBERNATE_SEQUENCE.CURRVAL FROM DUAL" /-->
-    </bean>
+    <bean id = "aclConfig" class = "ru.anr.base.services.security.ACLConfig" 
+        p:dataSource-ref="datasource"
+        p:aclCacheName="samples"
+        p:authenticationManager-ref="authenticationManager" />
+        
+    <bean id = "aclManager" class = "ru.anr.base.services.security.ACLManagerImpl" />        
 
 </beans>
