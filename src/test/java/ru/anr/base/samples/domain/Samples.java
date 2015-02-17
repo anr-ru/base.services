@@ -13,6 +13,7 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.springframework.security.core.Authentication;
 
 import ru.anr.base.domain.BaseEntity;
 
@@ -44,6 +45,15 @@ public class Samples extends BaseEntity {
      * Ref to parent
      */
     private Samples parent;
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean accessible(Authentication token, Object permission) {
+
+        return this.getName() == null || safeEquals(permission, this.getName());
+    }
 
     // /////////////////////////////////////////////////////////////////////////
     // /// getters/setters

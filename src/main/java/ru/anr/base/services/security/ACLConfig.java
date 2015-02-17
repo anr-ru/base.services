@@ -10,7 +10,6 @@ import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.acls.AclPermissionEvaluator;
 import org.springframework.security.acls.domain.AclAuthorizationStrategy;
 import org.springframework.security.acls.domain.AclAuthorizationStrategyImpl;
 import org.springframework.security.acls.domain.DefaultPermissionGrantingStrategy;
@@ -109,7 +108,7 @@ public class ACLConfig extends GlobalMethodSecurityConfiguration {
         /*
          * Specifing permission evaluator with our acl service
          */
-        setPermissionEvaluator(BaseParent.list(new AclPermissionEvaluator(s)));
+        setPermissionEvaluator(BaseParent.list(new BaseEntityPermissionEvaluator(s)));
         return s;
     }
 

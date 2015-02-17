@@ -38,6 +38,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.hibernate.annotations.DynamicUpdate;
+import org.springframework.security.core.Authentication;
 
 import ru.anr.base.BaseParent;
 
@@ -131,6 +132,21 @@ public class BaseEntity extends BaseParent implements Serializable {
         setStateChanged(GregorianCalendar.from(now()));
 
         return oldState;
+    }
+
+    /**
+     * Customizable function for domain - specific access checks.
+     * 
+     * @param token
+     *            Authentication
+     * @param permission
+     *            The permission to check. (See
+     *            PermissionEvaluator#hasPermission() for argument details)
+     * @return true, if the object can be accessed
+     */
+    public boolean accessible(Authentication token, Object permission) {
+
+        return true; // by default it's always accessible
     }
 
     // /////////////////////////////////////////////////////////////////////////

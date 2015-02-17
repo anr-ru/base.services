@@ -3,6 +3,8 @@
  */
 package ru.anr.base.services.security;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.acls.domain.ObjectIdentityImpl;
 import org.springframework.security.acls.model.MutableAcl;
@@ -27,6 +29,11 @@ import ru.anr.base.services.BaseDataAwareServiceImpl;
 public class ACLManagerImpl extends BaseDataAwareServiceImpl implements ACLManager {
 
     /**
+     * Logger
+     */
+    private static final Logger logger = LoggerFactory.getLogger(ACLManagerImpl.class);
+
+    /**
      * Standard {@link MutableAclService} implementation
      */
     @Autowired
@@ -39,6 +46,8 @@ public class ACLManagerImpl extends BaseDataAwareServiceImpl implements ACLManag
     public void grant(BaseEntity e, Sid sid, Permission permission) {
 
         ObjectIdentity oi = new ObjectIdentityImpl(entityClass(e), e.getId());
+        logger.debug("Granting for ObjectIdentity: {} - {}", oi.getType(), oi.getIdentifier());
+
         MutableAcl acl = null;
         try {
             acl = (MutableAcl) acls.readAclById(oi);

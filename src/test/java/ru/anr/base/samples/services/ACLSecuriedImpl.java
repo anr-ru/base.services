@@ -25,7 +25,7 @@ public class ACLSecuriedImpl extends TestDataServiceImpl implements ACLSecured {
      * {@inheritDoc}
      */
     @Override
-    @PreAuthorize("hasPermission(#xx,'write')")
+    @PreAuthorize("hasPermission(#xx,'write') or hasPermission(#xx,'access_write')")
     public void apply(@P("xx") Samples o) {
 
         dao().save(o);
@@ -36,7 +36,7 @@ public class ACLSecuriedImpl extends TestDataServiceImpl implements ACLSecured {
      * {@inheritDoc}
      */
     @Override
-    @PostAuthorize("hasPermission(returnObject,'read')")
+    @PostAuthorize("hasPermission(returnObject,'read') and hasPermission(returnObject,'access_read')")
     public Samples getObject(Long id) {
 
         return dao().find(Samples.class, id);

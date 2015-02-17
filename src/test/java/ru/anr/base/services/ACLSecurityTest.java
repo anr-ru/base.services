@@ -68,22 +68,39 @@ public class ACLSecurityTest extends BaseLocalServiceTestCase {
     }
 
     /**
-     * Cheching how authorization works
+     * Pattern: hasPermission(.., 'read') AND hasPermission(..,'access_read').
+     * The second one requires domain-level check which depends on value of the
+     * name attribute.
      */
     @Test
-    public void testACL() {
+    public void testACLAndAccess() {
 
-        /*
-         * Setting a security token, but it's not authenticated
-         */
-        Authentication token = authenticate("user");
-        Assert.assertTrue(token.isAuthenticated());
+        authenticate("user");
 
-        Samples s = create(Samples.class, "name", "xxx");
+        Samples s = create(Samples.class, "name", "read");
+
+        try {
+            service.getObject(s.getId());
+            Assert.fail();
+        } catch (AccessDeniedException ex) {
+            Assert.assertEquals("Access is denied", ex.getMessage());
+        }
 
         acls.grant(s, new PrincipalSid("user"), BasePermission.READ);
 
         service.getObject(s.getId());
+    }
+
+    /**
+     * Pattern: hasPermission(.., 'write') OR hasPermission(..,'access_write').
+     * The second one requires domain-level check which depends on value of the
+     * name attribute.
+     */
+    @Test
+    public void testACLOrScenario() {
+
+        authenticate("user");
+        Samples s = create(Samples.class, "name", "read"); // access_read
 
         try {
 
@@ -96,9 +113,25 @@ public class ACLSecurityTest extends BaseLocalServiceTestCase {
             Assert.assertEquals("Access is denied", ex.getMessage());
         }
 
+        // Now adding just an ACL access
+
         acls.grant(s, new PrincipalSid("user"), BasePermission.WRITE);
 
-        service.apply(s);
+        service.apply(s); // good !
+
+        s = create(Samples.class, "name", "write"); // access_write
+
+        service.apply(s); // Ok
+
+        s.setName("read");
+
+        try {
+            service.apply(s);
+            Assert.fail();
+
+        } catch (AccessDeniedException ex) {
+            Assert.assertEquals("Access is denied", ex.getMessage());
+        }
     }
 
     /**
@@ -113,7 +146,7 @@ public class ACLSecurityTest extends BaseLocalServiceTestCase {
         Authentication token = authenticate("user1");
         Assert.assertTrue(token.isAuthenticated());
 
-        Samples s = create(Samples.class, "name", "xxx");
+        Samples s = create(Samples.class, "name", null);
 
         /*
          * Permissions are granter for ROLE, not for a concrete user
