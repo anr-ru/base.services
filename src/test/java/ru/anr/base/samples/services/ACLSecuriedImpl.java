@@ -28,8 +28,9 @@ public class ACLSecuriedImpl extends TestDataServiceImpl implements ACLSecured {
     @PreAuthorize("hasPermission(#xx,'write') or hasPermission(#xx,'access_write')")
     public void apply(@P("xx") Samples o) {
 
-        dao().save(o);
-
+        if (o != null) {
+            dao().save(o);
+        }
     }
 
     /**

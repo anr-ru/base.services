@@ -3,15 +3,17 @@
  */
 package ru.anr.base.services.security;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.acls.AclPermissionEvaluator;
 import org.springframework.security.acls.model.AclService;
 import org.springframework.security.core.Authentication;
 
-import ru.anr.base.domain.BaseEntity;
+import ru.anr.base.domain.Accessible;
 
 /**
  * This {@link org.springframework.security.access.PermissionEvaluator} uses
- * {@link BaseEntity#accessible(Authentication, Object)} function to perform
+ * {@link Accessible#accessible(Authentication, Object)} function to perform
  * some additional permission checks on domain object level.
  *
  *
@@ -20,6 +22,11 @@ import ru.anr.base.domain.BaseEntity;
  *
  */
 public class BaseEntityPermissionEvaluator extends AclPermissionEvaluator {
+
+    /**
+     * Logger
+     */
+    private static final Logger logger = LoggerFactory.getLogger(BaseEntityPermissionEvaluator.class);
 
     /**
      * Constructor for evaluator
@@ -36,18 +43,22 @@ public class BaseEntityPermissionEvaluator extends AclPermissionEvaluator {
      * {@inheritDoc}
      */
     @Override
-    public boolean hasPermission(Authentication authentication, Object domainObject, Object permission) {
+    public boolean hasPermission(Authentication authentication, Object domainObject, Object p) {
 
         boolean accessible = true;
 
-        if (permission != null && permission.toString().startsWith("access") && domainObject instanceof BaseEntity) {
+        logger.trace("hasPermission for {} and {}", domainObject, p);
 
-            // We suppose such patterns: access_read, access_write, ...
-            String[] splitted = permission.toString().split("_");
-            accessible = ((BaseEntity) domainObject).accessible(authentication, splitted[1]);
+        if (domainObject != null) {
+            if (p != null && p.toString().startsWith("access") && (domainObject instanceof Accessible)) {
 
-        } else { // A standard ACL
-            accessible = super.hasPermission(authentication, domainObject, permission);
+                // We suppose such patterns: access_read, access_write, ...
+                String[] splitted = p.toString().split("_");
+                accessible = ((Accessible) domainObject).accessible(authentication, splitted[1]);
+
+            } else { // A standard ACL
+                accessible = super.hasPermission(authentication, domainObject, p);
+            }
         }
         return accessible;
     }

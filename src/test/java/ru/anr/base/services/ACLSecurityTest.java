@@ -163,4 +163,19 @@ public class ACLSecurityTest extends BaseLocalServiceTestCase {
         service.getObject(s.getId());
         service.apply(s);
     }
+
+    /**
+     * Passing 'null' value
+     */
+    @Test
+    public void testNullObjects() {
+
+        authenticate("user");
+
+        service.getObject(900L);
+
+        service.apply(null);
+
+        Assert.assertTrue(true);
+    }
 }

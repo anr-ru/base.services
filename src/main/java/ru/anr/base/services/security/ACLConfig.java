@@ -10,6 +10,7 @@ import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.access.intercept.RunAsManager;
 import org.springframework.security.acls.domain.AclAuthorizationStrategy;
 import org.springframework.security.acls.domain.AclAuthorizationStrategyImpl;
 import org.springframework.security.acls.domain.DefaultPermissionGrantingStrategy;
@@ -71,6 +72,20 @@ public class ACLConfig extends GlobalMethodSecurityConfiguration {
      * For example, "SELECT HIBERNATE_SEQUENCE.CURRVAL FROM DUAL"
      */
     private String sidIdentityQuery;
+
+    /**
+     * Ref to {@link RunAsManager} is required
+     */
+    private RunAsManager runAs;
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected RunAsManager runAsManager() {
+
+        return runAs;
+    }
 
     /**
      * An 'AclService' bean. Uses a preconfigured spring {@link CacheManager}.
@@ -185,5 +200,14 @@ public class ACLConfig extends GlobalMethodSecurityConfiguration {
     public void setAuthenticationManager(AuthenticationManager authenticationManager) {
 
         this.authenticationManagerRef = authenticationManager;
+    }
+
+    /**
+     * @param runAsManager
+     *            the runAsManager
+     */
+    public void setRunAsManager(RunAsManager runAsManager) {
+
+        this.runAs = runAsManager;
     }
 }
