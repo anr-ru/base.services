@@ -17,7 +17,6 @@ package ru.anr.base.services;
 
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 import javax.validation.ConstraintViolation;
@@ -195,7 +194,7 @@ public class BaseServiceImpl extends BaseSpringParent implements BaseService {
      */
     protected String getAllErrorsAsString(Set<ConstraintViolation<?>> violations) {
 
-        return violations.stream().map(v -> v.getMessage()).collect(Collectors.toList()).toString();
+        return ValidationUtils.getAllErrorsAsString(violations);
     }
 
     // /////////////////////////////////////////////////////////////////////////

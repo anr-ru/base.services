@@ -7,7 +7,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -40,7 +39,7 @@ public class BaseLocalServiceTestCase extends BaseLocalDaoTestCase {
      *            A token for authentication
      * @return Authrorised user
      */
-    protected Authentication authenticate(AbstractAuthenticationToken token) {
+    protected Authentication authenticate(Authentication token) {
 
         Authentication r = authenticationManager.authenticate(token);
 

@@ -117,6 +117,18 @@ public class BaseEntity extends BaseParent implements Serializable, Accessible {
     }
 
     /**
+     * Returns true if the specified state is equals to the current
+     * 
+     * @param s
+     *            State to compare
+     * @return true if states are equals
+     */
+    public boolean hasState(String s) {
+
+        return safeEquals(s, getState());
+    }
+
+    /**
      * Changing a state of this object
      * 
      * @param newState
