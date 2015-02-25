@@ -42,7 +42,7 @@ public class StrategyConfig {
     /**
      * See {@link StrategyModes}
      */
-    private StrategyModes mode = StrategyModes.Normal;
+    private final StrategyModes mode;
 
     /**
      * An array of additinal params
@@ -56,10 +56,10 @@ public class StrategyConfig {
      *            true/false for strategy to be applied
      * @param object
      *            An object
-     * @param params
-     *            Stored additinal params
      * @param mode
      *            {@link StrategyModes}
+     * @param params
+     *            Stored additinal params
      */
     public StrategyConfig(boolean applicable, Object object, StrategyModes mode, Object... params) {
 
