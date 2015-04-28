@@ -103,12 +103,24 @@ public class BaseRepositoryImpl<T extends BaseEntity> extends SimpleJpaRepositor
     @Override
     public Class<?> entityClass(BaseEntity entity) {
 
-        Object r = entity;
+        Object r = entity(entity);
+        return r.getClass();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @SuppressWarnings("unchecked")
+    @Override
+    public <S extends BaseEntity> S entity(S entity) {
+
+        S r = entity;
 
         if (entity instanceof HibernateProxy) {
             HibernateProxy proxy = (HibernateProxy) entity;
-            r = proxy.getHibernateLazyInitializer().getImplementation();
+            r = (S) proxy.getHibernateLazyInitializer().getImplementation();
         }
-        return r.getClass();
+        return r;
     }
+
 }

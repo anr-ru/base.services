@@ -23,12 +23,14 @@ import org.springframework.stereotype.Repository;
 import ru.anr.base.domain.BaseEntity;
 
 /**
- * Custom repository interface for extensions.
+ * A base repository interface.
  *
  *
  * @author Alexey Romanchuk
  * @created Nov 6, 2014
  *
+ * @param <T>
+ *            The main entity type
  */
 @Repository("BaseRepository")
 public interface BaseRepository<T extends BaseEntity> extends JpaRepository<T, Long> {
@@ -80,4 +82,17 @@ public interface BaseRepository<T extends BaseEntity> extends JpaRepository<T, L
      * @return Entity's class
      */
     Class<?> entityClass(BaseEntity entity);
+
+    /**
+     * Extracts a pure entity for the specified hibernate entity (which can be a
+     * proxied). The implementation is hibernate specific.
+     * 
+     * @param entity
+     *            The entity
+     * @return Pure entity
+     * 
+     * @param <S>
+     *            Object type
+     */
+    <S extends BaseEntity> S entity(S entity);
 }
