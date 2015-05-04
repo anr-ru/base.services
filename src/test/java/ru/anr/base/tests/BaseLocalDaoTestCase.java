@@ -16,6 +16,7 @@ import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
 import ru.anr.base.ApplicationException;
+import ru.anr.base.dao.BaseRepositoryImpl;
 import ru.anr.base.dao.repository.BaseRepository;
 import ru.anr.base.domain.BaseEntity;
 
@@ -70,6 +71,34 @@ public class BaseLocalDaoTestCase extends BaseTestCase {
             }
         }
         return dao.save(entity);
+    }
+
+    /**
+     * A short-cut method for {@link BaseRepositoryImpl#entityClass(BaseEntity)}
+     * 
+     * 
+     * @param e
+     *            Some entity
+     * @return Entity class
+     */
+    public static Class<?> entityClass(BaseEntity e) {
+
+        return BaseRepositoryImpl.entityClass(e);
+    }
+
+    /**
+     * A short-cut method for {@link BaseRepositoryImpl#entity(BaseEntity)}
+     * 
+     * @param e
+     *            Some entity
+     * @return The entity without proxies
+     * 
+     * @param <S>
+     *            Entity type to cast to
+     */
+    public static <S extends BaseEntity> S entity(S e) {
+
+        return BaseRepositoryImpl.entity(e);
     }
 
 }

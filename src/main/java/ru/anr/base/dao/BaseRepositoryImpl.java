@@ -92,27 +92,39 @@ public class BaseRepositoryImpl<T extends BaseEntity> extends SimpleJpaRepositor
      * {@inheritDoc}
      */
     @Override
-    public <S extends BaseEntity> S find(Class<S> entityClass, Long id) {
+    @SuppressWarnings("unchecked")
+    public <S extends BaseEntity> S find(Class<?> entityClass, Long id) {
 
-        return entityManager.find(entityClass, id);
+        return (S) entityManager.find(entityClass, id);
     }
 
     /**
-     * {@inheritDoc}
+     * Extracts entity class for specified entity (which can be a proxied
+     * hibernate entity). The implementation is hibernate specific.
+     * 
+     * @param entity
+     *            Entity
+     * @return Entity's class
      */
-    @Override
-    public Class<?> entityClass(BaseEntity entity) {
+    public static Class<?> entityClass(BaseEntity entity) {
 
         Object r = entity(entity);
         return r.getClass();
     }
 
     /**
-     * {@inheritDoc}
+     * Extracts a pure entity for the specified hibernate entity (which can be a
+     * proxied). The implementation is hibernate specific.
+     * 
+     * @param entity
+     *            The entity
+     * @return Pure entity
+     * 
+     * @param <S>
+     *            Object type
      */
     @SuppressWarnings("unchecked")
-    @Override
-    public <S extends BaseEntity> S entity(S entity) {
+    public static <S extends BaseEntity> S entity(S entity) {
 
         S r = entity;
 
@@ -122,5 +134,4 @@ public class BaseRepositoryImpl<T extends BaseEntity> extends SimpleJpaRepositor
         }
         return r;
     }
-
 }

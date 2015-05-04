@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import ru.anr.base.dao.BaseRepositoryImpl;
 import ru.anr.base.dao.repository.BaseRepository;
 import ru.anr.base.domain.BaseEntity;
 
@@ -49,7 +50,7 @@ public class BaseDataAwareServiceImpl extends BaseServiceImpl {
      */
     protected Class<?> entityClass(BaseEntity e) {
 
-        return repository.entityClass(e);
+        return BaseRepositoryImpl.entityClass(e);
     }
 
     // /////////////////////////////////////////////////////////////////////////

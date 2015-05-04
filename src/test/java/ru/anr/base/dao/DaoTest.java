@@ -208,6 +208,6 @@ public class DaoTest extends AbstractDaoTestCase {
 
         Samples x = mydao.getOne(s.getId());
         // TODO: can't create a HibernateProxy
-        Assert.assertEquals(Samples.class, dao.entityClass(x.getParent()));
+        Assert.assertEquals(Samples.class, entityClass(x.getParent()));
     }
 }

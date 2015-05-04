@@ -71,28 +71,5 @@ public interface BaseRepository<T extends BaseEntity> extends JpaRepository<T, L
      * @param <S>
      *            Object type
      */
-    <S extends BaseEntity> S find(Class<S> entityClass, Long id);
-
-    /**
-     * Extracts entity class for specified entity (which can be a proxied
-     * hibernate entity). The implementation is hibernate specific.
-     * 
-     * @param entity
-     *            Entity
-     * @return Entity's class
-     */
-    Class<?> entityClass(BaseEntity entity);
-
-    /**
-     * Extracts a pure entity for the specified hibernate entity (which can be a
-     * proxied). The implementation is hibernate specific.
-     * 
-     * @param entity
-     *            The entity
-     * @return Pure entity
-     * 
-     * @param <S>
-     *            Object type
-     */
-    <S extends BaseEntity> S entity(S entity);
+    <S extends BaseEntity> S find(Class<?> entityClass, Long id);
 }
