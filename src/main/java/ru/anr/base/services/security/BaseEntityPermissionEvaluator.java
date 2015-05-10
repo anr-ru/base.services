@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.security.acls.AclPermissionEvaluator;
 import org.springframework.security.acls.model.AclService;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.oauth2.provider.OAuth2Authentication;
 
 import ru.anr.base.domain.Accessible;
 
@@ -46,6 +47,10 @@ public class BaseEntityPermissionEvaluator extends AclPermissionEvaluator {
     public boolean hasPermission(Authentication authentication, Object domainObject, Object p) {
 
         boolean accessible = true;
+
+        if (authentication instanceof OAuth2Authentication) {
+            authentication = ((OAuth2Authentication) authentication).getUserAuthentication();
+        }
 
         logger.trace("hasPermission for {} and {}", domainObject, p);
 
