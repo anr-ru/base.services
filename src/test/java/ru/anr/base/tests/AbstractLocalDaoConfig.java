@@ -46,7 +46,7 @@ public abstract class AbstractLocalDaoConfig extends AbstractJPADaoConfig {
 
             ds.setInitialPoolSize(1);
             ds.setMinPoolSize(1);
-            ds.setMaxPoolSize(3);
+            ds.setMaxPoolSize(15);
 
         } catch (PropertyVetoException ex) {
             throw new ApplicationException(ex);
