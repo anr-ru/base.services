@@ -15,6 +15,11 @@
  */
 package ru.anr.base.services;
 
+import org.springframework.security.access.method.P;
+import org.springframework.security.access.prepost.PreAuthorize;
+
+import ru.anr.base.domain.BaseEntity;
+
 /**
  * A 'Service' interface
  * 
@@ -38,4 +43,20 @@ public interface BaseService {
      * @return A text with parameters replaced with the arguments
      */
     String text(String code, Object... args);
+
+    /**
+     * Changes a state of the {@link BaseEntity} object and returns the old
+     * state.
+     * 
+     * @param object
+     *            The object
+     * @param newState
+     *            New state
+     * @return The old state
+     * 
+     * @param <S>
+     *            Type of state enumeration
+     */
+    @PreAuthorize("hasPermission(#o,'write') or hasPermission(#o,'access_state')")
+    <S extends Enum<S>> S changeState(@P("o") BaseEntity object, S newState);
 }

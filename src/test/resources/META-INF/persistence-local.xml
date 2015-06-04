@@ -8,7 +8,8 @@
         <provider>org.hibernate.ejb.HibernatePersistence</provider>
 
         <class>ru.anr.base.samples.domain.Samples</class>
-        
+        <class>ru.anr.base.samples.domain.SampleState</class>
+
         <!-- converter -->
         <class>ru.anr.base.domain.LocalDateTimePersistenceConverter</class>        
 

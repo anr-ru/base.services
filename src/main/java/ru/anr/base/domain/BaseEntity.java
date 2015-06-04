@@ -31,6 +31,7 @@ import javax.persistence.PreUpdate;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 import javax.persistence.Version;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
@@ -38,6 +39,8 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.hibernate.annotations.DynamicUpdate;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 
 import ru.anr.base.BaseParent;
 
@@ -143,6 +146,37 @@ public class BaseEntity extends BaseParent implements Serializable, Accessible {
         setStateChanged(GregorianCalendar.from(now()));
 
         return oldState;
+    }
+
+    /**
+     * State diagram of the object
+     */
+    private final MultiValueMap<String, String> transitions = new LinkedMultiValueMap<>();
+
+    /**
+     * Puts a state transition to the map. Just a convenient short-cut method.
+     * 
+     * @param key
+     *            A key
+     * @param states
+     *            A list of target states
+     * @param <S>
+     *            Type of the states enumeration
+     */
+    protected <S extends Enum<S>> void putStates(S key, @SuppressWarnings("unchecked") S... states) {
+
+        transitions.put(key.name(), list(list(states).stream().map(s -> s.name())));
+    }
+
+    /**
+     * Returns a map with available transitions
+     * 
+     * @return The map
+     */
+    @Transient
+    public MultiValueMap<String, String> getTransitionsMap() {
+
+        return transitions; // Empty by default
     }
 
     // /////////////////////////////////////////////////////////////////////////

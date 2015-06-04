@@ -28,10 +28,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.NoSuchMessageException;
 import org.springframework.context.support.MessageSourceAccessor;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.MultiValueMap;
 
 import ru.anr.base.ApplicationException;
 import ru.anr.base.BaseSpringParent;
+import ru.anr.base.domain.BaseEntity;
 import ru.anr.base.services.pattern.Strategy;
 import ru.anr.base.services.pattern.StrategyFactory;
 import ru.anr.base.services.pattern.StrategyFactoryImpl;
@@ -197,13 +200,50 @@ public class BaseServiceImpl extends BaseSpringParent implements BaseService {
         return ValidationUtils.getAllErrorsAsString(violations);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @SuppressWarnings("unchecked")
+    @Override
+    public <S extends Enum<S>> S changeState(BaseEntity object, S newState) {
+
+        S oldState = null;
+        boolean transitionDone = false;
+
+        if (safeEquals(newState.name(), object.getState())) {
+
+            logger.debug("Trying to change the same state (trivial case)");
+
+            transitionDone = true;
+            oldState = newState;
+
+        } else {
+            MultiValueMap<String, String> map = object.getTransitionsMap();
+            if (map.containsKey(object.getState())) {
+
+                List<String> targets = map.get(object.getState());
+
+                if (targets.contains(newState.name())) {
+
+                    String oldStateStr = object.changeState(newState.name());
+                    oldState = (S) Enum.valueOf(newState.getClass(), oldStateStr);
+                    transitionDone = true;
+                }
+            }
+        }
+        if (!transitionDone) {
+            throw new AccessDeniedException("Unable to change the state");
+        }
+        return oldState;
+    }
+
     // /////////////////////////////////////////////////////////////////////////
     // /// getters/setters
     // /////////////////////////////////////////////////////////////////////////
 
     /**
      * @param extentions
-     *            the extentions to set
+     *            the extensions to set
      */
     public void setExtentions(List<Strategy<Object>> extentions) {
 
