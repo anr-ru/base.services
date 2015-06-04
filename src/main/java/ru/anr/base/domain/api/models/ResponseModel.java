@@ -45,7 +45,7 @@ public class ResponseModel implements Serializable {
     /**
      * Reponse code. 0 mean 'success'
      */
-    private int code = 0;
+    private Integer code;
 
     /**
      * Current page number
@@ -75,7 +75,7 @@ public class ResponseModel implements Serializable {
      * @return the code
      */
     @XmlAttribute(name = "code")
-    public int getCode() {
+    public Integer getCode() {
 
         return code;
     }
@@ -120,7 +120,7 @@ public class ResponseModel implements Serializable {
      * @param code
      *            the code to set
      */
-    public void setCode(int code) {
+    public void setCode(Integer code) {
 
         this.code = code;
     }

@@ -235,7 +235,18 @@ public class APICommandFactoryImpl extends BaseServiceImpl implements APICommand
     private int resolveErrorCode(Exception ex) {
 
         Throwable reason = new ApplicationException(ex).getRootCause();
-        return (reason instanceof APIException) ? ((APIException) reason).getErrorCode() : APIException.ERROR_SYSTEM;
+
+        int code = APIException.ERROR_SYSTEM;
+        if (reason instanceof APIException) {
+
+            code = ((APIException) reason).getErrorCode();
+
+        } else if (reason instanceof ConstraintViolationException) {
+
+            code = APIException.ERROR_VALIDATION;
+        }
+
+        return code;
     }
 
     /**
@@ -316,7 +327,7 @@ public class APICommandFactoryImpl extends BaseServiceImpl implements APICommand
                 m.setSearch(cmd.getRequest().getSearch());
                 m.setSorted(cmd.getRequest().getSorted());
             } else {
-                logger.info("Unable to parse request model for {}", cmd);
+                logger.debug("No RequestModel was detected for {}", cmd);
             }
             cmd.setRequest(m);
         } else {
@@ -346,6 +357,10 @@ public class APICommandFactoryImpl extends BaseServiceImpl implements APICommand
 
         if (cmd.getResponseFormat() == null) {
             cmd.setResponseFormat(RawFormatTypes.JSON); // default
+        }
+
+        if (m instanceof ResponseModel && ((ResponseModel) m).getCode() == null) {
+            ((ResponseModel) m).setCode(0);
         }
 
         Serializer s = getSerializer(cmd.getResponseFormat());

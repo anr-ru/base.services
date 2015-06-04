@@ -34,6 +34,11 @@ public class APIException extends ApplicationException {
     public static final int ERROR_SYSTEM = 1;
 
     /**
+     * Error code for validation errors
+     */
+    public static final int ERROR_VALIDATION = -1;
+
+    /**
      * Serial ID
      */
     private static final long serialVersionUID = -1705171832150544996L;

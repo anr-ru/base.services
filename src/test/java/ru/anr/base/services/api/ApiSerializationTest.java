@@ -60,7 +60,7 @@ public class ApiSerializationTest extends BaseLocalServiceTestCase {
         String value = json.toStr(m);
         logger.info("JSON: {}", value);
 
-        Assert.assertEquals("{\"code\":0}", value);
+        Assert.assertEquals("{}", value);
 
         RequestModel mx = json.fromStr(value, RequestModel.class);
         Assert.assertEquals(m, mx);
@@ -75,7 +75,7 @@ public class ApiSerializationTest extends BaseLocalServiceTestCase {
         value = xml.toStr(m);
         logger.info("XML: {}", value);
 
-        Assert.assertEquals("<?xml version='1.0' encoding='UTF-8'?><request code=\"0\"/>", value);
+        Assert.assertEquals("<?xml version='1.0' encoding='UTF-8'?><request/>", value);
 
         mx = xml.fromStr(value, RequestModel.class);
         Assert.assertEquals(m, mx);
@@ -135,8 +135,8 @@ public class ApiSerializationTest extends BaseLocalServiceTestCase {
         String js = "[{\"code\":1},{\"code\":2}]";
 
         errors = json.fromStr(js, ref);
-        Assert.assertEquals(1, errors.get(0).getCode());
-        Assert.assertEquals(2, errors.get(1).getCode());
+        Assert.assertEquals(Integer.valueOf(1), errors.get(0).getCode());
+        Assert.assertEquals(Integer.valueOf(2), errors.get(1).getCode());
     }
 
     /**
