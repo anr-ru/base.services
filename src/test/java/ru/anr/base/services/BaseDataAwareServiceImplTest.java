@@ -7,6 +7,8 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.TestingAuthenticationToken;
 
 import ru.anr.base.dao.repository.BaseRepository;
 import ru.anr.base.domain.BaseEntity;
@@ -62,7 +64,7 @@ public class BaseDataAwareServiceImplTest extends BaseLocalServiceTestCase {
      */
     @Autowired
     @Qualifier("TestDataService")
-    private BaseService testService;
+    private BaseDataAwareService testService;
 
     /**
      * Check dao access methods
@@ -75,4 +77,43 @@ public class BaseDataAwareServiceImplTest extends BaseLocalServiceTestCase {
 
         Assert.assertNull(bean);
     }
+
+    /**
+     * Test method for {@link BaseDataAwareService#save(BaseEntity)}
+     */
+    @Test
+    public void testSaveEntity() {
+
+        authenticate(new TestingAuthenticationToken("test", "password", "ROLE_USER"));
+
+        Samples e = new Samples();
+        e.setName("write");
+
+        Samples ex = testService.save(e);
+
+        Assert.assertEquals(e, ex);
+        Assert.assertNotNull(ex.getId());
+
+        ex.setName("read");
+
+        try {
+            testService.save(ex);
+            Assert.fail();
+        } catch (AccessDeniedException exp) {
+            Assert.assertEquals("Access is denied", exp.getMessage());
+        }
+
+        e = new Samples();
+        e.setName("read");
+
+        try {
+            logger.debug("Started");
+            testService.save(e);
+            Assert.fail();
+        } catch (AccessDeniedException exp) {
+            Assert.assertEquals("Access is denied", exp.getMessage());
+        }
+
+    }
+
 }

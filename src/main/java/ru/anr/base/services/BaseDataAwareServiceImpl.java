@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Assert;
 
 import ru.anr.base.dao.BaseRepositoryImpl;
 import ru.anr.base.dao.repository.BaseRepository;
@@ -34,7 +35,7 @@ import ru.anr.base.domain.BaseEntity;
  *
  */
 @Transactional(propagation = Propagation.REQUIRED)
-public class BaseDataAwareServiceImpl extends BaseServiceImpl {
+public class BaseDataAwareServiceImpl extends BaseServiceImpl implements BaseDataAwareService {
 
     /**
      * Base repository
@@ -51,6 +52,22 @@ public class BaseDataAwareServiceImpl extends BaseServiceImpl {
     protected Class<?> entityClass(BaseEntity e) {
 
         return BaseRepositoryImpl.entityClass(e);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public <S extends BaseEntity> S save(S object) {
+
+        S e = object;
+        BaseRepository<BaseEntity> dao = dao();
+        Assert.notNull(dao, "BaseRepository DAO is not configured");
+
+        if (object.getId() == null) {
+            e = dao.save(object);
+        }
+        return e;
     }
 
     // /////////////////////////////////////////////////////////////////////////
