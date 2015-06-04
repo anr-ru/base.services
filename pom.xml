@@ -209,11 +209,11 @@
 
     <properties>
         
-        <db.url>jdbc:hsqldb:mem:testdb</db.url>
-        <db.user>sa</db.user>
-        <db.password></db.password>
-        <db.driverClass>org.hsqldb.jdbcDriver</db.driverClass>
-        <db.hibernateDialect>org.hibernate.dialect.HSQLDialect</db.hibernateDialect>
+        <dbx.url>jdbc:hsqldb:mem:testdb</dbx.url>
+        <dbx.user>sa</dbx.user>
+        <dbx.password></dbx.password>
+        <dbx.driverClass>org.hsqldb.jdbcDriver</dbx.driverClass>
+        <dbx.hibernateDialect>org.hibernate.dialect.HSQLDialect</dbx.hibernateDialect>
         
     </properties>
 
