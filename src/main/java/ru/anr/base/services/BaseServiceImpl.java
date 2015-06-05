@@ -232,6 +232,7 @@ public class BaseServiceImpl extends BaseSpringParent implements BaseService {
             }
         }
         if (!transitionDone) {
+            logger.error("Transition {} to {} is invalid", object.getState(), newState.name());
             throw new AccessDeniedException("Unable to change the state");
         }
         return oldState;
