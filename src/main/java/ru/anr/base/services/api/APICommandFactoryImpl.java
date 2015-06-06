@@ -228,13 +228,11 @@ public class APICommandFactoryImpl extends BaseServiceImpl implements APICommand
      * Getting an error code. If an exception is {@link APIException},
      * extracting the code from it, otherwise using a system exception code.
      * 
-     * @param ex
+     * @param reason
      *            An exception
      * @return integer code
      */
-    private int resolveErrorCode(Exception ex) {
-
-        Throwable reason = new ApplicationException(ex).getRootCause();
+    private int resolveErrorCode(Throwable reason) {
 
         int code = APIException.ERROR_SYSTEM;
         if (reason instanceof APIException) {
@@ -256,17 +254,19 @@ public class APICommandFactoryImpl extends BaseServiceImpl implements APICommand
     public APICommand error(APICommand cmd, Exception ex) {
 
         ResponseModel m = new ResponseModel();
+        Throwable reason = new ApplicationException(ex).getMostSpecificCause();
 
-        int code = resolveErrorCode(ex);
+        int code = resolveErrorCode(reason);
         m.setCode(code);
 
         String msg = text(errorCodePrefix + code);
-        if (msg.startsWith("[xxx")) {
-            msg = ex.getMessage();
+
+        if (msg.startsWith("[xxx") || (code == -1 && (reason instanceof APIException))) {
+            msg = reason.getMessage();
         }
 
         m.setMessage(msg);
-        m.setDescription(getExceptionMessage(ex));
+        m.setDescription(getExceptionMessage(reason));
 
         cmd.setResponse(m);
         processResponseModel(cmd);
@@ -276,33 +276,32 @@ public class APICommandFactoryImpl extends BaseServiceImpl implements APICommand
 
     /**
      * A special processing for
-     * {@link org.hibernate.exception.ConstraintViolationException}, whick
+     * {@link org.hibernate.exception.ConstraintViolationException}, which
      * occurs in validations.
      * 
-     * @param ex
-     *            An exception
+     * @param reason
+     *            The reason exception
      * @return Exception message
      */
-    private String getExceptionMessage(Exception ex) {
+    private String getExceptionMessage(Throwable reason) {
 
         String rs = null;
-        logger.debug("Processing an exception", ex);
+        logger.trace("Processing an exception: {}", reason.getClass());
 
-        Throwable e = new ApplicationException(ex).getMostSpecificCause();
-        if (e instanceof ConstraintViolationException) {
+        if (reason instanceof ConstraintViolationException) {
 
-            Set<ConstraintViolation<?>> violations = ((ConstraintViolationException) e).getConstraintViolations();
+            Set<ConstraintViolation<?>> violations = ((ConstraintViolationException) reason).getConstraintViolations();
             rs = getAllErrorsAsString(violations);
 
         } else {
-            rs = ex.getMessage();
+            rs = reason.getMessage();
         }
         return rs;
     }
 
     /**
-     * Derializing raw content of request into required model. If raw content is
-     * null, the function does nothing.
+     * Deserializing raw content of request into required model. If raw content
+     * is null, the function does nothing.
      * 
      * @param cmd
      *            Command
