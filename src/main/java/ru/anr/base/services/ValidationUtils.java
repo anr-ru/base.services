@@ -1,7 +1,6 @@
 package ru.anr.base.services;
 
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import javax.validation.ConstraintViolation;
 
@@ -35,6 +34,6 @@ public final class ValidationUtils extends BaseParent {
      */
     public static String getAllErrorsAsString(Set<ConstraintViolation<?>> violations) {
 
-        return violations.stream().map(v -> v.getMessage()).collect(Collectors.toList()).toString();
+        return list(violations.stream().map(v -> v.getMessage()).distinct()).toString();
     }
 }
