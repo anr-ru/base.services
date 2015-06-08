@@ -90,4 +90,33 @@ public class BaseEntityTest extends BaseTestCase {
         Assert.assertTrue(s.contains(b));
     }
 
+    /**
+     * State transition
+     */
+    @Test
+    public void testEnumStates() {
+
+        BaseEntity e = new BaseEntity();
+        Assert.assertNull(e.changeState(BasicStates.Active));
+
+        Assert.assertSame(BasicStates.Active, e.changeState(BasicStates.Inactive));
+        Assert.assertSame(BasicStates.Inactive, e.changeState(BasicStates.New));
+    }
+
+    /**
+     * hasState() checks
+     */
+    @Test
+    public void testHasStates() {
+
+        BaseEntity e = new BaseEntity();
+        e.changeState(BasicStates.Active);
+
+        Assert.assertTrue(e.hasState(BasicStates.Active));
+        Assert.assertTrue(e.hasState(BasicStates.Active, BasicStates.Inactive, BasicStates.New));
+        Assert.assertTrue(e.hasState(BasicStates.Active, BasicStates.New));
+
+        Assert.assertFalse(e.hasState(BasicStates.Inactive, BasicStates.New));
+        Assert.assertFalse(e.hasState(BasicStates.New));
+    }
 }

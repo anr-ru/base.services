@@ -169,6 +169,41 @@ public class BaseEntity extends BaseParent implements Serializable, Accessible {
     }
 
     /**
+     * Changing the state of the object. Enumeration-based version
+     * 
+     * @param newState
+     *            A new state
+     * @return The previous state (can be null)
+     * 
+     * @param <S>
+     *            A type of state enumeration
+     */
+    @SuppressWarnings("unchecked")
+    public <S extends Enum<S>> S changeState(S newState) {
+
+        S rs = null;
+        if (newState != null) {
+            String s = changeState(newState.name());
+            rs = (s == null) ? null : (S) Enum.valueOf(newState.getClass(), s);
+        }
+        return rs;
+    }
+
+    /**
+     * Checks the object's state to be in the states array
+     * 
+     * @param states
+     *            State to compare
+     * @return true, if one of the states is the current state
+     * @param <S>
+     *            Type of the state enumeration
+     */
+    public <S extends Enum<S>> boolean hasState(@SuppressWarnings("unchecked") S... states) {
+
+        return list(states).stream().anyMatch(s -> safeEquals(getState(), s.name()));
+    }
+
+    /**
      * Returns a map with available transitions
      * 
      * @return The map
