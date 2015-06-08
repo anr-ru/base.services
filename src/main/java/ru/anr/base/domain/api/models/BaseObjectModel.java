@@ -1,0 +1,195 @@
+/**
+ * 
+ */
+package ru.anr.base.domain.api.models;
+
+import java.util.Calendar;
+import java.util.Optional;
+
+import javax.xml.bind.annotation.XmlAttribute;
+
+import ru.anr.base.domain.BaseEntity;
+
+/**
+ * A base model for all objects (contains id, state, created and other basic
+ * properties).
+ *
+ *
+ * @author Alexey Romanchuk
+ * @created Jun 8, 2015
+ *
+ */
+
+public class BaseObjectModel extends RequestModel {
+
+    /**
+     * Serial ID
+     */
+    private static final long serialVersionUID = -752471039342963751L;
+
+    /**
+     * Identifier of the object
+     */
+    private Long id;
+
+    /**
+     * The state attribute
+     */
+    private String state;
+
+    /**
+     * Time of creation
+     */
+    private Calendar created;
+
+    /**
+     * Time of latest modification
+     */
+    private Calendar modified;
+
+    /**
+     * Time of latest state transitions
+     */
+    private Calendar stateChanged;
+
+    /**
+     * Default
+     */
+    public BaseObjectModel() {
+
+        super();
+    }
+
+    /**
+     * Construction with BaseEntity
+     * 
+     * @param object
+     *            The object
+     * 
+     */
+    public BaseObjectModel(BaseEntity object) {
+
+        this();
+
+        BaseEntity o = Optional.ofNullable(object).orElse(new BaseEntity());
+
+        this.id = o.getId();
+        this.created = o.getCreated();
+        this.modified = o.getModified();
+        this.state = o.getState();
+        this.stateChanged = o.getStateChanged();
+    }
+
+    /**
+     * Copy constructor
+     * 
+     * @param model
+     *            The original model
+     */
+    public BaseObjectModel(BaseObjectModel model) {
+
+        this();
+
+        BaseObjectModel mo = Optional.ofNullable(model).orElse(new BaseObjectModel());
+
+        this.id = mo.getId();
+        this.created = mo.getCreated();
+        this.modified = mo.getModified();
+        this.state = mo.getState();
+        this.stateChanged = mo.getStateChanged();
+    }
+
+    // /////////////////////////////////////////////////////////////////////////
+    // /// getters/setters
+    // /////////////////////////////////////////////////////////////////////////
+
+    /**
+     * @return the id
+     */
+    @XmlAttribute(name = "id")
+    public Long getId() {
+
+        return id;
+    }
+
+    /**
+     * @param id
+     *            the id to set
+     */
+    public void setId(Long id) {
+
+        this.id = id;
+    }
+
+    /**
+     * @return the state
+     */
+    @XmlAttribute(name = "state")
+    public String getState() {
+
+        return state;
+    }
+
+    /**
+     * @param state
+     *            the state to set
+     */
+    public void setState(String state) {
+
+        this.state = state;
+    }
+
+    /**
+     * @return the created
+     */
+    @XmlAttribute(name = "created")
+    public Calendar getCreated() {
+
+        return created;
+    }
+
+    /**
+     * @param created
+     *            the created to set
+     */
+    public void setCreated(Calendar created) {
+
+        this.created = created;
+    }
+
+    /**
+     * @return the stateChanged
+     */
+    @XmlAttribute(name = "state_changed")
+    public Calendar getStateChanged() {
+
+        return stateChanged;
+    }
+
+    /**
+     * @param stateChanged
+     *            the stateChanged to set
+     */
+    public void setStateChanged(Calendar stateChanged) {
+
+        this.stateChanged = stateChanged;
+    }
+
+    /**
+     * @return the modified
+     */
+    @XmlAttribute(name = "modified")
+    public Calendar getModified() {
+
+        return modified;
+    }
+
+    /**
+     * @param modified
+     *            the modified to set
+     */
+    public void setModified(Calendar modified) {
+
+        this.modified = modified;
+    }
+}
