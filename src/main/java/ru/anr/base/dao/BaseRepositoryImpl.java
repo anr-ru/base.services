@@ -21,8 +21,10 @@ import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
 import org.hibernate.proxy.HibernateProxy;
+import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 
+import ru.anr.base.BaseParent;
 import ru.anr.base.dao.repository.BaseRepository;
 import ru.anr.base.domain.BaseEntity;
 
@@ -133,5 +135,14 @@ public class BaseRepositoryImpl<T extends BaseEntity> extends SimpleJpaRepositor
             r = (S) proxy.getHibernateLazyInitializer().getImplementation();
         }
         return r;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public <S extends BaseEntity> List<S> filter(Page<S> page) {
+
+        return BaseParent.list(page.getContent());
     }
 }

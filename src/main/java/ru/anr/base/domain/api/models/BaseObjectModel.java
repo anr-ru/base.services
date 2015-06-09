@@ -8,6 +8,7 @@ import java.util.Optional;
 
 import javax.xml.bind.annotation.XmlAttribute;
 
+import ru.anr.base.BaseParent;
 import ru.anr.base.domain.BaseEntity;
 
 /**
@@ -61,6 +62,22 @@ public class BaseObjectModel extends RequestModel {
     }
 
     /**
+     * Null-safe initialization
+     * 
+     * @param o
+     *            An object
+     * @param clazz
+     *            The class of the object
+     * @return The old object or a new created
+     * @param <S>
+     *            Object type
+     */
+    public static <S> S nullSafe(S o, Class<S> clazz) {
+
+        return Optional.ofNullable(o).orElse(BaseParent.inst(clazz, new Class<?>[]{}));
+    }
+
+    /**
      * Construction with BaseEntity
      * 
      * @param object
@@ -71,7 +88,7 @@ public class BaseObjectModel extends RequestModel {
 
         this();
 
-        BaseEntity o = Optional.ofNullable(object).orElse(new BaseEntity());
+        BaseEntity o = nullSafe(object, BaseEntity.class);
 
         this.id = o.getId();
         this.created = o.getCreated();
@@ -90,7 +107,7 @@ public class BaseObjectModel extends RequestModel {
 
         this();
 
-        BaseObjectModel mo = Optional.ofNullable(model).orElse(new BaseObjectModel());
+        BaseObjectModel mo = nullSafe(model, BaseObjectModel.class);
 
         this.id = mo.getId();
         this.created = mo.getCreated();

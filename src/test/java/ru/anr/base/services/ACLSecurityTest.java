@@ -3,10 +3,14 @@
  */
 package ru.anr.base.services;
 
+import java.util.List;
+
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.acls.domain.BasePermission;
 import org.springframework.security.acls.domain.GrantedAuthoritySid;
@@ -16,6 +20,7 @@ import org.springframework.security.authentication.TestingAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
+import ru.anr.base.samples.dao.MyDao;
 import ru.anr.base.samples.domain.Samples;
 import ru.anr.base.samples.services.ACLSecured;
 import ru.anr.base.services.security.ACLManager;
@@ -177,5 +182,39 @@ public class ACLSecurityTest extends BaseLocalServiceTestCase {
         service.apply(null);
 
         Assert.assertTrue(true);
+    }
+
+    /**
+     * The test DAO
+     */
+    @Autowired
+    private MyDao<Samples> myDao;
+
+    /**
+     * Filtering the pages
+     */
+    @Test
+    public void testPageFilteringByAccessible() {
+
+        authenticate("user");
+
+        Samples s1 = create(Samples.class, "name", "read");
+        Samples s2 = create(Samples.class, "name", "write");
+
+        Page<Samples> p = myDao.pages(new PageRequest(0, 10));
+        Assert.assertEquals(2, p.getContent().size());
+        Assert.assertTrue(p.getContent().containsAll(list(s1, s2)));
+
+        List<Samples> rs = myDao.filter(p);
+        Assert.assertEquals(1, rs.size());
+        Assert.assertTrue(rs.contains(s1));
+        Assert.assertFalse(rs.contains(s2));
+
+        // Access granted via ACL
+        acls.grant(s2, new PrincipalSid("user"), BasePermission.READ);
+
+        rs = myDao.filter(p);
+        Assert.assertEquals(2, rs.size());
+        Assert.assertTrue(rs.containsAll(list(s1, s2)));
     }
 }

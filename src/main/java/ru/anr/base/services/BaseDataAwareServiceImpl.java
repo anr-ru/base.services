@@ -15,8 +15,11 @@
  */
 package ru.anr.base.services;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.domain.Page;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
@@ -68,6 +71,24 @@ public class BaseDataAwareServiceImpl extends BaseServiceImpl implements BaseDat
             e = dao.save(object);
         }
         return e;
+    }
+
+    /**
+     * Applying security filter to the page
+     * 
+     * @param page
+     *            The page to be filtered
+     * @return Filtered list
+     * @param <S>
+     *            Type of an item of the list
+     * 
+     */
+    protected <S extends BaseEntity> List<S> securedFilter(Page<S> page) {
+
+        BaseRepository<BaseEntity> dao = dao();
+        Assert.notNull(dao, "BaseRepository DAO is not configured");
+
+        return dao.filter(page);
     }
 
     // /////////////////////////////////////////////////////////////////////////
