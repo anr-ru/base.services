@@ -17,7 +17,9 @@ package ru.anr.base.dao.repository;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.security.access.prepost.PostFilter;
 import org.springframework.stereotype.Repository;
 
 import ru.anr.base.domain.BaseEntity;
@@ -72,4 +74,17 @@ public interface BaseRepository<T extends BaseEntity> extends JpaRepository<T, L
      *            Object type
      */
     <S extends BaseEntity> S find(Class<?> entityClass, Long id);
+
+    /**
+     * Performs security-involved filtering of the page object
+     * 
+     * @param page
+     *            The page which results need to be filtered
+     * @return A resulted page list with applied security {@link PostFilter}.
+     * 
+     * @param <S>
+     *            Type of item in the list
+     */
+    @PostFilter("hasPermission(filterObject,'read') or hasPermission(filterObject,'access_read')")
+    <S extends BaseEntity> List<S> filter(Page<S> page);
 }

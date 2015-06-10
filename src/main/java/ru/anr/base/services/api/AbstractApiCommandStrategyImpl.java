@@ -23,7 +23,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
 
 import ru.anr.base.domain.api.APICommand;
-import ru.anr.base.services.BaseServiceImpl;
+import ru.anr.base.services.BaseDataAwareServiceImpl;
 
 /**
  * Implementation of base API Command strategy.
@@ -33,7 +33,7 @@ import ru.anr.base.services.BaseServiceImpl;
  *
  */
 
-public class AbstractApiCommandStrategyImpl extends BaseServiceImpl implements ApiCommandStrategy {
+public class AbstractApiCommandStrategyImpl extends BaseDataAwareServiceImpl implements ApiCommandStrategy {
 
     /**
      * GET method
