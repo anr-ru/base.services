@@ -39,7 +39,7 @@ public class StrategyFactoryImpl extends BaseSpringParent implements StrategyFac
     private static final Logger logger = LoggerFactory.getLogger(StrategyFactoryImpl.class);
 
     /**
-     * Chain of strategies. We use a list here to make sure a valild sequence is
+     * Chain of strategies. We use a list here to make sure a valid sequence is
      * applied.
      */
     private final List<Strategy<Object>> strategies;

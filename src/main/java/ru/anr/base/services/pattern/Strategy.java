@@ -22,6 +22,8 @@ package ru.anr.base.services.pattern;
  * @author Alexey Romanchuk
  * @created Nov 10, 2014
  *
+ * @param <T>
+ *            Type of the object
  */
 
 public interface Strategy<T> {
@@ -44,7 +46,7 @@ public interface Strategy<T> {
      * @param o
      *            Incoming object
      * @param cfg
-     *            Original config
+     *            Original configuration
      * @return Resulted (maybe updated) object
      */
     T process(T o, StrategyConfig cfg);

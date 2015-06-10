@@ -16,7 +16,7 @@
 package ru.anr.base.services.pattern;
 
 /**
- * An interface - the main entry point for procecessing an object via specific
+ * An interface - the main entry point for processing an object via specific
  * chain of strategies.
  *
  *
@@ -33,9 +33,10 @@ public interface StrategyFactory {
      * @param object
      *            An object
      * @param params
-     *            An array of additional params
+     *            An array of additional parameters
      * @return Result of processing (contains a result object and information
      *         about applied strategies)
+     * 
      */
     StrategyStatistic process(Object object, Object... params);
 }
