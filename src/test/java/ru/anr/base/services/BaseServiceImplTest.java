@@ -36,16 +36,6 @@ public class BaseServiceImplTest extends BaseLocalServiceTestCase {
     protected BaseService base;
 
     /**
-     * Test method for ru.anr.base.services.BaseServiceImpl#isProdMode()
-     */
-    @Test
-    public void testIsProdMode() {
-
-        BaseServiceImpl impl = target(base);
-        Assert.assertFalse(impl.isProdMode());
-    }
-
-    /**
      * Test method for {@link BaseService#text(String, Object...)}
      */
     @Test

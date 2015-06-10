@@ -56,22 +56,6 @@ public class BaseServiceImpl extends BaseSpringParent implements BaseService {
     private static final Logger logger = LoggerFactory.getLogger(BaseServiceImpl.class);
 
     /**
-     * Default name for production profile
-     */
-    public static final String PRODUCTION_PROFILE = "production";
-
-    /**
-     * Checking for 'Production' mode
-     * 
-     * @return true, if 'production' profile found
-     */
-    protected boolean isProdMode() {
-
-        Set<String> profiles = getProfiles();
-        return profiles.contains(PRODUCTION_PROFILE);
-    }
-
-    /**
      * A ref to a text resource service
      */
     @Autowired
