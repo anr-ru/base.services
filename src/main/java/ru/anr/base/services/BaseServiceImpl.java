@@ -35,6 +35,7 @@ import org.springframework.util.MultiValueMap;
 import ru.anr.base.ApplicationException;
 import ru.anr.base.BaseSpringParent;
 import ru.anr.base.domain.BaseEntity;
+import ru.anr.base.domain.api.APIException;
 import ru.anr.base.services.pattern.Strategy;
 import ru.anr.base.services.pattern.StrategyFactory;
 import ru.anr.base.services.pattern.StrategyFactoryImpl;
@@ -167,7 +168,7 @@ public class BaseServiceImpl extends BaseSpringParent implements BaseService {
 
         if (!CollectionUtils.isEmpty(violations)) {
 
-            throw new ApplicationException(getAllErrorsAsString(violations));
+            throw new APIException(getAllErrorsAsString(violations), APIException.ERROR_VALIDATION);
         }
     }
 
