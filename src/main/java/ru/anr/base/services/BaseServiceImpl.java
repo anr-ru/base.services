@@ -246,11 +246,11 @@ public class BaseServiceImpl extends BaseSpringParent implements BaseService {
     // /////////////////////////////////////////////////////////////////////////
 
     /**
-     * @param extentions
+     * @param extensions
      *            the extensions to set
      */
-    public void setExtentions(List<Strategy<Object>> extentions) {
+    public void setExtensions(List<Strategy<Object>> extensions) {
 
-        this.extensions = extentions;
+        this.extensions = extensions;
     }
 }
