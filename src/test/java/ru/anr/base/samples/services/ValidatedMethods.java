@@ -62,5 +62,5 @@ public interface ValidatedMethods {
      * @param <S>
      *            Type of object
      */
-    <S> void method5(Set<ConstraintViolation<?>> constraints);
+    <S> void method5(Set<ConstraintViolation<S>> constraints);
 }

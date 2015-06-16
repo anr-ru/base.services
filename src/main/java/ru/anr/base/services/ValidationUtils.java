@@ -7,7 +7,7 @@ import javax.validation.ConstraintViolation;
 import ru.anr.base.BaseParent;
 
 /**
- * Validation utils.
+ * Validation utilities.
  *
  *
  * @author Alexey Romanchuk
@@ -31,8 +31,11 @@ public final class ValidationUtils extends BaseParent {
      * @param violations
      *            collection of violations
      * @return All errors as a comma-separated string
+     * 
+     * @param <S>
+     *            The class of the object
      */
-    public static String getAllErrorsAsString(Set<ConstraintViolation<?>> violations) {
+    public static <S> String getAllErrorsAsString(Set<ConstraintViolation<? extends S>> violations) {
 
         return list(violations.stream().map(v -> v.getMessage()).distinct()).toString();
     }

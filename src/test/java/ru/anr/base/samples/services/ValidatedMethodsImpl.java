@@ -3,6 +3,7 @@
  */
 package ru.anr.base.samples.services;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.validation.ConstraintViolation;
@@ -65,8 +66,8 @@ public class ValidatedMethodsImpl extends BaseServiceImpl implements ValidatedMe
      * {@inheritDoc}
      */
     @Override
-    public <S> void method5(Set<ConstraintViolation<?>> constraints) {
+    public <S> void method5(Set<ConstraintViolation<S>> constraints) {
 
-        rejectIfNeed(constraints);
+        rejectIfNeed(new HashSet<>(constraints));
     }
 }

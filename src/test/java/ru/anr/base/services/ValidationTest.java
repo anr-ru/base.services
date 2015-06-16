@@ -3,7 +3,6 @@
  */
 package ru.anr.base.services;
 
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
@@ -152,14 +151,7 @@ public class ValidationTest extends BaseLocalServiceTestCase {
         try {
 
             Set<ConstraintViolation<SomeValidated>> errors = validator.validate(v);
-
-            /*
-             * I didn't cope with 'generic' in this case
-             */
-            Set<ConstraintViolation<?>> errors2 = new HashSet<ConstraintViolation<?>>();
-            errors2.addAll(errors);
-
-            service.method5(errors2);
+            service.method5(errors);
 
             Assert.fail();
 

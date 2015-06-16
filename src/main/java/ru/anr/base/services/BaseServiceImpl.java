@@ -15,6 +15,7 @@
  */
 package ru.anr.base.services;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -88,14 +89,14 @@ public class BaseServiceImpl extends BaseSpringParent implements BaseService {
     }
 
     /**
-     * List of additional extentions of the service
+     * List of additional extensions of the service
      */
-    private List<Strategy<Object>> extentions = list();
+    private List<Strategy<Object>> extensions = list();
 
     /**
-     * A factory which manages by extentions execution
+     * A factory which manages by extensions execution
      */
-    private StrategyFactory extentionFactory;
+    private StrategyFactory extensionFactory;
 
     /**
      * Initialization
@@ -103,11 +104,11 @@ public class BaseServiceImpl extends BaseSpringParent implements BaseService {
     @PostConstruct
     public void init() {
 
-        extentionFactory = new StrategyFactoryImpl(extentions);
+        extensionFactory = new StrategyFactoryImpl(extensions);
     }
 
     /**
-     * A point of extention of the current service with sort of plugins.
+     * A point of extension of the current service with sort of plug-ins.
      * Delegates an additional processing to some strategies, defined for the
      * service.
      * 
@@ -119,7 +120,7 @@ public class BaseServiceImpl extends BaseSpringParent implements BaseService {
      */
     protected Object processExtentions(Object object, Object... params) {
 
-        StrategyStatistic stat = extentionFactory.process(object, params);
+        StrategyStatistic stat = extensionFactory.process(object, params);
 
         if (logger.isDebugEnabled()) {
             logger.debug("List of applied strategies: {}", stat.getAppliedStrategies());
@@ -163,13 +164,28 @@ public class BaseServiceImpl extends BaseSpringParent implements BaseService {
      * 
      * @param violations
      *            A collection with violations
+     * 
+     * @param <S>
+     *            Type of the object to validate
      */
-    protected void rejectIfNeed(Set<ConstraintViolation<?>> violations) {
+    protected <S> void rejectIfNeed(Set<ConstraintViolation<? extends S>> violations) {
 
         if (!CollectionUtils.isEmpty(violations)) {
-
             throw new APIException(getAllErrorsAsString(violations), APIException.ERROR_VALIDATION);
         }
+    }
+
+    /**
+     * Validates an object
+     * 
+     * @param object
+     *            The object to be validated
+     * @param <S>
+     *            The type of the object
+     */
+    protected <S extends Object> void validate(S object) {
+
+        rejectIfNeed(new HashSet<>(validator().validate(object)));
     }
 
     /**
@@ -179,8 +195,10 @@ public class BaseServiceImpl extends BaseSpringParent implements BaseService {
      * @param violations
      *            collection of violations
      * @return All errors as a comma-separated string
+     * @param <S>
+     *            The class of the object
      */
-    protected String getAllErrorsAsString(Set<ConstraintViolation<?>> violations) {
+    protected <S> String getAllErrorsAsString(Set<ConstraintViolation<? extends S>> violations) {
 
         return ValidationUtils.getAllErrorsAsString(violations);
     }
@@ -233,6 +251,6 @@ public class BaseServiceImpl extends BaseSpringParent implements BaseService {
      */
     public void setExtentions(List<Strategy<Object>> extentions) {
 
-        this.extentions = extentions;
+        this.extensions = extentions;
     }
 }
