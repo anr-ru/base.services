@@ -204,6 +204,18 @@ public class BaseEntity extends BaseParent implements Serializable, Accessible {
     }
 
     /**
+     * Checks the object's state to be in the states array (string version)
+     * 
+     * @param states
+     *            State to compare
+     * @return true, if one of the states is the current state
+     */
+    public boolean hasState(String... states) {
+
+        return list(states).stream().anyMatch(s -> safeEquals(getState(), s));
+    }
+
+    /**
      * Returns a map with available transitions
      * 
      * @return The map
