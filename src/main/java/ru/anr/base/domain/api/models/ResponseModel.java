@@ -48,6 +48,11 @@ public class ResponseModel implements Serializable {
     private Integer code;
 
     /**
+     * A unique identifier of en error (if specified)
+     */
+    private String errorId;
+
+    /**
      * Current page number
      */
     private Integer page;
@@ -132,6 +137,24 @@ public class ResponseModel implements Serializable {
     public String getMessage() {
 
         return message;
+    }
+
+    /**
+     * @return the errorId
+     */
+    @XmlAttribute(name = "error_id")
+    public String getErrorId() {
+
+        return errorId;
+    }
+
+    /**
+     * @param errorId
+     *            the errorId to set
+     */
+    public void setErrorId(String errorId) {
+
+        this.errorId = errorId;
     }
 
     /**

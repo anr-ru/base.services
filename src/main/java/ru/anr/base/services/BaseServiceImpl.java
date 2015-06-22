@@ -30,7 +30,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.NoSuchMessageException;
 import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.util.CollectionUtils;
 import org.springframework.util.MultiValueMap;
 
 import ru.anr.base.ApplicationException;
@@ -170,8 +169,8 @@ public class BaseServiceImpl extends BaseSpringParent implements BaseService {
      */
     protected <S> void rejectIfNeed(Set<ConstraintViolation<? extends S>> violations) {
 
-        if (!CollectionUtils.isEmpty(violations)) {
-            throw new APIException(getAllErrorsAsString(violations), APIException.ERROR_VALIDATION);
+        if (notEmpty(violations)) {
+            throw APIException.validation("validation", getAllErrorsAsString(violations));
         }
     }
 

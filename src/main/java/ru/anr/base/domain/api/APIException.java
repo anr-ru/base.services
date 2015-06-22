@@ -29,7 +29,7 @@ import ru.anr.base.ApplicationException;
 public class APIException extends ApplicationException {
 
     /**
-     * Error code for system erro
+     * Error code for system error
      */
     public static final int ERROR_SYSTEM = 1;
 
@@ -44,9 +44,27 @@ public class APIException extends ApplicationException {
     private static final long serialVersionUID = -1705171832150544996L;
 
     /**
-     * Error code - usefull for automatic pasring
+     * Error code is useful for automatic parsing
      */
     private final int errorCode;
+
+    /**
+     * Generates a validation exception
+     * 
+     * @param errorId
+     *            A string identifier of the error
+     * @param msg
+     *            Full message linked with the error
+     * 
+     * @return An exception object
+     */
+    public static APIException validation(String errorId, String msg) {
+
+        APIException ex = new APIException(msg, ERROR_VALIDATION);
+        ex.setErrorId(errorId);
+
+        return ex;
+    }
 
     /**
      * Constructor
@@ -60,35 +78,6 @@ public class APIException extends ApplicationException {
 
         super(msg);
         this.errorCode = errorCode;
-    }
-
-    /**
-     * Constructor
-     * 
-     * @param msg
-     *            An error message
-     * @param errorCode
-     *            Error code
-     * @param cause
-     *            Root exception
-     */
-    public APIException(String msg, Throwable cause, int errorCode) {
-
-        super(msg, cause);
-        this.errorCode = errorCode;
-    }
-
-    /**
-     * Constructor
-     * 
-     * @param cause
-     *            Root exception
-     * @param errorCode
-     *            Error code
-     */
-    public APIException(Throwable cause, int errorCode) {
-
-        this("", cause, errorCode);
     }
 
     // /////////////////////////////////////////////////////////////////////////
