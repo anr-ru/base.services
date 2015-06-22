@@ -219,7 +219,7 @@ public class APICommandFactoryImpl extends BaseServiceImpl implements APICommand
      * {@inheritDoc}
      */
     @Override
-    public APICommand error(Exception ex) {
+    public APICommand error(Throwable ex) {
 
         return error(new APICommand("", ""), ex);
     }
@@ -251,7 +251,7 @@ public class APICommandFactoryImpl extends BaseServiceImpl implements APICommand
      * {@inheritDoc}
      */
     @Override
-    public APICommand error(APICommand cmd, Exception ex) {
+    public APICommand error(APICommand cmd, Throwable ex) {
 
         ResponseModel m = new ResponseModel();
         Throwable reason = new ApplicationException(ex).getMostSpecificCause();
@@ -259,14 +259,26 @@ public class APICommandFactoryImpl extends BaseServiceImpl implements APICommand
         int code = resolveErrorCode(reason);
         m.setCode(code);
 
-        String msg = text(errorCodePrefix + code);
+        if (reason instanceof APIException) {
 
-        if (msg.startsWith("[xxx") || (code == -1 && (reason instanceof APIException))) {
-            msg = reason.getMessage();
+            APIException e = (APIException) reason;
+
+            if (e.getErrorId() != null) {
+                m.setErrorId(e.getErrorId());
+            }
+
+            // May be the integer code defined
+            String msg = text(errorCodePrefix + code);
+            if (msg.startsWith("[xxx")) {
+                m.setMessage(e.getMessage());
+            } else {
+                m.setMessage(msg);
+            }
+        } else if (reason instanceof ConstraintViolationException) {
+            m.setMessage(getExceptionMessage(reason));
+        } else {
+            m.setMessage(reason.getMessage());
         }
-
-        m.setMessage(msg);
-        m.setDescription(getExceptionMessage(reason));
 
         cmd.setResponse(m);
         processResponseModel(cmd);

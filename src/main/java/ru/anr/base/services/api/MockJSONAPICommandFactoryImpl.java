@@ -124,7 +124,7 @@ public class MockJSONAPICommandFactoryImpl extends BaseSpringParent implements A
      * {@inheritDoc}
      */
     @Override
-    public APICommand error(APICommand cmd, Exception ex) {
+    public APICommand error(APICommand cmd, Throwable ex) {
 
         return generateError(64, "System error", ex.getMessage());
     }
@@ -133,7 +133,7 @@ public class MockJSONAPICommandFactoryImpl extends BaseSpringParent implements A
      * {@inheritDoc}
      */
     @Override
-    public APICommand error(Exception ex) {
+    public APICommand error(Throwable ex) {
 
         return generateError(64, "System error", ex.getMessage());
     }

@@ -81,8 +81,8 @@ public class ApiCommandFactoryTest extends BaseLocalServiceTestCase {
             Assert.assertEquals("Version 'v3' for a command 'ping' does not exist", ex.getMessage());
             rs = factory.error(ping, ex);
 
-            Assert.assertEquals("{\"code\":1,\"message\":\"A system error\","
-                    + "\"description\":\"Version 'v3' for a command 'ping' does not exist\"}", rs.getRawModel());
+            Assert.assertEquals("{\"code\":1,\"message\":\"Version 'v3' for a command 'ping' does not exist\"}",
+                    rs.getRawModel());
         }
     }
 
@@ -125,8 +125,7 @@ public class ApiCommandFactoryTest extends BaseLocalServiceTestCase {
             Assert.assertEquals("Exception", ex.getMessage());
             rs = factory.error(e, ex);
 
-            Assert.assertEquals("{\"code\":5,\"message\":\"Exception\"," + "\"description\":\"Exception\"}",
-                    rs.getRawModel());
+            Assert.assertEquals("{\"code\":5,\"message\":\"Exception\"}", rs.getRawModel());
         }
     }
 
@@ -204,8 +203,8 @@ public class ApiCommandFactoryTest extends BaseLocalServiceTestCase {
         } catch (Exception ex) {
 
             APICommand rs = factory.error(ex);
-            Assert.assertEquals("{\"code\":-1,\"message\":\"A validation error\","
-                    + "\"description\":\"[The value is expected to be NOT NULL]\"}", rs.getRawModel());
+            Assert.assertEquals("{\"code\":-1,\"message\":\"[The value is expected to be NOT NULL]\"}",
+                    rs.getRawModel());
         }
     }
 }

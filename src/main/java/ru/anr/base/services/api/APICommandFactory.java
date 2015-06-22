@@ -31,7 +31,7 @@ public interface APICommandFactory {
 
     /**
      * Processing an API Command. If an exception occurs, the below
-     * {@link #error(APICommand, Exception)} procedure required to get a valid
+     * {@link #error(APICommand, Throwable)} procedure required to get a valid
      * error response.
      * 
      * @param cmd
@@ -47,10 +47,10 @@ public interface APICommandFactory {
      * @param cmd
      *            Original API Command
      * @param ex
-     *            AN exception
+     *            An exception
      * @return API Command with built error response
      */
-    APICommand error(APICommand cmd, Exception ex);
+    APICommand error(APICommand cmd, Throwable ex);
 
     /**
      * A special entry point for handling global errors, not for specific
@@ -60,5 +60,5 @@ public interface APICommandFactory {
      *            AN exception
      * @return API Command with built error response
      */
-    APICommand error(Exception ex);
+    APICommand error(Throwable ex);
 }
