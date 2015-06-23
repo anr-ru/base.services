@@ -18,6 +18,8 @@ package ru.anr.base.services.api;
 import java.util.Optional;
 
 import org.apache.commons.lang3.NotImplementedException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
@@ -34,6 +36,11 @@ import ru.anr.base.services.BaseDataAwareServiceImpl;
  */
 
 public class AbstractApiCommandStrategyImpl extends BaseDataAwareServiceImpl implements ApiCommandStrategy {
+
+    /**
+     * The logger
+     */
+    private static final Logger logger = LoggerFactory.getLogger(AbstractApiCommandStrategyImpl.class);
 
     /**
      * GET method
@@ -103,9 +110,16 @@ public class AbstractApiCommandStrategyImpl extends BaseDataAwareServiceImpl imp
      */
     protected Pageable safePageable(APICommand cmd, Direction direction, String... properties) {
 
-        Integer page = Optional.ofNullable(cmd.getRequest().getPage()).orElse(0);
-        Integer perPage = Optional.ofNullable(cmd.getRequest().getPerPage()).orElse(0);
+        logger.trace("Page parameters: {}:{}", cmd.getRequest().getPage(), cmd.getRequest().getPerPage());
 
+        Integer page = Optional.ofNullable(cmd.getRequest().getPage()).orElse(0);
+        Integer perPage = Optional.ofNullable(cmd.getRequest().getPerPage()).orElse(10);
+        if (page < 0) {
+            page = 0;
+        }
+        if (perPage <= 0) {
+            perPage = 10;
+        }
         return new PageRequest(page, perPage, direction, properties);
     }
 }
