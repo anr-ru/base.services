@@ -20,6 +20,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
+import org.springframework.security.acls.model.NotFoundException;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
@@ -37,7 +38,7 @@ import ru.anr.base.domain.BaseEntity;
  * @created Nov 6, 2014
  *
  */
-@Transactional(propagation = Propagation.REQUIRED)
+@Transactional(propagation = Propagation.REQUIRED, noRollbackFor = { NotFoundException.class })
 public class BaseDataAwareServiceImpl extends BaseServiceImpl implements BaseDataAwareService {
 
     /**
