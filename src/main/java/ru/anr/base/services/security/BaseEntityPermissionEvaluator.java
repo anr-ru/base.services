@@ -31,14 +31,22 @@ public class BaseEntityPermissionEvaluator extends AclPermissionEvaluator {
     private static final Logger logger = LoggerFactory.getLogger(BaseEntityPermissionEvaluator.class);
 
     /**
+     * A flag which indicates the ACL checking is required
+     */
+    private boolean useAcls;
+
+    /**
      * Constructor for evaluator
      * 
      * @param aclService
      *            {@link AclService}
+     * @param useAcls
+     *            true, if ACL permission checking should be switched on
      */
-    public BaseEntityPermissionEvaluator(AclService aclService) {
+    public BaseEntityPermissionEvaluator(AclService aclService, boolean useAcls) {
 
         super(aclService);
+        this.useAcls = useAcls;
     }
 
     /**
@@ -62,9 +70,11 @@ public class BaseEntityPermissionEvaluator extends AclPermissionEvaluator {
                 String[] splitted = p.toString().split("_");
                 accessible = ((Accessible) domainObject).accessible(authentication, splitted[1]);
 
-            } else { // A standard ACL
-                accessible =
-                        checkNotNullId(domainObject) ? super.hasPermission(authentication, domainObject, p) : false;
+            } else if (useAcls) { // The standard ACL checking
+                accessible = checkNotNullId(domainObject) ? //
+                        super.hasPermission(authentication, domainObject, p) : false;
+            } else {
+                accessible = false; // not used acls and our checks
             }
         }
         return accessible;

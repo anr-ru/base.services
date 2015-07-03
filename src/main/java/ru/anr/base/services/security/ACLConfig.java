@@ -74,6 +74,11 @@ public class ACLConfig extends GlobalMethodSecurityConfiguration {
     private String sidIdentityQuery;
 
     /**
+     * To use or not use the acls
+     */
+    private boolean useAcls = true;
+
+    /**
      * Ref to {@link RunAsManager} is required
      */
     private RunAsManager runAs;
@@ -121,9 +126,9 @@ public class ACLConfig extends GlobalMethodSecurityConfiguration {
         }
 
         /*
-         * Specifing permission evaluator with our acl service
+         * Specifying a permission evaluator with our acl service
          */
-        setPermissionEvaluator(BaseParent.list(new BaseEntityPermissionEvaluator(s)));
+        setPermissionEvaluator(BaseParent.list(new BaseEntityPermissionEvaluator(s, useAcls)));
         return s;
     }
 
@@ -209,5 +214,14 @@ public class ACLConfig extends GlobalMethodSecurityConfiguration {
     public void setRunAsManager(RunAsManager runAsManager) {
 
         this.runAs = runAsManager;
+    }
+
+    /**
+     * @param useAcls
+     *            the useAcls to set
+     */
+    public void setUseAcls(boolean useAcls) {
+
+        this.useAcls = useAcls;
     }
 }
