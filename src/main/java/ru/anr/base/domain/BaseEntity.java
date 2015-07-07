@@ -43,6 +43,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
 import ru.anr.base.BaseParent;
+import ru.anr.base.dao.BaseRepositoryImpl;
 
 /**
  * A parent for all entities. It include a definition of ID column,
@@ -379,10 +380,10 @@ public class BaseEntity extends BaseParent implements Serializable, Accessible {
         if (obj == this) {
             return true;
         }
-        if (obj.getClass() != getClass()) {
+        if (getClass() != (obj instanceof BaseEntity ? BaseRepositoryImpl.entityClass((BaseEntity) obj) : obj
+                .getClass())) {
             return false;
         }
-
         BaseEntity rhs = (BaseEntity) obj;
         return new EqualsBuilder().append(internalId(), rhs.internalId()).isEquals();
     }
