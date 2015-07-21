@@ -259,18 +259,20 @@ public class APICommandFactoryImpl extends BaseServiceImpl implements APICommand
         int code = resolveErrorCode(reason);
         m.setCode(code);
 
-        if (reason instanceof APIException) {
+        if (reason instanceof ApplicationException) {
 
-            APIException e = (APIException) reason;
-
+            ApplicationException e = (ApplicationException) reason;
             if (e.getErrorId() != null) {
                 m.setErrorId(e.getErrorId());
             }
+        }
+
+        if (reason instanceof APIException) {
 
             // May be the integer code defined
             String msg = text(errorCodePrefix + code);
             if (msg.startsWith("[xxx")) {
-                m.setMessage(e.getMessage());
+                m.setMessage(reason.getMessage());
             } else {
                 m.setMessage(msg);
             }
@@ -327,20 +329,28 @@ public class APICommandFactoryImpl extends BaseServiceImpl implements APICommand
             Assert.notNull(cmd.getRequestFormat(), "Request content format is empty");
             Serializer s = getSerializer(cmd.getRequestFormat());
 
-            RequestModel m = s.fromStr(cmd.getRawModel(), a.model());
-            if (cmd.getRequest() != null) {
-                /*
-                 * This means - we have parsed previously some query params
-                 */
-                m.setFields(cmd.getRequest().getFields());
-                m.setPage(cmd.getRequest().getPage());
-                m.setPerPage(cmd.getRequest().getPerPage());
-                m.setSearch(cmd.getRequest().getSearch());
-                m.setSorted(cmd.getRequest().getSorted());
-            } else {
-                logger.debug("No RequestModel was detected for {}", cmd);
+            try {
+
+                RequestModel m = s.fromStr(cmd.getRawModel(), a.model());
+                if (cmd.getRequest() != null) {
+                    /*
+                     * This means - we have parsed previously some query params
+                     */
+                    m.setFields(cmd.getRequest().getFields());
+                    m.setPage(cmd.getRequest().getPage());
+                    m.setPerPage(cmd.getRequest().getPerPage());
+                    m.setSearch(cmd.getRequest().getSearch());
+                    m.setSorted(cmd.getRequest().getSorted());
+                } else {
+                    logger.debug("No RequestModel was detected for {}", cmd);
+                }
+                cmd.setRequest(m);
+
+            } catch (Exception ex) {
+
+                logger.error("Unable to parse: {}", cmd.getRawModel());
+                throw ex;
             }
-            cmd.setRequest(m);
         } else {
             logger.debug("Raw model is null for {}", cmd);
         }
