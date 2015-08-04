@@ -53,13 +53,13 @@ public interface BaseRepository<T extends BaseEntity> extends JpaRepository<T, L
      *            A JPQL query string (for instance, "from Samples") with
      *            positioned (aka ?1) or named (like :name) parameters.
      * @param params
-     *            Paratemers of the query
+     *            Parameters of the query
      * @return A result list
      * 
      * @param <S>
      *            A result set object types
      */
-    <S extends BaseEntity> List<S> query(String queryStr, Object... params);
+    <S> List<S> query(String queryStr, Object... params);
 
     /**
      * Searches an entity by class and id.
