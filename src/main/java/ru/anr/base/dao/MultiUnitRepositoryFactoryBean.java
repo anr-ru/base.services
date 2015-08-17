@@ -18,36 +18,74 @@ package ru.anr.base.dao;
 import javax.persistence.EntityManager;
 
 import org.springframework.data.jpa.repository.support.JpaRepositoryFactory;
-import org.springframework.data.jpa.repository.support.JpaRepositoryFactoryBean;
+import org.springframework.data.mapping.context.MappingContext;
 import org.springframework.data.repository.core.RepositoryMetadata;
 import org.springframework.data.repository.core.support.RepositoryFactorySupport;
+import org.springframework.data.repository.core.support.TransactionalRepositoryFactoryBeanSupport;
+import org.springframework.util.Assert;
 
 import ru.anr.base.dao.repository.BaseRepository;
 import ru.anr.base.domain.BaseEntity;
 
 /**
- * A factory bean for creation of our custom repository instance. This code is
- * taken from Spring Data Reference Docs.
+ * MultiUnit version.
  *
  *
  * @author Alexey Romanchuk
- * @created Nov 6, 2014
+ * @created Aug 11, 2015
  *
  * @param <T>
- *            Type of Entity
+ *            Type of an entity
  */
 
-public class BaseRepositoryFactoryBean<T extends BaseEntity> extends
-        JpaRepositoryFactoryBean<BaseRepository<T>, T, Long> {
+public class MultiUnitRepositoryFactoryBean<T extends BaseEntity> extends
+        TransactionalRepositoryFactoryBeanSupport<BaseRepository<T>, T, Long> {
+
+    /**
+     * A reference to the current {@link EntityManager}
+     */
+    private EntityManager entityManager;
+
+    /**
+     * The {@link EntityManager} to be used.
+     * 
+     * @param entityManager
+     *            the entityManager to set
+     */
+    public void setEntityManager(EntityManager entityManager) {
+
+        this.entityManager = entityManager;
+    }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    protected RepositoryFactorySupport createRepositoryFactory(EntityManager entityManager) {
+    public void setMappingContext(MappingContext<?, ?> mappingContext) {
+
+        super.setMappingContext(mappingContext);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected RepositoryFactorySupport doCreateRepositoryFactory() {
 
         return new InternalRepositoryFactory<T>(entityManager);
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void afterPropertiesSet() {
+
+        Assert.notNull(entityManager, "EntityManager must not be null!");
+        super.afterPropertiesSet();
+    }
+
+    // ///////////////////////////// Original parts ///////////////////////////
 
     /**
      * Repository factory

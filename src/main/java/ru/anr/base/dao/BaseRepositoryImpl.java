@@ -79,7 +79,7 @@ public class BaseRepositoryImpl<T extends BaseEntity> extends SimpleJpaRepositor
      */
     @SuppressWarnings("unchecked")
     @Override
-    public <S extends BaseEntity> List<S> query(String queryStr, Object... params) {
+    public <S> List<S> query(String queryStr, Object... params) {
 
         Query q = entityManager.createQuery(queryStr);
         if (params != null) {
