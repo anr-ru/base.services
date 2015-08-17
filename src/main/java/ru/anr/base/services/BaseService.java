@@ -57,6 +57,6 @@ public interface BaseService {
      * @param <S>
      *            Type of state enumeration
      */
-    @PreAuthorize("hasPermission(#o,'write') or hasPermission(#o,'access_state')")
+    @PreAuthorize("hasPermission(#o,'write') or hasPermission(#o,'access_state') or hasRole('ROLE_ROOT')")
     <S extends Enum<S>> S changeState(@P("o") BaseEntity object, S newState);
 }
