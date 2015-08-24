@@ -331,6 +331,8 @@ public class APICommandFactoryImpl extends BaseServiceImpl implements APICommand
 
             try {
 
+                logger.debug("Raw request data: {}", cmd.getRawModel());
+
                 RequestModel m = s.fromStr(cmd.getRawModel(), a.model());
                 if (cmd.getRequest() != null) {
                     /*
