@@ -40,6 +40,11 @@ public class MessagePropertiesConfig {
     private String[] paths = new String[]{};
 
     /**
+     * AMount of time to cache properties
+     */
+    private Integer cacheSeconds = 60;
+
+    /**
      * Defining a {@link MessageSourceAccessor} to get messages for specific
      * locale.
      * 
@@ -65,7 +70,7 @@ public class MessagePropertiesConfig {
 
         ReloadableResourceBundleMessageSource source = new ReloadableResourceBundleMessageSource();
         source.setBasenames(paths);
-        source.setCacheSeconds(60); // every one minute to be reloaded
+        source.setCacheSeconds(cacheSeconds); // every one minute to be reloaded
 
         return source;
     }
@@ -89,5 +94,14 @@ public class MessagePropertiesConfig {
     protected String[] getPaths() {
 
         return ArrayUtils.clone(paths);
+    }
+
+    /**
+     * @param cacheSeconds
+     *            the cacheSeconds to set
+     */
+    public void setCacheSeconds(Integer cacheSeconds) {
+
+        this.cacheSeconds = cacheSeconds;
     }
 }
