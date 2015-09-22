@@ -170,7 +170,7 @@ public class APICommandFactoryImpl extends BaseServiceImpl implements APICommand
     private Object doInvoke(ApiCommandStrategy s, APICommand cmd) {
 
         Object rs = null;
-        logger.debug("Invoking {} method for {} / {}", cmd.getType(), cmd.getCommandId(), cmd.getVersion());
+        logger.debug("Invoking {} method for {}/{}", cmd.getType(), cmd.getCommandId(), cmd.getVersion());
 
         switch (cmd.getType()) {
             case Get:
