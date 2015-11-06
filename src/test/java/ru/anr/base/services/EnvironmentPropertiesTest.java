@@ -28,11 +28,18 @@ public class EnvironmentPropertiesTest extends BaseTestCase {
     private String value;
 
     /**
+     * The value3
+     */
+    @Value("${value3}")
+    private String value3;
+
+    /**
      * The property is read from the environment
      */
     @Test
     public void testPropertiesOverriding() {
 
         Assert.assertEquals(System.getenv("USER"), value);
+        Assert.assertEquals(System.getenv("USER"), value3);
     }
 }

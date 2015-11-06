@@ -35,4 +35,27 @@ public class LocalPropertiesTest extends BaseTestCase {
 
         Assert.assertEquals("nemo", value);
     }
+
+    /**
+     * The value 1
+     */
+    @Value("${value1}")
+    private String value1;
+
+    /**
+     * The value 2
+     */
+    @Value("${value2}")
+    private String value2;
+
+    /**
+     * The property is substituted from another
+     */
+    @Test
+    public void testPropertySubstitution() {
+
+        Assert.assertEquals("12345", value1);
+        Assert.assertEquals("12345", value2);
+    }
+
 }
