@@ -61,9 +61,9 @@ public class APICommand extends BaseParent implements Serializable {
     private String commandId;
 
     /**
-     * Idenfiers of objects in the api command context (keys/values pairs)
+     * Command parameters in the key/value format
      */
-    private Map<String, ? extends Serializable> contexts;
+    private Map<String, Object> contexts;
 
     /**
      * Raw model data (JSON, XML) of request or response
@@ -368,7 +368,7 @@ public class APICommand extends BaseParent implements Serializable {
     /**
      * @return the contexts
      */
-    public Map<String, ? extends Serializable> getContexts() {
+    public Map<String, Object> getContexts() {
 
         return contexts;
     }
@@ -377,7 +377,7 @@ public class APICommand extends BaseParent implements Serializable {
      * @param contexts
      *            the contexts to set
      */
-    public void setContexts(Map<String, ? extends Serializable> contexts) {
+    public void setContexts(Map<String, Object> contexts) {
 
         this.contexts = contexts;
     }
