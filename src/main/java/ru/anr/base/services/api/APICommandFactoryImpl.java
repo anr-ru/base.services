@@ -15,6 +15,8 @@
  */
 package ru.anr.base.services.api;
 
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -31,6 +33,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Import;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.util.Assert;
+import org.springframework.web.util.UriUtils;
 
 import ru.anr.base.ApplicationException;
 import ru.anr.base.domain.api.APICommand;
@@ -272,7 +275,15 @@ public class APICommandFactoryImpl extends BaseServiceImpl implements APICommand
             // May be the integer code defined
             String msg = text(errorCodePrefix + code);
             if (msg.startsWith("[xxx")) {
-                m.setMessage(reason.getMessage());
+                String reasonMsg = reason.getMessage();
+                if (notEmpty(m.getErrorId()) && m.getErrorId().startsWith("files")) {
+                    try {
+                        reasonMsg = UriUtils.encodePath(reasonMsg, StandardCharsets.UTF_8.toString());
+                    } catch (UnsupportedEncodingException e) {
+                        throw new IllegalStateException("Could not decode URL", e);
+                    }
+                }
+                m.setMessage(reasonMsg);
             } else {
                 m.setMessage(msg);
             }
