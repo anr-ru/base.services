@@ -30,6 +30,6 @@ public class ErrorV1ApiCommand extends AbstractApiCommandStrategyImpl {
     @Override
     public ResponseModel get(APICommand cmd) {
 
-        throw new APIException("Exception", 5);
+        throw APIException.withCode("Exception", 5);
     }
 }
