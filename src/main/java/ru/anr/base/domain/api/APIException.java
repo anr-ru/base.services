@@ -26,7 +26,7 @@ import ru.anr.base.ApplicationException;
  *
  */
 
-public class APIException extends ApplicationException {
+public final class APIException extends ApplicationException {
 
     /**
      * Error code for system error
@@ -67,6 +67,21 @@ public class APIException extends ApplicationException {
     }
 
     /**
+     * Generates a API exception
+     * 
+     * @param msg
+     *            Error message
+     * @param errorCode
+     *            Error code
+     * 
+     * @return An exception object
+     */
+    public static APIException withCode(String msg, int errorCode) {
+
+        return new APIException(msg, errorCode);
+    }
+
+    /**
      * Constructor
      * 
      * @param msg
@@ -74,7 +89,7 @@ public class APIException extends ApplicationException {
      * @param errorCode
      *            Error code
      */
-    public APIException(String msg, int errorCode) {
+    private APIException(String msg, int errorCode) {
 
         super(msg);
         this.errorCode = errorCode;
