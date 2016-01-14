@@ -175,6 +175,15 @@ public class BaseServiceImpl extends BaseSpringParent implements BaseService {
     }
 
     /**
+     * @param id
+     *            The identifier to use
+     */
+    protected void rejectAPI(String id) {
+
+        throw APIException.validation(id, text(id));
+    }
+
+    /**
      * Validates an object
      * 
      * @param object
