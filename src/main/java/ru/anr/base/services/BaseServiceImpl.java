@@ -17,6 +17,7 @@ package ru.anr.base.services;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.PostConstruct;
@@ -34,12 +35,15 @@ import org.springframework.util.MultiValueMap;
 
 import ru.anr.base.ApplicationException;
 import ru.anr.base.BaseSpringParent;
+import ru.anr.base.dao.BaseRepositoryImpl;
 import ru.anr.base.domain.BaseEntity;
 import ru.anr.base.domain.api.APIException;
 import ru.anr.base.services.pattern.Strategy;
 import ru.anr.base.services.pattern.StrategyFactory;
 import ru.anr.base.services.pattern.StrategyFactoryImpl;
 import ru.anr.base.services.pattern.StrategyStatistic;
+import ru.anr.base.services.validation.ValidationFactory;
+import ru.anr.base.services.validation.ValidationUtils;
 
 /**
  * Implementation of Base Service.
@@ -129,7 +133,7 @@ public class BaseServiceImpl extends BaseSpringParent implements BaseService {
 
     /**
      * Getting validator instance if configured (requires
-     * {@link ValidationConfig} to be loaded)
+     * {@link ru.anr.base.services.validation.ValidationConfig} to be loaded)
      * 
      * @return {@link Validator}
      */
@@ -188,16 +192,32 @@ public class BaseServiceImpl extends BaseSpringParent implements BaseService {
     }
 
     /**
+     * Cached validators
+     */
+    private Map<Class<?>, StrategyFactory> validators = toMap();
+
+    /**
      * Validates an object
      * 
-     * @param object
+     * @param o
      *            The object to be validated
      * @param <S>
      *            The type of the object
      */
-    protected <S extends Object> void validate(S object) {
+    protected <S extends Object> void validate(S o) {
 
-        rejectIfNeed(new HashSet<>(validator().validate(object)));
+        rejectIfNeed(new HashSet<>(validator().validate(o)));
+
+        Class<?> clazz = (o instanceof BaseEntity) ? BaseRepositoryImpl.entityClass((BaseEntity) o) : o.getClass();
+
+        if (!validators.containsKey(clazz)) {
+
+            ValidationFactory factory = bean("ValidationFactory", ValidationFactory.class);
+
+            StrategyFactory sf = new StrategyFactoryImpl(factory.getValidators(clazz));
+            validators.put(clazz, sf);
+        }
+        validators.get(clazz).process(o);
     }
 
     /**

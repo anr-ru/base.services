@@ -140,7 +140,7 @@ public class ApiSerializationTest extends BaseLocalServiceTestCase {
     }
 
     /**
-     * {@link ErrorModel}
+     * Testing errors
      */
     @Test
     public void testErrorModel() {

@@ -38,7 +38,7 @@
     <bean id = "api_ping" class="ru.anr.base.services.api.PingV1ApiCommand" />
 
     <!-- Validations -->
-    <bean id = "validationConfig" class = "ru.anr.base.services.ValidationConfig" />
+    <bean id = "validationConfig" class = "ru.anr.base.services.validation.ValidationConfig" />
 
     <!-- SECURITY AND ACL -->
     

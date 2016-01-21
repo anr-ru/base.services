@@ -1,7 +1,7 @@
 /**
  * 
  */
-package ru.anr.base.services;
+package ru.anr.base.services.validation;
 
 import javax.validation.Validator;
 
@@ -14,8 +14,11 @@ import org.springframework.context.annotation.DependsOn;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.validation.beanvalidation.MethodValidationPostProcessor;
 
+import ru.anr.base.BaseSpringParent;
+
 /**
- * Validation configuration (depends on {@link MessagePropertiesConfig}).
+ * Validation configuration (depends on
+ * {@link ru.anr.base.services.MessagePropertiesConfig}).
  *
  *
  * @author Alexey Romanchuk
@@ -23,7 +26,7 @@ import org.springframework.validation.beanvalidation.MethodValidationPostProcess
  *
  */
 @Configuration
-public class ValidationConfig {
+public class ValidationConfig extends BaseSpringParent {
 
     /**
      * Message source with text message configs
@@ -35,7 +38,7 @@ public class ValidationConfig {
     /**
      * Exporting a validation bean, which can be used as default validation and
      * injected {@link org.springframework.beans.factory.annotation.Autowired}
-     * annocation
+     * annotation.
      * 
      * @return {@link Validator} instance
      */
@@ -64,5 +67,19 @@ public class ValidationConfig {
         processor.setValidator(validator);
 
         return processor;
+    }
+
+    /**
+     * Creates the {@link ValidationFactory} bean
+     * 
+     * @return The bean instance
+     */
+    @Bean(name = "ValidationFactory")
+    public ValidationFactory factory() {
+
+        ValidationFactoryImpl factory = new ValidationFactoryImpl();
+        factory.init(ctx.getBeansWithAnnotation(ru.anr.base.services.validation.Validator.class));
+
+        return factory;
     }
 }

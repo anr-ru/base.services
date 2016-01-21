@@ -55,7 +55,7 @@ public class StrategyFactoryImpl extends BaseSpringParent implements StrategyFac
         super();
         this.strategies = list(strategies); // null safe
 
-        logger.debug("Loaded {} strategies", strategies.size());
+        logger.debug("Loaded {} strategies", this.strategies.size());
     }
 
     /**
