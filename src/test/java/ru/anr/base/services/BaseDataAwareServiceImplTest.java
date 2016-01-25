@@ -37,10 +37,12 @@ public class BaseDataAwareServiceImplTest extends BaseLocalServiceTestCase {
     @Test
     public void testDaoAccess() {
 
+        authenticate(new TestingAuthenticationToken("test", "password", "ROLE_USER"));
+
         BaseDataAwareServiceImpl impl = target(service);
 
         Samples s = new Samples();
-        s.setName("xxx");
+        s.setName("read");
         s.changeState("New");
 
         s = impl.dao().save(s);
@@ -51,6 +53,13 @@ public class BaseDataAwareServiceImplTest extends BaseLocalServiceTestCase {
         Samples e = d.findOne(s.getId());
         Assert.assertEquals(s, e);
     }
+
+    /**
+     * The repo
+     */
+    @Autowired
+    @Qualifier("BaseRepository")
+    private BaseRepository<Samples> repo;
 
     /**
      * Testing injection for not existing bean

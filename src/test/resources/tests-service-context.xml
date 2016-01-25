@@ -23,6 +23,19 @@
     <util:list id="messages">
         <value>classpath:/messages/data</value>
     </util:list>
+
+
+    <!-- SECURITY AND ACL -->
+    <bean id="securityConfig" class="ru.anr.base.services.security.SecurityConfig"  
+        p:providers-ref="testAuthenticator"/>
+    <bean id = "testAuthenticator" class="org.springframework.security.authentication.TestingAuthenticationProvider" />
+    
+    <bean id = "aclConfig" class = "ru.anr.base.services.security.ACLConfig" 
+        p:dataSource-ref="datasource"
+        p:aclCacheName="samples"
+        p:authenticationManager-ref="authenticationManager" p:useAcls="true" />
+        
+    <bean id = "aclManager" class = "ru.anr.base.services.security.ACLManagerImpl" />        
     
     
     <!-- Test service -->
@@ -40,18 +53,6 @@
     <!-- Validations -->
     <bean id = "validationConfig" class = "ru.anr.base.services.validation.ValidationConfig" />
 
-    <!-- SECURITY AND ACL -->
-    
-    <bean id="securityConfig" class="ru.anr.base.services.security.SecurityConfig"  
-        p:providers-ref="testAuthenticator"/>
-    <bean id = "testAuthenticator" class="org.springframework.security.authentication.TestingAuthenticationProvider" />
-    
-    <bean id = "aclConfig" class = "ru.anr.base.services.security.ACLConfig" 
-        p:dataSource-ref="datasource"
-        p:aclCacheName="samples"
-        p:authenticationManager-ref="authenticationManager" p:useAcls="true" />
-        
-    <bean id = "aclManager" class = "ru.anr.base.services.security.ACLManagerImpl" />        
 
     <tx:annotation-driven/>
 
