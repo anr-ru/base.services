@@ -3,6 +3,8 @@
  */
 package ru.anr.base.services;
 
+import javax.validation.ConstraintViolationException;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -12,6 +14,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.ContextConfiguration;
 
+import ru.anr.base.services.validation.ValidationUtils;
 import ru.anr.base.tests.BaseLocalDaoTestCase;
 
 /**
@@ -59,5 +62,18 @@ public class BaseLocalServiceTestCase extends BaseLocalDaoTestCase {
         super.setUp();
 
         SecurityContextHolder.clearContext();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected String extractMessage(Throwable ex) {
+
+        String msg = super.extractMessage(ex);
+        if (ex instanceof ConstraintViolationException) {
+            msg = ValidationUtils.getAllErrorsAsString(((ConstraintViolationException) ex).getConstraintViolations());
+        }
+        return msg;
     }
 }
