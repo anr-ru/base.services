@@ -137,4 +137,13 @@ public class MockJSONAPICommandFactoryImpl extends BaseSpringParent implements A
 
         return generateError(64, "System error", ex.getMessage());
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public APICommand error(APICommand cmd, Throwable ex, ResponseModel model) {
+
+        return error(cmd, ex);
+    }
 }

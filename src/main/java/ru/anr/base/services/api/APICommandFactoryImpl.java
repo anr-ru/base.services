@@ -254,9 +254,8 @@ public class APICommandFactoryImpl extends BaseServiceImpl implements APICommand
      * {@inheritDoc}
      */
     @Override
-    public APICommand error(APICommand cmd, Throwable ex) {
+    public APICommand error(APICommand cmd, Throwable ex, ResponseModel m) {
 
-        ResponseModel m = new ResponseModel();
         Throwable reason = new ApplicationException(ex).getMostSpecificCause();
 
         int code = resolveErrorCode(reason);
@@ -297,6 +296,15 @@ public class APICommandFactoryImpl extends BaseServiceImpl implements APICommand
         processResponseModel(cmd);
 
         return cmd;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public APICommand error(APICommand cmd, Throwable ex) {
+
+        return error(cmd, ex, new ResponseModel());
     }
 
     /**

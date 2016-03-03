@@ -39,16 +39,23 @@ public @interface ApiStrategy {
 
     /**
      * Version of an API command
+     * 
+     * @return The version
      */
     String version();
 
     /**
      * Unique identifier of an API command
+     * 
+     * 
+     * @return The identifier
      */
     String id();
 
     /**
      * Defines a class for request command body representation
+     * 
+     * @return The model
      */
     Class<? extends RequestModel> model() default RequestModel.class;
 }
