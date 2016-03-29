@@ -57,9 +57,8 @@ public class BaseEntityPermissionEvaluator extends AclPermissionEvaluator {
 
         boolean accessible = true;
 
-        if (authentication instanceof OAuth2Authentication) {
-            authentication = ((OAuth2Authentication) authentication).getUserAuthentication();
-        }
+        Authentication auth = authentication instanceof OAuth2Authentication
+                ? ((OAuth2Authentication) authentication).getUserAuthentication() : authentication;
 
         logger.trace("hasPermission for {} and {}", domainObject, p);
 
@@ -68,11 +67,11 @@ public class BaseEntityPermissionEvaluator extends AclPermissionEvaluator {
 
                 // We suppose such patterns: access_read, access_write, ...
                 String[] splitted = p.toString().split("_");
-                accessible = ((Accessible) domainObject).accessible(authentication, splitted[1]);
+                accessible = ((Accessible) domainObject).accessible(auth, splitted[1]);
 
             } else if (useAcls) { // The standard ACL checking
                 accessible = checkNotNullId(domainObject) ? //
-                        super.hasPermission(authentication, domainObject, p) : false;
+                        super.hasPermission(auth, domainObject, p) : false;
             } else {
                 accessible = false; // not used acls and our checks
             }
