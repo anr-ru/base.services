@@ -49,6 +49,20 @@ public final class APIException extends ApplicationException {
     private final int errorCode;
 
     /**
+     * Constructor
+     * 
+     * @param msg
+     *            Error message
+     * @param errorCode
+     *            Error code
+     */
+    private APIException(String msg, int errorCode) {
+
+        super(msg);
+        this.errorCode = errorCode;
+    }
+
+    /**
      * Generates a validation exception
      * 
      * @param errorId
@@ -79,20 +93,6 @@ public final class APIException extends ApplicationException {
     public static APIException withCode(String msg, int errorCode) {
 
         return new APIException(msg, errorCode);
-    }
-
-    /**
-     * Constructor
-     * 
-     * @param msg
-     *            Error message
-     * @param errorCode
-     *            Error code
-     */
-    private APIException(String msg, int errorCode) {
-
-        super(msg);
-        this.errorCode = errorCode;
     }
 
     // /////////////////////////////////////////////////////////////////////////
