@@ -15,8 +15,9 @@
  */
 package ru.anr.base.services.api;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 import java.io.UnsupportedEncodingException;
-import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -276,11 +277,7 @@ public class APICommandFactoryImpl extends BaseServiceImpl implements APICommand
             if (msg.startsWith("[xxx")) {
                 String reasonMsg = reason.getMessage();
                 if (notEmpty(m.getErrorId()) && m.getErrorId().startsWith("files")) {
-                    try {
-                        reasonMsg = UriUtils.encodePath(reasonMsg, StandardCharsets.UTF_8.toString());
-                    } catch (UnsupportedEncodingException e) {
-                        throw new IllegalStateException("Could not decode URL", e);
-                    }
+                    reasonMsg = encodeToUTF8(reasonMsg);
                 }
                 m.setMessage(reasonMsg);
             } else {
@@ -296,6 +293,24 @@ public class APICommandFactoryImpl extends BaseServiceImpl implements APICommand
         processResponseModel(cmd);
 
         return cmd;
+    }
+
+    /**
+     * Encode message to UTF-8
+     * 
+     * @param message
+     *            original message
+     * @return encoded message
+     */
+    private String encodeToUTF8(String message) {
+
+        String result;
+        try {
+            result = UriUtils.encodePath(message, UTF_8.toString());
+        } catch (UnsupportedEncodingException exception) {
+            throw new IllegalStateException("Could not decode URL", exception);
+        }
+        return result;
     }
 
     /**
