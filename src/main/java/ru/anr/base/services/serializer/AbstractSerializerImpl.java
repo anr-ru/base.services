@@ -17,16 +17,17 @@ package ru.anr.base.services.serializer;
 
 import java.io.IOException;
 
-import ru.anr.base.ApplicationException;
-import ru.anr.base.BaseParent;
-
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.AnnotationIntrospector;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JSR310Module;
 import com.fasterxml.jackson.module.jaxb.JaxbAnnotationIntrospector;
+
+import ru.anr.base.ApplicationException;
+import ru.anr.base.BaseParent;
 
 /**
  * Abstract jackson-based serialer implementation.
@@ -60,6 +61,7 @@ public abstract class AbstractSerializerImpl extends BaseParent implements Seria
         // ISO for date/time
         objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
         objectMapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
+        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
         objectMapper.setSerializationInclusion(Include.NON_NULL);
 
