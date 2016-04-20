@@ -79,7 +79,7 @@ public class BaseEntity extends BaseParent implements Serializable, Accessible {
     /**
      * Version column for optimistic locks
      */
-    private Integer version = 0;
+    private Integer version;
 
     /**
      * Time of creation
