@@ -23,6 +23,10 @@ public enum BasicStates {
      */
     Active,
     /**
+     * The movement from the 'New' to 'Active' state
+     */
+    Pending,
+    /**
      * Disabled object
      */
     Inactive;
