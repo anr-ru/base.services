@@ -19,6 +19,7 @@ import javax.persistence.EntityManager;
 
 import org.springframework.data.jpa.repository.support.JpaRepositoryFactory;
 import org.springframework.data.mapping.context.MappingContext;
+import org.springframework.data.repository.core.RepositoryInformation;
 import org.springframework.data.repository.core.RepositoryMetadata;
 import org.springframework.data.repository.core.support.RepositoryFactorySupport;
 import org.springframework.data.repository.core.support.TransactionalRepositoryFactoryBeanSupport;
@@ -114,10 +115,10 @@ public class MultiUnitRepositoryFactoryBean<T extends BaseEntity> extends
          * {@inheritDoc}
          */
         @Override
-        protected Object getTargetRepository(RepositoryMetadata metadata) {
+        protected Object getTargetRepository(RepositoryInformation information) {
 
             @SuppressWarnings("unchecked")
-            Class<T> clazz = (Class<T>) metadata.getDomainType();
+            Class<T> clazz = (Class<T>) information.getDomainType();
 
             return new BaseRepositoryImpl<T>(clazz, entityManager);
         }

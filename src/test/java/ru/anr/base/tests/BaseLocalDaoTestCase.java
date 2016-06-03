@@ -12,7 +12,6 @@ import org.junit.Ignore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
 import ru.anr.base.ApplicationException;
@@ -30,8 +29,7 @@ import ru.anr.base.domain.BaseEntity;
  */
 @ContextConfiguration(locations = "classpath:/tests-dao-context.xml", inheritLocations = false)
 @Ignore
-@Transactional
-@TransactionConfiguration(transactionManager = "transactionManager")
+@Transactional(transactionManager = "transactionManager")
 public class BaseLocalDaoTestCase extends BaseTestCase {
 
     /**

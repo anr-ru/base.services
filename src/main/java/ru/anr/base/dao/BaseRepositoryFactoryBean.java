@@ -19,6 +19,7 @@ import javax.persistence.EntityManager;
 
 import org.springframework.data.jpa.repository.support.JpaRepositoryFactory;
 import org.springframework.data.jpa.repository.support.JpaRepositoryFactoryBean;
+import org.springframework.data.repository.core.RepositoryInformation;
 import org.springframework.data.repository.core.RepositoryMetadata;
 import org.springframework.data.repository.core.support.RepositoryFactorySupport;
 
@@ -76,10 +77,10 @@ public class BaseRepositoryFactoryBean<T extends BaseEntity> extends
          * {@inheritDoc}
          */
         @Override
-        protected Object getTargetRepository(RepositoryMetadata metadata) {
+        protected Object getTargetRepository(RepositoryInformation information) {
 
             @SuppressWarnings("unchecked")
-            Class<T> clazz = (Class<T>) metadata.getDomainType();
+            Class<T> clazz = (Class<T>) information.getDomainType();
 
             return new BaseRepositoryImpl<T>(clazz, entityManager);
         }
