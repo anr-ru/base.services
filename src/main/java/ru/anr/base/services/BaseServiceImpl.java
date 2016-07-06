@@ -290,6 +290,8 @@ public class BaseServiceImpl extends BaseSpringParent implements BaseService {
         List<Strategy<Object>> extentions = list(beans.values().stream().map(a -> {
             return (Strategy<Object>) a;
         }));
+
+        logger.info("Loaded: {} extensions for the: {}", extentions.size(), target(this));
         return extentions;
     }
 
