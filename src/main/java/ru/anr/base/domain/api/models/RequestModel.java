@@ -18,6 +18,7 @@ package ru.anr.base.domain.api.models;
 import java.io.Serializable;
 import java.util.List;
 
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
@@ -54,6 +55,11 @@ public class RequestModel extends ResponseModel implements Serializable {
      * List of fields required in result set
      */
     private List<String> fields;
+
+    /**
+     * The identifier of a request
+     */
+    private String queryId;
 
     // /////////////////////////////////////////////////////////////////////////
     // /// getters/setters
@@ -122,6 +128,24 @@ public class RequestModel extends ResponseModel implements Serializable {
     public List<String> getFields() {
 
         return fields;
+    }
+
+    /**
+     * @return the queryId
+     */
+    @XmlAttribute(name = "query_id")
+    public String getQueryId() {
+
+        return queryId;
+    }
+
+    /**
+     * @param queryId
+     *            the queryId to set
+     */
+    public void setQueryId(String queryId) {
+
+        this.queryId = queryId;
     }
 
     /**
