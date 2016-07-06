@@ -15,6 +15,7 @@
  */
 package ru.anr.base.services;
 
+import java.lang.annotation.Annotation;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -119,16 +120,17 @@ public class BaseServiceImpl extends BaseSpringParent implements BaseService {
      *            Original object to process
      * @param params
      *            Additional parameters
-     * @return Possible updated original object
+     * @return A list including resulted objects if they were during the
+     *         processing.
      */
-    protected Object processExtentions(Object object, Object... params) {
+    protected List<Object> processExtentions(Object object, Object... params) {
 
         StrategyStatistic stat = extensionFactory.process(object, params);
 
         if (logger.isDebugEnabled()) {
             logger.debug("List of applied strategies: {}", stat.getAppliedStrategies());
         }
-        return stat.getObject();
+        return stat.getResults();
     }
 
     /**
@@ -271,6 +273,24 @@ public class BaseServiceImpl extends BaseSpringParent implements BaseService {
             throw new AccessDeniedException("Unable to change the state");
         }
         return oldState;
+    }
+
+    /**
+     * Loads extensions marked with the given annotation type
+     * 
+     * @param marker
+     *            The marker annotation
+     * @return A list of extensions
+     */
+    protected List<Strategy<Object>> loadExtentions(Class<? extends Annotation> marker) {
+
+        Map<String, Object> beans = ctx.getBeansWithAnnotation(marker);
+
+        @SuppressWarnings("unchecked")
+        List<Strategy<Object>> extentions = list(beans.values().stream().map(a -> {
+            return (Strategy<Object>) a;
+        }));
+        return extentions;
     }
 
     // /////////////////////////////////////////////////////////////////////////

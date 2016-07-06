@@ -15,7 +15,11 @@
  */
 package ru.anr.base.services.pattern;
 
+import java.util.List;
+
 import org.apache.commons.lang3.ArrayUtils;
+
+import ru.anr.base.BaseParent;
 
 /**
  * A storage for the way how a stategy should be handled. It's used by
@@ -50,6 +54,11 @@ public class StrategyConfig {
     private final Object[] params;
 
     /**
+     * A collection of objects gathered during processing through all strategies
+     */
+    private List<Object> collection = BaseParent.list();
+
+    /**
      * Constructor
      * 
      * @param applicable
@@ -59,7 +68,7 @@ public class StrategyConfig {
      * @param mode
      *            {@link StrategyModes}
      * @param params
-     *            Stored additinal params
+     *            Stored additional params
      */
     public StrategyConfig(boolean applicable, Object object, StrategyModes mode, Object... params) {
 
@@ -83,6 +92,25 @@ public class StrategyConfig {
     public Object getObject() {
 
         return object;
+    }
+
+    /**
+     * Adds an object to the resulted collection
+     * 
+     * @param o
+     *            Some object
+     */
+    public void add(Object o) {
+
+        collection.add(o);
+    }
+
+    /**
+     * @return the collection
+     */
+    public List<Object> getCollection() {
+
+        return collection;
     }
 
     /**

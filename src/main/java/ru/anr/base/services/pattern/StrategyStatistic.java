@@ -39,17 +39,25 @@ public class StrategyStatistic {
     private final List<Class<?>> appliedStrategies;
 
     /**
+     * The resulted list
+     */
+    private final List<Object> results;
+
+    /**
      * Constructor
      * 
      * @param object
      *            An object
      * @param appliedStrategies
      *            List of classes of all applied strategies
+     * @param results
+     *            The results of processing
      */
-    public StrategyStatistic(Object object, List<Class<?>> appliedStrategies) {
+    public StrategyStatistic(Object object, List<Class<?>> appliedStrategies, List<Object> results) {
 
         this.object = object;
         this.appliedStrategies = appliedStrategies;
+        this.results = results;
     }
 
     // /////////////////////////////////////////////////////////////////////////
@@ -70,5 +78,13 @@ public class StrategyStatistic {
     public List<Class<?>> getAppliedStrategies() {
 
         return appliedStrategies;
+    }
+
+    /**
+     * @return the results
+     */
+    public List<Object> getResults() {
+
+        return results;
     }
 }
