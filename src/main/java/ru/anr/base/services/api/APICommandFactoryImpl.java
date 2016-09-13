@@ -273,8 +273,8 @@ public class APICommandFactoryImpl extends BaseServiceImpl implements APICommand
         if (reason instanceof APIException) {
 
             // May be the integer code defined
-            String msg = text(errorCodePrefix + code);
-            if (msg.startsWith("[xxx")) {
+            String msg = (code != APIException.ERROR_VALIDATION) ? text(errorCodePrefix + code) : null;
+            if (msg == null || msg.startsWith("[xxx")) {
                 String reasonMsg = reason.getMessage();
                 if (notEmpty(m.getErrorId()) && m.getErrorId().startsWith("files")) {
                     reasonMsg = encodeToUTF8(reasonMsg);
