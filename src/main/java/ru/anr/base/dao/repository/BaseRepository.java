@@ -87,4 +87,12 @@ public interface BaseRepository<T extends BaseEntity> extends JpaRepository<T, L
      */
     @PostFilter("hasPermission(filterObject,'read') or hasPermission(filterObject,'access_read')")
     <S extends BaseEntity> List<S> filter(Page<S> page);
+
+    /**
+     * Executes an SQL query (update or delete)
+     * 
+     * @param sql
+     *            An SQL query
+     */
+    void executeSQL(String sql);
 }

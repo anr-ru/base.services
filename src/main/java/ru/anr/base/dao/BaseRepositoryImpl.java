@@ -40,8 +40,8 @@ import ru.anr.base.domain.BaseEntity;
  *            Entity type
  */
 
-public class BaseRepositoryImpl<T extends BaseEntity> extends SimpleJpaRepository<T, Long> implements
-        BaseRepository<T> {
+public class BaseRepositoryImpl<T extends BaseEntity> extends SimpleJpaRepository<T, Long>
+        implements BaseRepository<T> {
 
     /**
      * Ref to {@link EntityManager}
@@ -144,5 +144,15 @@ public class BaseRepositoryImpl<T extends BaseEntity> extends SimpleJpaRepositor
     public <S extends BaseEntity> List<S> filter(Page<S> page) {
 
         return BaseParent.list(page.getContent());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void executeSQL(String sql) {
+
+        Query query = entityManager.createNativeQuery(sql);
+        query.executeUpdate();
     }
 }
