@@ -291,7 +291,7 @@ public class BaseServiceImpl extends BaseSpringParent implements BaseService {
             return (Strategy<Object>) a;
         }));
 
-        logger.info("Loaded: {} extensions for the: {}", extentions.size(), target(this));
+        logger.info("Loaded: {} '{}' extensions for the: {}", extentions.size(), marker.getSimpleName(), target(this));
         return extentions;
     }
 
