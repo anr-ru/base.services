@@ -106,7 +106,11 @@
         <dependency>
             <groupId>net.sf.ehcache</groupId>
             <artifactId>ehcache-core</artifactId>
-        </dependency>       
+        </dependency>
+        <dependency>
+            <groupId>net.sf.ehcache</groupId>
+            <artifactId>ehcache-jmsreplication</artifactId>
+        </dependency>
         <dependency>
             <artifactId>hibernate-ehcache</artifactId>
             <groupId>org.hibernate</groupId>
