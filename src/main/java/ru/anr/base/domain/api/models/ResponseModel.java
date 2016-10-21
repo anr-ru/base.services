@@ -72,6 +72,16 @@ public class ResponseModel implements Serializable {
      */
     private String description;
 
+    /**
+     * Checks whether the response has errors or not
+     * 
+     * @return true, if it does not have.
+     */
+    public boolean noErrors() {
+
+        return getCode() == null || Integer.valueOf(0).equals(getCode());
+    }
+
     // /////////////////////////////////////////////////////////////////////////
     // /// getters/setters
     // /////////////////////////////////////////////////////////////////////////
