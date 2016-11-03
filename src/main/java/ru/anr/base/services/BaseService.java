@@ -59,4 +59,14 @@ public interface BaseService {
      */
     @PreAuthorize("hasPermission(#o,'write') or hasPermission(#o,'access_state') or hasRole('ROLE_ROOT')")
     <S extends Enum<S>> S changeState(@P("o") BaseEntity object, S newState);
+
+    /**
+     * Determines the current environment if defined. By usage of spring
+     * profiles like DEV, QA and PROD it is possible to organize a different
+     * behavior in each situation.
+     * 
+     * @return A name of the environment or null, if no one from
+     *         {@link TargetEnvironments} is defined in profiles.
+     */
+    TargetEnvironments getTargetEnv();
 }

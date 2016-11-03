@@ -295,6 +295,15 @@ public class BaseServiceImpl extends BaseSpringParent implements BaseService {
         return extentions;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public TargetEnvironments getTargetEnv() {
+
+        return TargetEnvironments.search(getProfiles());
+    }
+
     // /////////////////////////////////////////////////////////////////////////
     // /// getters/setters
     // /////////////////////////////////////////////////////////////////////////
@@ -307,4 +316,5 @@ public class BaseServiceImpl extends BaseSpringParent implements BaseService {
 
         this.extensions = extensions;
     }
+
 }

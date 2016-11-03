@@ -42,7 +42,8 @@ public class StrategyFactoryImplTest extends BaseLocalServiceTestCase {
      */
     public StrategyFactory strategyFactory2() {
 
-        return new StrategyFactoryImpl(list(new NopStrategyImpl(), new TerminateStrategyImpl(), new NopStrategyImpl()));
+        return new StrategyFactoryImpl(
+                list(new NopStrategyImpl(), new TerminateStrategyImpl(), new NopStrategyImpl()));
     }
 
     /**
@@ -94,7 +95,7 @@ public class StrategyFactoryImplTest extends BaseLocalServiceTestCase {
 
         // terminated after the second
         Assert.assertEquals(2, st.getAppliedStrategies().size());
-        Assert.assertTrue(st.getAppliedStrategies().containsAll(
-                list(NopStrategyImpl.class, TerminateStrategyImpl.class)));
+        Assert.assertTrue(
+                st.getAppliedStrategies().containsAll(list(NopStrategyImpl.class, TerminateStrategyImpl.class)));
     }
 }
