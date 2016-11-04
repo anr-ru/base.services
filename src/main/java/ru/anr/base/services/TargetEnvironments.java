@@ -17,6 +17,10 @@ import java.util.Set;
 public enum TargetEnvironments {
 
     /**
+     * CI Environment
+     */
+    CI,
+    /**
      * Developers' Environment
      */
     DEV,

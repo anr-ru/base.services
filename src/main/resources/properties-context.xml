@@ -17,6 +17,11 @@
          It can be a useful solution for different environments. All properties are included in a "soft"
          mode without an exception if the files are not found. -->
 
+    <!-- If defined the profile for CI environments -->
+    <beans profile="CI">
+        <context:property-placeholder location="classpath:application.properties,classpath:application-ci.properties" 
+            ignore-resource-not-found="true" />
+    </beans>
     <!-- If defined the profile for development environments -->
     <beans profile="DEV">
         <context:property-placeholder location="classpath:application.properties,classpath:application-dev.properties" 
@@ -33,7 +38,7 @@
             ignore-resource-not-found="true" />
     </beans>
     <!-- If nothing from above is defined, load the default one -->
-    <beans profile="!DEV,!QA,!PROD">
+    <beans profile="!DEV,!QA,!PROD,!CI">
         <context:property-placeholder location="classpath:application.properties" 
             ignore-resource-not-found="true"/>
     </beans>
