@@ -63,7 +63,7 @@ public class APICommand extends BaseParent implements Serializable {
     /**
      * Command parameters in the key/value format
      */
-    private Map<String, Object> contexts;
+    private Map<String, Object> contexts = toMap();
 
     /**
      * Raw model data (JSON, XML) of request or response
