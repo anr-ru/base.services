@@ -53,6 +53,12 @@ public class BaseObjectModel extends RequestModel {
      */
     private Calendar stateChanged;
 
+    private String otp;
+
+    private Integer otpNum;
+
+    private String confirmChannel;
+
     /**
      * Default
      */
@@ -208,5 +214,59 @@ public class BaseObjectModel extends RequestModel {
     public void setModified(Calendar modified) {
 
         this.modified = modified;
+    }
+
+    /**
+     * @return the otp
+     */
+    @XmlAttribute(name = "otp")
+    public String getOtp() {
+
+        return otp;
+    }
+
+    /**
+     * @return the otpNum
+     */
+    @XmlAttribute(name = "otp_num")
+    public Integer getOtpNum() {
+
+        return otpNum;
+    }
+
+    /**
+     * @return the confirmChannel
+     */
+    @XmlAttribute(name = "confirm_channel")
+    public String getConfirmChannel() {
+
+        return confirmChannel;
+    }
+
+    /**
+     * @param otp
+     *            the otp to set
+     */
+    public void setOtp(String otp) {
+
+        this.otp = otp;
+    }
+
+    /**
+     * @param otpNum
+     *            the otpNum to set
+     */
+    public void setOtpNum(Integer otpNum) {
+
+        this.otpNum = otpNum;
+    }
+
+    /**
+     * @param confirmChannel
+     *            the confirmChannel to set
+     */
+    public void setConfirmChannel(String confirmChannel) {
+
+        this.confirmChannel = confirmChannel;
     }
 }
