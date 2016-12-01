@@ -21,11 +21,11 @@ public enum TargetEnvironments {
      */
     CI,
     /**
-     * Developers' Environment
+     * Developers' Stage Environment
      */
     DEV,
     /**
-     * QA Environment
+     * QA Stage Environment
      */
     QA,
     /**
