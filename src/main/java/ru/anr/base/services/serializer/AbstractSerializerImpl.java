@@ -17,6 +17,12 @@ package ru.anr.base.services.serializer;
 
 import java.io.IOException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import ru.anr.base.ApplicationException;
+import ru.anr.base.BaseParent;
+
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.AnnotationIntrospector;
@@ -25,9 +31,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JSR310Module;
 import com.fasterxml.jackson.module.jaxb.JaxbAnnotationIntrospector;
-
-import ru.anr.base.ApplicationException;
-import ru.anr.base.BaseParent;
 
 /**
  * Abstract jackson-based serialer implementation.
@@ -39,6 +42,11 @@ import ru.anr.base.BaseParent;
  */
 
 public abstract class AbstractSerializerImpl extends BaseParent implements Serializer {
+
+    /**
+     * The logger
+     */
+    private static final Logger logger = LoggerFactory.getLogger(AbstractSerializerImpl.class);
 
     /**
      * Mapper
@@ -78,7 +86,8 @@ public abstract class AbstractSerializerImpl extends BaseParent implements Seria
         try {
             return objectMapper.readValue(s, clazz);
         } catch (IOException ex) {
-            throw new ApplicationException(ex);
+            logger.error("Serializer exception", ex);
+            throw new ApplicationException(ex.getMessage().replaceAll("ru.anr.([a-zA-Z\\d]*\\.)*([a-zA-Z\\d]*)", ""));
         }
     }
 
@@ -91,7 +100,8 @@ public abstract class AbstractSerializerImpl extends BaseParent implements Seria
         try {
             return objectMapper.readValue(s, ref);
         } catch (IOException ex) {
-            throw new ApplicationException(ex);
+            logger.error("Serializer exception", ex);
+            throw new ApplicationException(ex.getMessage().replaceAll("ru.anr.([a-zA-Z\\d]*\\.)*([a-zA-Z\\d]*)", ""));
         }
     }
 
@@ -104,7 +114,8 @@ public abstract class AbstractSerializerImpl extends BaseParent implements Seria
         try {
             return objectMapper.writeValueAsString(o);
         } catch (IOException ex) {
-            throw new ApplicationException(ex);
+            logger.error("Serializer exception", ex);
+            throw new ApplicationException(ex.getMessage().replaceAll("ru.anr.([a-zA-Z\\d]*\\.)*([a-zA-Z\\d]*)", ""));
         }
     }
 
