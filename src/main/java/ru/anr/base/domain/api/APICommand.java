@@ -16,6 +16,7 @@
 package ru.anr.base.domain.api;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -83,7 +84,7 @@ public class APICommand extends BaseParent implements Serializable {
     /**
      * Parsed request model
      */
-    private RequestModel request;
+    private RequestModel request = new RequestModel();;
 
     /**
      * Prepared response model
@@ -201,31 +202,41 @@ public class APICommand extends BaseParent implements Serializable {
     public APICommand params(Map<String, ?> params) {
 
         request = new RequestModel();
+        Map<String, ?> copy = new HashMap<>(params);
 
-        Object v = params.get("page");
+        Object v = copy.get("page");
         if (v != null) {
             request.setPage(parse(v.toString(), Integer.class));
+            copy.remove("page");
         }
 
-        v = params.get("per_page");
+        v = copy.get("per_page");
         if (v != null) {
             request.setPerPage(parse(v.toString(), Integer.class));
+            copy.remove("per_page");
         }
 
-        v = params.get("fields");
+        v = copy.get("fields");
         if (v != null) {
             request.setFields(parseList(v.toString()));
+            copy.remove("fields");
         }
 
-        v = params.get("q");
+        v = copy.get("q");
         if (v != null) {
             request.setSearch(v.toString());
+            copy.remove("q");
         }
 
-        v = params.get("sort");
+        v = copy.get("sort");
         if (v != null) {
             request.setSorted(parseSort(parseList(v.toString())));
+            copy.remove("sort");
         }
+        /*
+         * The rest of parameters is used depending on the context
+         */
+        this.contexts.putAll(copy);
         return this;
     }
 
