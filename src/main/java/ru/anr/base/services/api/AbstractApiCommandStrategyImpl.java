@@ -24,6 +24,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
 
+import ru.anr.base.domain.BaseEntity;
 import ru.anr.base.domain.api.APICommand;
 import ru.anr.base.services.BaseDataAwareServiceImpl;
 
@@ -121,5 +122,44 @@ public class AbstractApiCommandStrategyImpl extends BaseDataAwareServiceImpl imp
             perPage = 10;
         }
         return new PageRequest(page, perPage, direction, properties);
+    }
+
+    /**
+     * A simple callback for customization of searching an object by its
+     * identifier.
+     */
+    @FunctionalInterface
+    protected interface ObjectFindCallback<S> {
+
+        /**
+         * Finds an object by the given identifier
+         * 
+         * @param id
+         *            The identifier
+         * @return A found object or null if nothing found.
+         */
+        S find(Long id);
+    }
+
+    /**
+     * Performs a search of an object by its identifier given as a string value.
+     * 
+     * @param strId
+     *            An string value which is expected to be a long value
+     * @param callback
+     *            A callback function used to delegate the search procedure to a
+     *            service
+     * @return A found object (cab be null).
+     * 
+     * @param <S>
+     *            A class of the object
+     */
+    protected <S extends BaseEntity> S findObjectByID(String strId, ObjectFindCallback<S> callback) {
+
+        Long id = parse(strId, Long.class);
+        if (id == null) {
+            rejectAPI("api.param.is.wrong", "id", strId);
+        }
+        return callback.find(id);
     }
 }
