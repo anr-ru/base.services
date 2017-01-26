@@ -385,6 +385,44 @@ public class APICommand extends BaseParent implements Serializable {
     }
 
     /**
+     * Gets a parameter value of the command by its name. Uses the given default
+     * value if the parameter's value is null.
+     * 
+     * @param name
+     *            The name of a parameter
+     * @param defaultValue
+     *            The value to be set if the value of the parameter is null
+     * @param <S>
+     *            The class of the parameter's value
+     * @return The value of the parameter
+     */
+    public <S> S get(String name, S defaultValue) {
+
+        @SuppressWarnings("unchecked")
+        S v = (S) getContexts().get(name);
+
+        if (v == null) {
+            v = defaultValue;
+        }
+        return v;
+    }
+
+    /**
+     * Gets a parameter value of the command by its name without a default
+     * value.
+     * 
+     * @param name
+     *            The name of a parameter
+     * @param <S>
+     *            The class of the parameter's value
+     * @return The value of the parameter
+     */
+    public <S> S get(String name) {
+
+        return get(name, null);
+    }
+
+    /**
      * @param contexts
      *            the contexts to set
      */
