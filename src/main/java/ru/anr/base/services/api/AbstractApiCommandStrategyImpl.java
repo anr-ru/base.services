@@ -15,6 +15,8 @@
  */
 package ru.anr.base.services.api;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.apache.commons.lang3.NotImplementedException;
@@ -142,10 +144,64 @@ public class AbstractApiCommandStrategyImpl extends BaseDataAwareServiceImpl imp
     }
 
     /**
-     * Performs a search of an object by its identifier given as a string value.
+     * Searches and returns id parameters from the specified context of the api
+     * command
      * 
-     * @param strId
-     *            An string value which is expected to be a long value
+     * @param cmd
+     *            the API Command
+     * @return Long value of identifier or raises an exception if it is absent
+     *         or unparsible
+     */
+    protected Long extractId(APICommand cmd) {
+
+        Map<String, ?> map = extract(cmd, "id");
+        return parse(map.get("id").toString(), Long.class);
+    }
+
+    /**
+     * Returns an identifier from the request parameters and check whether it
+     * has been correctly parsed or not.
+     * 
+     * @param cmd
+     *            An original API command
+     * @return Parsed not null identifier
+     */
+    protected Long extractIdStrict(APICommand cmd) {
+
+        Long id = extractId(cmd);
+        if (id == null) {
+            Map<String, ?> map = extract(cmd, "id");
+            rejectAPI("api.param.is.wrong", "id", map.get("id").toString());
+        }
+        return id;
+    }
+
+    /**
+     * Extracts request parameters from the command
+     * 
+     * @param cmd
+     *            The API command
+     * @param keys
+     *            A set of key to find in the request parameters
+     * @return A resulted map which definitely contains not-empty keys
+     */
+    protected Map<String, Object> extract(APICommand cmd, String... keys) {
+
+        Map<String, Object> contexts = cmd.getContexts();
+        List<String> emptyParam = getEmptyKeys(contexts, list(keys));
+
+        if (!emptyParam.isEmpty()) {
+            rejectAPI("api.param.is.null", emptyParam.get(0));
+        }
+        return contexts;
+    }
+
+    /**
+     * Performs a search of an object by its identifier located inside of a
+     * {@link APICommand}.
+     * 
+     * @param cmd
+     *            A command to parse
      * @param callback
      *            A callback function used to delegate the search procedure to a
      *            service
@@ -154,12 +210,8 @@ public class AbstractApiCommandStrategyImpl extends BaseDataAwareServiceImpl imp
      * @param <S>
      *            A class of the object
      */
-    protected <S extends BaseEntity> S findObjectByID(String strId, ObjectFindCallback<S> callback) {
+    protected <S extends BaseEntity> S findObjectByID(APICommand cmd, ObjectFindCallback<S> callback) {
 
-        Long id = parse(strId, Long.class);
-        if (id == null) {
-            rejectAPI("api.param.is.wrong", "id", strId);
-        }
-        return callback.find(id);
+        return callback.find(extractIdStrict(cmd));
     }
 }
