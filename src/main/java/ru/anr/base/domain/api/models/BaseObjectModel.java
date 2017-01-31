@@ -78,11 +78,10 @@ public class BaseObjectModel extends RequestModel {
     }
 
     /**
-     * Construction with BaseEntity
+     * Construction by the given {@link BaseEntity}
      * 
      * @param object
      *            The object
-     * 
      */
     public BaseObjectModel(BaseEntity object) {
 
