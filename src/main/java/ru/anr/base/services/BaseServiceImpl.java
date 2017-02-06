@@ -211,6 +211,24 @@ public class BaseServiceImpl extends BaseSpringParent implements BaseService {
     }
 
     /**
+     * Checks the given condition is true and throws an exception if it is
+     * false.
+     * 
+     * @param condition
+     *            A condition to check
+     * @param errorId
+     *            A message identifier for an exception to throw
+     * @param params
+     *            Parameters of the error message
+     */
+    protected void checkIsTrue(boolean condition, String errorId, Object... params) {
+
+        if (!condition) {
+            rejectAPI(errorId, params);
+        }
+    }
+
+    /**
      * Cached validators
      */
     private Map<Class<?>, StrategyFactory> validators = toMap();
