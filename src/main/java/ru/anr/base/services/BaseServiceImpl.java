@@ -194,6 +194,23 @@ public class BaseServiceImpl extends BaseSpringParent implements BaseService {
     }
 
     /**
+     * Checks the given value is not null
+     * 
+     * @param value
+     *            A value to check
+     * @param errorId
+     *            A message for an exception to throw
+     * @param params
+     *            Parameters of the error message
+     */
+    protected void checkNotNull(Object value, String errorId, Object... params) {
+
+        if (value == null) {
+            rejectAPI(errorId, params);
+        }
+    }
+
+    /**
      * Cached validators
      */
     private Map<Class<?>, StrategyFactory> validators = toMap();
