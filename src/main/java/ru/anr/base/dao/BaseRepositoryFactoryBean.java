@@ -42,17 +42,6 @@ public class BaseRepositoryFactoryBean<T extends BaseEntity> extends
         JpaRepositoryFactoryBean<BaseRepository<T>, T, Long> {
 
     /**
-     * Creates a new {@link BaseRepositoryFactoryBean} for the given repository interface.
-     *
-     * @param repositoryInterface
-     *            must not be {@literal null}.
-     */
-    public BaseRepositoryFactoryBean(Class<? extends BaseRepository<T>> repositoryInterface) {
-
-        super(repositoryInterface);
-    }
-
-    /**
      * {@inheritDoc}
      */
     @Override
