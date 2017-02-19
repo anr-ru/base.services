@@ -43,17 +43,6 @@ public class MultiUnitRepositoryFactoryBean<T extends BaseEntity> extends
         TransactionalRepositoryFactoryBeanSupport<BaseRepository<T>, T, Long> {
 
     /**
-     * Creates a new {@link MultiUnitRepositoryFactoryBean} for the given repository interface.
-     *
-     * @param repositoryInterface
-     *            must not be {@literal null}.
-     */
-    public MultiUnitRepositoryFactoryBean(Class<? extends BaseRepository<T>> repositoryInterface) {
-
-        super(repositoryInterface);
-    }
-
-    /**
      * A reference to the current {@link EntityManager}
      */
     private EntityManager entityManager;
