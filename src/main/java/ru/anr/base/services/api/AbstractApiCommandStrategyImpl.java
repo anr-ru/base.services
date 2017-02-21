@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.NotImplementedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -123,7 +124,8 @@ public class AbstractApiCommandStrategyImpl extends BaseDataAwareServiceImpl imp
         if (perPage <= 0) {
             perPage = 10;
         }
-        return new PageRequest(page, perPage, direction, properties);
+        return ArrayUtils.isEmpty(properties) ? new PageRequest(page, perPage)
+                : new PageRequest(page, perPage, direction, properties);
     }
 
     /**
