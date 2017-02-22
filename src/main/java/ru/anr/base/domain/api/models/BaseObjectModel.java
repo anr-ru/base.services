@@ -78,6 +78,40 @@ public class BaseObjectModel extends RequestModel {
     }
 
     /**
+     * An auxiliary interface for creation of models
+     */
+    @FunctionalInterface
+    protected interface ModelCreator<S, V> {
+
+        /**
+         * Creates a new model of the S type using the given value
+         * 
+         * @param v
+         *            The value to use
+         * @return A new model
+         */
+        S newValue(V v);
+    }
+
+    /**
+     * A variant of the nullSafe(..) function for safe creation of models
+     * 
+     * @param value
+     *            A value to check before creation of a model
+     * @param callback
+     *            The callback used to specify the way of creation
+     * @return A model instance or null
+     * @param <S>
+     *            The class of the model
+     * @param <V>
+     *            The class of the value
+     */
+    protected <S, V> S nullSafe(V value, ModelCreator<S, V> callback) {
+
+        return (value == null) ? null : callback.newValue(value);
+    }
+
+    /**
      * Construction by the given {@link BaseEntity}
      * 
      * @param object
