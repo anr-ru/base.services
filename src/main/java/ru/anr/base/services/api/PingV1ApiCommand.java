@@ -17,6 +17,7 @@ package ru.anr.base.services.api;
 
 import ru.anr.base.domain.api.APICommand;
 import ru.anr.base.domain.api.models.PingModel;
+import ru.anr.base.domain.api.models.RequestModel;
 import ru.anr.base.domain.api.models.ResponseModel;
 
 /**
@@ -40,13 +41,13 @@ public class PingV1ApiCommand extends AbstractApiCommandStrategyImpl {
      *            A method name (to check)
      * @return Response model (we use {@link ErrorModel})
      */
-    private ResponseModel build(PingModel rq, String method) {
+    private ResponseModel build(RequestModel rq, String method) {
 
         ResponseModel m = new ResponseModel();
         m.setCode(0);
 
-        if (rq != null) {
-            m.setMessage(rq.getValue() + " " + method);
+        if (rq != null && rq instanceof PingModel) {
+            m.setMessage(((PingModel) rq).getValue() + " " + method);
         }
         return m;
     }
@@ -61,7 +62,7 @@ public class PingV1ApiCommand extends AbstractApiCommandStrategyImpl {
     @Override
     public ResponseModel post(APICommand cmd) {
 
-        return build((PingModel) cmd.getRequest(), "POST");
+        return build(cmd.getRequest(), "POST");
     }
 
     /**
@@ -74,7 +75,7 @@ public class PingV1ApiCommand extends AbstractApiCommandStrategyImpl {
     @Override
     public ResponseModel put(APICommand cmd) {
 
-        return build((PingModel) cmd.getRequest(), "PUT");
+        return build(cmd.getRequest(), "PUT");
     }
 
     /**
@@ -87,7 +88,7 @@ public class PingV1ApiCommand extends AbstractApiCommandStrategyImpl {
     @Override
     public ResponseModel get(APICommand cmd) {
 
-        return build((PingModel) cmd.getRequest(), "GET");
+        return build(cmd.getRequest(), "GET");
     }
 
     /**
@@ -100,6 +101,6 @@ public class PingV1ApiCommand extends AbstractApiCommandStrategyImpl {
     @Override
     public ResponseModel delete(APICommand cmd) {
 
-        return build((PingModel) cmd.getRequest(), "DELETE");
+        return build(cmd.getRequest(), "DELETE");
     }
 }
