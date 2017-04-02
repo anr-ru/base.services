@@ -19,6 +19,10 @@ public enum BasicStates {
      */
     New,
     /**
+     * Some action has been successfully applied to the object
+     */
+    Processed,
+    /**
      * Enabled object
      */
     Active,
