@@ -20,6 +20,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import javax.annotation.PostConstruct;
 import javax.validation.ConstraintViolation;
@@ -206,6 +207,25 @@ public class BaseServiceImpl extends BaseSpringParent implements BaseService {
     protected void checkNotNull(Object value, String errorId, Object... params) {
 
         if (value == null) {
+            rejectAPI(errorId, params);
+        }
+    }
+
+    /**
+     * Checks the given value is not null
+     * 
+     * @param value
+     *            A value to check
+     * @param pattern
+     *            pattern to check
+     * @param errorId
+     *            A message for an exception to throw
+     * @param params
+     *            Parameters of the error message
+     */
+    protected void checkPattern(String value, String pattern, String errorId, Object... params) {
+
+        if (!Pattern.matches(pattern, value)) {
             rejectAPI(errorId, params);
         }
     }
