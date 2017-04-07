@@ -70,11 +70,7 @@ public class StrategyFactoryImpl extends BaseSpringParent implements StrategyFac
 
         for (Strategy<Object> s : strategies) {
 
-            logger.debug("Proccess strategy " + s.getClass().getName());
-
             StrategyConfig cfg = s.check(object, params);
-
-            logger.debug("Strategy " + s.getClass().getName() + " was checked");
 
             if (cfg.isApplicable()) {
 
