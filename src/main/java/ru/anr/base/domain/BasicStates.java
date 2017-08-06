@@ -19,7 +19,7 @@ public enum BasicStates {
      */
     New,
     /**
-     * Some action has been successfully applied to the object
+     * Some process was applied to an object
      */
     Processed,
     /**
@@ -27,11 +27,15 @@ public enum BasicStates {
      */
     Active,
     /**
-     * The movement from the 'New' to 'Active' state
+     * The movement between states
      */
     Pending,
     /**
      * Disabled object
      */
-    Inactive;
+    Inactive,
+    /**
+     * Cancellation of a process
+     */
+    Cancelled;
 }
