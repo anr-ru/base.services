@@ -16,8 +16,10 @@
 package ru.anr.base.dao.repository;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.security.access.prepost.PostFilter;
 import org.springframework.stereotype.Repository;
@@ -95,4 +97,17 @@ public interface BaseRepository<T extends BaseEntity> extends JpaRepository<T, L
      *            An SQL query
      */
     void executeSQL(String sql);
+
+    /**
+     * Executes an SQL query
+     * 
+     * @param sql
+     *            An SQL query
+     * @param page
+     *            A page parameter (can be null)
+     * @param params
+     *            Parameters
+     * @return A resulted list
+     */
+    List<Object> executeSQLQuery(String sql, Pageable page, Map<String, Object> params);
 }

@@ -16,12 +16,15 @@
 package ru.anr.base.dao;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
 import org.hibernate.proxy.HibernateProxy;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 
 import ru.anr.base.BaseParent;
@@ -154,5 +157,26 @@ public class BaseRepositoryImpl<T extends BaseEntity> extends SimpleJpaRepositor
 
         Query query = entityManager.createNativeQuery(sql);
         query.executeUpdate();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @SuppressWarnings("unchecked")
+    @Override
+    public List<Object> executeSQLQuery(String sql, Pageable page, Map<String, Object> params) {
+
+        Query query = entityManager.createNativeQuery(sql);
+        if (params != null) {
+            for (Entry<String, Object> e : params.entrySet()) {
+                query.setParameter(e.getKey(), e.getValue());
+            }
+        }
+
+        if (page != null) {
+            query.setFirstResult(page.getOffset());
+            query.setMaxResults(page.getPageSize());
+        }
+        return query.getResultList();
     }
 }
