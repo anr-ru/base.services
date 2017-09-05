@@ -23,6 +23,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
 import org.hibernate.proxy.HibernateProxy;
+import org.hibernate.transform.AliasToEntityMapResultTransformer;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
@@ -167,6 +168,7 @@ public class BaseRepositoryImpl<T extends BaseEntity> extends SimpleJpaRepositor
     public List<Object> executeSQLQuery(String sql, Pageable page, Map<String, Object> params) {
 
         Query query = entityManager.createNativeQuery(sql);
+
         if (params != null) {
             for (Entry<String, Object> e : params.entrySet()) {
                 query.setParameter(e.getKey(), e.getValue());
@@ -177,6 +179,13 @@ public class BaseRepositoryImpl<T extends BaseEntity> extends SimpleJpaRepositor
             query.setFirstResult(page.getOffset());
             query.setMaxResults(page.getPageSize());
         }
+        /*
+         * Convert the results to a map
+         */
+        org.hibernate.Query hibernateQuery = ((org.hibernate.jpa.HibernateQuery) query).getHibernateQuery();
+        hibernateQuery.setResultTransformer(AliasToEntityMapResultTransformer.INSTANCE);
+        hibernateQuery.setReadOnly(true);
+
         return query.getResultList();
     }
 }
