@@ -24,6 +24,8 @@ import javax.persistence.Query;
 
 import org.hibernate.proxy.HibernateProxy;
 import org.hibernate.transform.AliasToEntityMapResultTransformer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
@@ -51,6 +53,11 @@ public class BaseRepositoryImpl<T extends BaseEntity> extends SimpleJpaRepositor
      * Ref to {@link EntityManager}
      */
     private final EntityManager entityManager;
+
+    /**
+     * Logger
+     */
+    private static final Logger logger = LoggerFactory.getLogger(BaseRepositoryImpl.class);
 
     /**
      * Constructor of repository instance
@@ -166,6 +173,10 @@ public class BaseRepositoryImpl<T extends BaseEntity> extends SimpleJpaRepositor
     @SuppressWarnings("unchecked")
     @Override
     public List<Object> executeSQLQuery(String sql, Pageable page, Map<String, Object> params) {
+
+        if (logger.isDebugEnabled()) {
+            logger.debug("SQL: {}, params: {}", sql, params);
+        }
 
         Query query = entityManager.createNativeQuery(sql);
 
