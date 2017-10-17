@@ -18,6 +18,7 @@ package ru.anr.base.services;
 import java.lang.annotation.Annotation;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
@@ -84,6 +85,25 @@ public class BaseServiceImpl extends BaseSpringParent implements BaseService {
 
         try {
             txt = messages.getMessage(code, args);
+
+        } catch (NoSuchMessageException ex) {
+
+            logger.error("Message resource error: {}", ex.getMessage());
+            txt = String.format(MSG_ERROR_DECORATION, code);
+        }
+        return txt;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String textLocalized(String code, Locale l, Object... args) {
+
+        String txt = null;
+
+        try {
+            txt = messages.getMessage(code, args, l);
 
         } catch (NoSuchMessageException ex) {
 

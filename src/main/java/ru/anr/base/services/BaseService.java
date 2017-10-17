@@ -15,6 +15,8 @@
  */
 package ru.anr.base.services;
 
+import java.util.Locale;
+
 import org.springframework.security.access.method.P;
 import org.springframework.security.access.prepost.PreAuthorize;
 
@@ -69,4 +71,19 @@ public interface BaseService {
      *         {@link TargetEnvironments} is defined in profiles.
      */
     TargetEnvironments getTargetEnv();
+
+    /**
+     * Retrieves a text message from resource with provided code and locale. If
+     * no message found with specified code, it returns a spring in format
+     * [xxxCODExxx].
+     * 
+     * @param code
+     *            A Message code
+     * @param locale
+     *            A Locale of message
+     * @param args
+     *            Message arguments
+     * @return A text with parameters replaced with the arguments
+     */
+    String textLocalized(String code, Locale locale, Object... args);
 }
