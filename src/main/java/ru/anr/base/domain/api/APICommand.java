@@ -423,6 +423,19 @@ public class APICommand extends BaseParent implements Serializable {
     }
 
     /**
+     * Determines whether the parameter list or context has the given parameter
+     * name
+     * 
+     * @param name
+     *            The name
+     * @return true, if it has
+     */
+    public boolean hasParam(String name) {
+
+        return getContexts().containsKey(name);
+    }
+
+    /**
      * @param contexts
      *            the contexts to set
      */
