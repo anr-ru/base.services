@@ -17,9 +17,10 @@ package ru.anr.base.dao;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
+import java.util.Set;
 
 import javax.persistence.EntityManager;
+import javax.persistence.Parameter;
 import javax.persistence.Query;
 
 import org.hibernate.proxy.HibernateProxy;
@@ -181,8 +182,13 @@ public class BaseRepositoryImpl<T extends BaseEntity> extends SimpleJpaRepositor
         Query query = entityManager.createNativeQuery(sql);
 
         if (params != null) {
-            for (Entry<String, Object> e : params.entrySet()) {
-                query.setParameter(e.getKey(), e.getValue());
+
+            Set<Parameter<?>> qparams = query.getParameters();
+
+            for (Parameter<?> qp : qparams) {
+                if (params.containsKey(qp.getName())) {
+                    query.setParameter(qp.getName(), params.get(qp.getName()));
+                }
             }
         }
 
