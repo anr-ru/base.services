@@ -27,7 +27,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
 
-import ru.anr.base.domain.BaseEntity;
 import ru.anr.base.domain.api.APICommand;
 import ru.anr.base.services.BaseDataAwareServiceImpl;
 
@@ -212,7 +211,7 @@ public class AbstractApiCommandStrategyImpl extends BaseDataAwareServiceImpl imp
      * @param <S>
      *            A class of the object
      */
-    protected <S extends BaseEntity> S findObjectByID(APICommand cmd, ObjectFindCallback<S> callback) {
+    protected <S> S findObjectByID(APICommand cmd, ObjectFindCallback<S> callback) {
 
         return callback.find(extractIdStrict(cmd));
     }
