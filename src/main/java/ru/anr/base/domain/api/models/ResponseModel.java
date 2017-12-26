@@ -24,6 +24,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
+import ru.anr.base.BaseParent;
+
 /**
  * Base content model of reponse body (parsed from JSON or XML). It also
  * contains fields for representation of error response (with code and error
@@ -35,7 +37,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
  *
  */
 @XmlRootElement(name = "response")
-public class ResponseModel implements Serializable {
+public class ResponseModel extends BaseParent implements Serializable {
 
     /**
      * 
@@ -71,6 +73,11 @@ public class ResponseModel implements Serializable {
      * Description gives some details about error
      */
     private String description;
+
+    /**
+     * Total number of results (if it's known)
+     */
+    private Long total;
 
     /**
      * Checks whether the response has errors or not
@@ -165,6 +172,24 @@ public class ResponseModel implements Serializable {
     public void setErrorId(String errorId) {
 
         this.errorId = errorId;
+    }
+
+    /**
+     * @return the total
+     */
+    @XmlAttribute(name = "total")
+    public Long getTotal() {
+
+        return total;
+    }
+
+    /**
+     * @param total
+     *            the total to set
+     */
+    public void setTotal(Long total) {
+
+        this.total = total;
     }
 
     /**
