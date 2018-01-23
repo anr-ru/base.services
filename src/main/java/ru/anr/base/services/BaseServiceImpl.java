@@ -232,6 +232,20 @@ public class BaseServiceImpl extends BaseSpringParent implements BaseService {
     }
 
     /**
+     * Checks the given value is not null and throws an exception with the given
+     * code.
+     * 
+     * @param value
+     *            The value to check
+     * @param paramId
+     *            The name of the parameter that represents the value
+     */
+    protected void checkParamNotNull(Object value, String paramId) {
+
+        checkNotNull(value, "api.param.is.null", paramId);
+    }
+
+    /**
      * Checks the given value is not null
      * 
      * @param value
