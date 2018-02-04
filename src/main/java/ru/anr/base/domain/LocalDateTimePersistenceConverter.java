@@ -24,7 +24,7 @@ import javax.persistence.Converter;
 import ru.anr.base.BaseParent;
 
 /**
- * A converter for {@link ZonedDateTime} object and standard SQL Timestamp.
+ * A converter for {@link ZonedDateTime} objects and standard SQL timestamps.
  *
  *
  * @author Alexey Romanchuk
@@ -33,8 +33,8 @@ import ru.anr.base.BaseParent;
  */
 
 @Converter(autoApply = true)
-public class LocalDateTimePersistenceConverter extends BaseParent implements
-        AttributeConverter<ZonedDateTime, Timestamp> {
+public class LocalDateTimePersistenceConverter extends BaseParent
+        implements AttributeConverter<ZonedDateTime, Timestamp> {
 
     /**
      * {@inheritDoc}

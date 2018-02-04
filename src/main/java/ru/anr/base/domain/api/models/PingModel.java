@@ -56,5 +56,4 @@ public class PingModel extends RequestModel {
 
         this.value = value;
     }
-
 }

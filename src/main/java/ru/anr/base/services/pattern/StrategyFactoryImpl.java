@@ -24,7 +24,7 @@ import ru.anr.base.BaseSpringParent;
 import ru.anr.base.services.pattern.StrategyConfig.StrategyModes;
 
 /**
- * Implementation of {@link StrategyFactory}
+ * An implementation of {@link StrategyFactory}
  *
  * @author Alexey Romanchuk
  * @created Nov 10, 2014
@@ -39,8 +39,8 @@ public class StrategyFactoryImpl extends BaseSpringParent implements StrategyFac
     private static final Logger logger = LoggerFactory.getLogger(StrategyFactoryImpl.class);
 
     /**
-     * Chain of strategies. We use a list here to make sure a valid sequence is
-     * applied.
+     * Chain of strategies. We use a list here to make sure the valid sequence
+     * is applied.
      */
     private final List<Strategy<Object>> strategies;
 

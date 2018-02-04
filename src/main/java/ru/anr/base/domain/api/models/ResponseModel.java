@@ -27,9 +27,9 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import ru.anr.base.BaseParent;
 
 /**
- * Base content model of reponse body (parsed from JSON or XML). It also
- * contains fields for representation of error response (with code and error
- * message).
+ * A base content model of the response's body (parsed from JSON or XML). It
+ * also contains fields for representation of error response (with code and
+ * error message).
  *
  *
  * @author Alexey Romanchuk
@@ -45,7 +45,7 @@ public class ResponseModel extends BaseParent implements Serializable {
     private static final long serialVersionUID = 6293179038331851434L;
 
     /**
-     * Reponse code. 0 mean 'success'
+     * The response code. 0 mean 'success'
      */
     private Integer code;
 

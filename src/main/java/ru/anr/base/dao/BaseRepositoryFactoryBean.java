@@ -27,7 +27,7 @@ import ru.anr.base.dao.repository.BaseRepository;
 import ru.anr.base.domain.BaseEntity;
 
 /**
- * A factory bean for creation of our custom repository instance. This code is
+ * A factory bean for creation of a custom repository instance. This code is
  * taken from Spring Data Reference Docs.
  *
  *
@@ -38,8 +38,8 @@ import ru.anr.base.domain.BaseEntity;
  *            Type of Entity
  */
 
-public class BaseRepositoryFactoryBean<T extends BaseEntity> extends
-        JpaRepositoryFactoryBean<BaseRepository<T>, T, Long> {
+public class BaseRepositoryFactoryBean<T extends BaseEntity>
+        extends JpaRepositoryFactoryBean<BaseRepository<T>, T, Long> {
 
     /**
      * Creates a new {@link BaseRepositoryFactoryBean} for the given repository

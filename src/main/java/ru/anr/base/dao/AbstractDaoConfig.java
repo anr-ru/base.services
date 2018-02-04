@@ -29,8 +29,8 @@ import org.springframework.transaction.annotation.TransactionManagementConfigure
 import ru.anr.base.BaseSpringParent;
 
 /**
- * Abstract configuration for data access - contains a query for
- * {@link PlatformTransactionManager} and Caching definition
+ * Abstract configuration for data accessing. It contains a builder for
+ * {@link PlatformTransactionManager} and caching.
  *
  *
  * @author Alexey Romanchuk
@@ -80,5 +80,4 @@ public abstract class AbstractDaoConfig extends BaseSpringParent implements Tran
 
         return mgr;
     }
-
 }

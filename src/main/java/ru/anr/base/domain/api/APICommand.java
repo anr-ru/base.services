@@ -31,7 +31,8 @@ import ru.anr.base.domain.api.models.SortModel;
 import ru.anr.base.domain.api.models.SortModel.SortDirection;
 
 /**
- * Representation of general API command (based on RESTful API model).
+ * A representation of a general API command (based on the RESTful API
+ * approach).
  *
  *
  * @author Alexey Romanchuk
@@ -109,11 +110,11 @@ public class APICommand extends BaseParent implements Serializable {
     // ////////////////////// Builder methods //////////////////////////////
 
     /**
-     * Add response format
+     * Adds the response format
      * 
      * @param t
-     *            Format of raw data for response
-     * @return This
+     *            A format of raw data for response
+     * @return This object
      */
     public APICommand responseFormat(RawFormatTypes t) {
 
@@ -122,11 +123,11 @@ public class APICommand extends BaseParent implements Serializable {
     }
 
     /**
-     * Add request format
+     * Adds the request format
      * 
      * @param t
-     *            Format of raw data request
-     * @return This
+     *            A format of raw data request
+     * @return This object
      */
     public APICommand requestFormat(RawFormatTypes t) {
 
@@ -135,11 +136,11 @@ public class APICommand extends BaseParent implements Serializable {
     }
 
     /**
-     * Adding a raw request data (not parsed)
+     * Adds raw request data (not parsed)
      * 
      * @param raw
-     *            A raw string with content
-     * @return This
+     *            A raw string with the request model
+     * @return This object
      */
     public APICommand addRaw(String raw) {
 
@@ -148,7 +149,7 @@ public class APICommand extends BaseParent implements Serializable {
     }
 
     /**
-     * Sets a type of operation according specified http method
+     * Sets the type of operation according to the specified http method
      * 
      * @param method
      *            Method
@@ -181,9 +182,11 @@ public class APICommand extends BaseParent implements Serializable {
     }
 
     /**
+     * Adds pairs name/value to the request parameters.
+     * 
      * @param array
      *            An array of pairs 'key/value'
-     * @return This
+     * @return This object
      */
     public APICommand context(Object... array) {
 
@@ -192,42 +195,47 @@ public class APICommand extends BaseParent implements Serializable {
     }
 
     /**
-     * Parsing specified query params to set some additional properties of the
-     * command
+     * Parses predefined query parameters to set additional properties of the
+     * command.
      * 
      * @param params
-     *            A map of request params
-     * @return This
+     *            A map of request parameters.
+     * @return This object
      */
     public APICommand params(Map<String, ?> params) {
 
         request = new RequestModel();
         Map<String, ?> copy = new HashMap<>(params);
 
+        // The number of the current page in multi-paged results
         Object v = copy.get("page");
         if (v != null) {
             request.setPage(parse(v.toString(), Integer.class));
             copy.remove("page");
         }
 
+        // The number of items per page
         v = copy.get("per_page");
         if (v != null) {
             request.setPerPage(parse(v.toString(), Integer.class));
             copy.remove("per_page");
         }
 
+        // A list of queried fields
         v = copy.get("fields");
         if (v != null) {
             request.setFields(parseList(v.toString()));
             copy.remove("fields");
         }
 
+        // the query field
         v = copy.get("q");
         if (v != null) {
             request.setSearch(v.toString());
             copy.remove("q");
         }
 
+        // the sort field
         v = copy.get("sort");
         if (v != null) {
             request.setSorted(parseSort(parseList(v.toString())));
@@ -241,11 +249,11 @@ public class APICommand extends BaseParent implements Serializable {
     }
 
     /**
-     * Parsing of string fields with +/- markers to {@link SortModel}.
+     * Parsing string fields with +/- markers to {@link SortModel}.
      * 
      * @param values
-     *            List of fields with expected prefixed
-     * @return List of {@link SortModel} objects
+     *            A list of fields with expected prefixed
+     * @return A list of {@link SortModel} objects
      */
     private List<SortModel> parseSort(List<String> values) {
 
@@ -261,10 +269,10 @@ public class APICommand extends BaseParent implements Serializable {
     }
 
     /**
-     * Parsing of values separated by ','
+     * Parsing values separated by comma (',').
      * 
      * @param s
-     *            String with values
+     *            A string with values
      * @return Parsed values
      */
     private List<String> parseList(String s) {

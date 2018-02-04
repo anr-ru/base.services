@@ -31,7 +31,7 @@ import ru.anr.base.domain.api.APICommand;
 import ru.anr.base.services.BaseDataAwareServiceImpl;
 
 /**
- * Implementation of base API Command strategy.
+ * An implementation of the base API strategy.
  *
  * @author Alexey Romanchuk
  * @created Nov 10, 2014
@@ -101,10 +101,10 @@ public class AbstractApiCommandStrategyImpl extends BaseDataAwareServiceImpl imp
 
     /**
      * Prepares a {@link Pageable} object based on provided data. Handles the
-     * situation when the paging parameters are nulls.
+     * case when paging parameters are null.
      * 
      * @param cmd
-     *            An original API Command
+     *            An API Command
      * @param direction
      *            A direction of sorting
      * @param properties

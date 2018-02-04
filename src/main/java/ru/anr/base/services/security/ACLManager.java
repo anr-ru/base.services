@@ -21,7 +21,7 @@ import ru.anr.base.domain.BaseEntity;
 public interface ACLManager {
 
     /**
-     * Grantes a given permission to entity for specific user
+     * Grants a given permission to an entity for a specific user
      * 
      * @param e
      *            Entity

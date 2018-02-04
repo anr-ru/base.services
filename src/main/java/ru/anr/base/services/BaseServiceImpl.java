@@ -134,11 +134,11 @@ public class BaseServiceImpl extends BaseSpringParent implements BaseService {
 
     /**
      * A point of extension of the current service with sort of plug-ins.
-     * Delegates an additional processing to some strategies, defined for the
-     * service.
+     * Delegates an additional processing to some strategies defined for the
+     * service with the 'extensions' properties.
      * 
      * @param object
-     *            Original object to process
+     *            An object to process
      * @param params
      *            Additional parameters
      * @return A list including resulted objects if they were during the
@@ -155,7 +155,7 @@ public class BaseServiceImpl extends BaseSpringParent implements BaseService {
     }
 
     /**
-     * Getting validator instance if configured (requires
+     * Getting the validator instance if configured (requires
      * {@link ru.anr.base.services.validation.ValidationConfig} to be loaded)
      * 
      * @return {@link Validator}

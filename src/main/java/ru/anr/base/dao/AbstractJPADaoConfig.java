@@ -25,8 +25,8 @@ import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 
 /**
- * Annotation-based dao config for JPA mode. It includes abstract datasource
- * definition via c3p0 pool, JPA based entity factory and JPA transaction
+ * An annotation-based dao config for non-JTA environments. It includes an
+ * abstract datasource definition, JPA based entity factory and JPA transaction
  * manager.
  *
  *
@@ -42,7 +42,7 @@ public abstract class AbstractJPADaoConfig extends AbstractDaoConfig {
     private String userName;
 
     /**
-     * Password
+     * Connection password
      */
     private String password;
 
@@ -52,7 +52,7 @@ public abstract class AbstractJPADaoConfig extends AbstractDaoConfig {
     private String jdbcUrl;
 
     /**
-     * Driver class for JDBC
+     * The driver class name for JDBC
      */
     private String jdbcDriverClassName;
 

@@ -24,7 +24,7 @@ import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 
 /**
- * Description ...
+ * A configuration for text properties.
  *
  *
  * @author Alexey Romanchuk
@@ -35,12 +35,12 @@ import org.springframework.context.support.ReloadableResourceBundleMessageSource
 public class MessagePropertiesConfig {
 
     /**
-     * Paths to each property file
+     * Paths to property files
      */
     private String[] paths = new String[]{};
 
     /**
-     * AMount of time to cache properties
+     * Amount of time to cache properties
      */
     private Integer cacheSeconds = 60;
 

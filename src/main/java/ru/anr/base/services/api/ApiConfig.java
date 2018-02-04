@@ -27,8 +27,8 @@ import ru.anr.base.BaseSpringParent;
 import ru.anr.base.services.serializer.SerializationConfig;
 
 /**
- * Configuration for Api commands and factory. Exports
- * {@link APICommandFactoryImpl} bean.
+ * A configuration for API commands and the factory. Exports
+ * {@link APICommandFactoryImpl} the factory bean.
  *
  *
  * @author Alexey Romanchuk
@@ -47,7 +47,7 @@ public class ApiConfig extends BaseSpringParent {
     private ApplicationContext ctx;
 
     /**
-     * Finding all api commands and storing them in a factory.
+     * Finds all API commands and stores them in the factory.
      * 
      * @return A factory bean instance
      */
@@ -61,5 +61,4 @@ public class ApiConfig extends BaseSpringParent {
 
         return impl;
     }
-
 }

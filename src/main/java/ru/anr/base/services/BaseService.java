@@ -23,7 +23,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import ru.anr.base.domain.BaseEntity;
 
 /**
- * A 'Service' interface
+ * A base service interface.
  * 
  * 
  * @author Alexey Romanchuk

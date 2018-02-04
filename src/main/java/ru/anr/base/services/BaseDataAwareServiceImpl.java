@@ -31,7 +31,7 @@ import ru.anr.base.domain.BaseEntity;
 
 /**
  * A parent class for all business logic services, which need a database access.
- * We suppose the necessery DAO repository was injected.
+ * We suppose the necessary DAO repository was injected.
  *
  *
  * @author Alexey Romanchuk

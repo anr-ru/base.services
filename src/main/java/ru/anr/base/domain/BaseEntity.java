@@ -46,7 +46,7 @@ import ru.anr.base.BaseParent;
 import ru.anr.base.dao.BaseRepositoryImpl;
 
 /**
- * A parent for all entities. It include a definition of ID column,
+ * A parent for all entities. It include a definition of the ID column,
  * {@link #equals(Object)} and {@link #hashCode()} operations.
  *
  * 
@@ -92,12 +92,12 @@ public class BaseEntity extends BaseParent implements Serializable, Accessible {
     private Calendar modified;
 
     /**
-     * Name of object state
+     * The state
      */
     private String state;
 
     /**
-     * The time when a state changed
+     * The time when the state has been changed
      */
     private Calendar stateChanged;
 
@@ -133,10 +133,10 @@ public class BaseEntity extends BaseParent implements Serializable, Accessible {
     }
 
     /**
-     * Changing a state of this object
+     * Changing the state of this object
      * 
      * @param newState
-     *            New state name
+     *            A new state
      * @return Old state (being changed)
      */
     public String changeState(String newState) {
@@ -150,7 +150,7 @@ public class BaseEntity extends BaseParent implements Serializable, Accessible {
     }
 
     /**
-     * State diagram of the object
+     * A state diagram of the object
      */
     private final MultiValueMap<String, String> transitions = new LinkedMultiValueMap<>();
 
@@ -380,8 +380,8 @@ public class BaseEntity extends BaseParent implements Serializable, Accessible {
         if (obj == this) {
             return true;
         }
-        if (getClass() != (obj instanceof BaseEntity ? BaseRepositoryImpl.entityClass((BaseEntity) obj) : obj
-                .getClass())) {
+        if (getClass() != (obj instanceof BaseEntity ? BaseRepositoryImpl.entityClass((BaseEntity) obj)
+                : obj.getClass())) {
             return false;
         }
         BaseEntity rhs = (BaseEntity) obj;

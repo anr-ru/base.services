@@ -29,7 +29,7 @@ import ru.anr.base.dao.repository.BaseRepository;
 import ru.anr.base.domain.BaseEntity;
 
 /**
- * MultiUnit version.
+ * A multiUnit version of the repository factory.
  *
  *
  * @author Alexey Romanchuk
@@ -39,8 +39,8 @@ import ru.anr.base.domain.BaseEntity;
  *            Type of an entity
  */
 
-public class MultiUnitRepositoryFactoryBean<T extends BaseEntity> extends
-        TransactionalRepositoryFactoryBeanSupport<BaseRepository<T>, T, Long> {
+public class MultiUnitRepositoryFactoryBean<T extends BaseEntity>
+        extends TransactionalRepositoryFactoryBeanSupport<BaseRepository<T>, T, Long> {
 
     /**
      * Creates a new {@link MultiUnitRepositoryFactoryBean} for the given

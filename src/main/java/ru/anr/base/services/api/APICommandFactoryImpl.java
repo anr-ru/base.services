@@ -348,8 +348,8 @@ public class APICommandFactoryImpl extends BaseServiceImpl implements APICommand
     }
 
     /**
-     * Deserializing raw content of request into required model. If raw content
-     * is null, the function does nothing.
+     * Deserializing the raw content of a request into the required model. If
+     * raw content is null, the function does nothing.
      * 
      * @param cmd
      *            Command

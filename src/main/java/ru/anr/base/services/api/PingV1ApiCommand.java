@@ -21,7 +21,7 @@ import ru.anr.base.domain.api.models.RequestModel;
 import ru.anr.base.domain.api.models.ResponseModel;
 
 /**
- * A 'ping' api command. It's always successful, inspite of using
+ * A 'ping' api command. It's always successful, in spite of using
  * {@link ErrorModel} :-)
  *
  *

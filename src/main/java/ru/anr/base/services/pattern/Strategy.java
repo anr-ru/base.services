@@ -29,12 +29,12 @@ package ru.anr.base.services.pattern;
 public interface Strategy<T> {
 
     /**
-     * Checking how this strategy can be or cannot be applied to an object.
+     * Checking how this strategy can be or can not be applied to an object.
      * 
      * @param o
-     *            Incoming object
+     *            An object
      * @param params
-     *            Additional params
+     *            Additional parameters
      * @return Configuration for strategy execution (true or false), including a
      *         {@link ru.anr.base.services.pattern.StrategyConfig.StrategyModes}
      */
@@ -47,7 +47,7 @@ public interface Strategy<T> {
      *            Incoming object
      * @param cfg
      *            Original configuration
-     * @return Resulted (maybe updated) object
+     * @return Resulted (possibly, updated) object
      */
     T process(T o, StrategyConfig cfg);
 }

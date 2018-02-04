@@ -34,6 +34,21 @@
             <timezone>5</timezone>
         </developer>
     </developers>
+    
+    <distributionManagement>
+      <repository>
+        <id>packagecloud-travis</id>
+        <url>
+          packagecloud+https://packagecloud.io/ruanr/baseplatform
+        </url>
+      </repository>
+      <snapshotRepository>
+        <id>packagecloud-travis</id>
+        <url>
+          packagecloud+https://packagecloud.io/ruanr/baseplatform
+        </url>
+      </snapshotRepository>
+    </distributionManagement>
 
     <build>
         <plugins>
@@ -58,6 +73,13 @@
                 </executions>
             </plugin>        
         </plugins>
+        <extensions>
+           <extension>
+              <groupId>io.packagecloud.maven.wagon</groupId>
+              <artifactId>maven-packagecloud-wagon</artifactId>
+              <version>0.0.6</version>
+           </extension>           
+        </extensions>
     </build>
 
 

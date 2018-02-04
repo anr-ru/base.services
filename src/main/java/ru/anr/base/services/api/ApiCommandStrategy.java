@@ -18,7 +18,7 @@ package ru.anr.base.services.api;
 import ru.anr.base.domain.api.APICommand;
 
 /**
- * Interface for Api command strategy.
+ * An interface for general API strategy.
  *
  *
  * @author Alexey Romanchuk

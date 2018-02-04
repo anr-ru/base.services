@@ -36,27 +36,27 @@ import ru.anr.base.dao.repository.BaseRepository;
 import ru.anr.base.domain.BaseEntity;
 
 /**
- * Custom implementation for Dao Repository. Added some useful functions from
- * {@link EntityManager}.
+ * A custom implementation for DAO Repositories. Added some useful functions
+ * from {@link EntityManager}.
  *
  *
  * @author Alexey Romanchuk
  * @created Nov 6, 2014
  *
  * @param <T>
- *            Entity type
+ *            Entity Type
  */
 
 public class BaseRepositoryImpl<T extends BaseEntity> extends SimpleJpaRepository<T, Long>
         implements BaseRepository<T> {
 
     /**
-     * Ref to {@link EntityManager}
+     * {@link EntityManager}
      */
     private final EntityManager entityManager;
 
     /**
-     * Logger
+     * The logger
      */
     private static final Logger logger = LoggerFactory.getLogger(BaseRepositoryImpl.class);
 
@@ -113,8 +113,8 @@ public class BaseRepositoryImpl<T extends BaseEntity> extends SimpleJpaRepositor
     }
 
     /**
-     * Extracts entity class for specified entity (which can be a proxied
-     * hibernate entity). The implementation is hibernate specific.
+     * Extracts the entity's class for the specified entity which can be a
+     * proxied hibernate entity. The implementation is Hibernate specific.
      * 
      * @param entity
      *            Entity
@@ -127,8 +127,8 @@ public class BaseRepositoryImpl<T extends BaseEntity> extends SimpleJpaRepositor
     }
 
     /**
-     * Extracts a pure entity for the specified hibernate entity (which can be a
-     * proxied). The implementation is hibernate specific.
+     * Extracts a pure entity for the given hibernate entity which can be a
+     * proxied. The implementation is Hibernate specific.
      * 
      * @param entity
      *            The entity

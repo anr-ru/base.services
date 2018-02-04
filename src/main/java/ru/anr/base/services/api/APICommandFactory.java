@@ -19,8 +19,8 @@ import ru.anr.base.domain.api.APICommand;
 import ru.anr.base.domain.api.models.ResponseModel;
 
 /**
- * Interface for command factory. Provides general function to handle API
- * command and their errors.
+ * An interface for the command factory. Provides general functions to handle
+ * API commands and their errors.
  *
  *
  * @author Alexey Romanchuk
@@ -42,19 +42,19 @@ public interface APICommandFactory {
     APICommand process(APICommand cmd);
 
     /**
-     * A special entry point for handling errors. It generates a pretty error
+     * A special entry point for handling errors. It generates an API error
      * response.
      * 
      * @param cmd
-     *            Original API Command
+     *            The original API Command
      * @param ex
      *            An exception
-     * @return API Command with built error response
+     * @return API Command with the built error response
      */
     APICommand error(APICommand cmd, Throwable ex);
 
     /**
-     * A special entry point for handling errors. It generates a pretty error
+     * A special entry point for handling errors. It generates an API error
      * response using the specified response model.
      * 
      * @param cmd
@@ -68,8 +68,8 @@ public interface APICommandFactory {
     APICommand error(APICommand cmd, Throwable ex, ResponseModel model);
 
     /**
-     * A special entry point for handling global errors, not for specific
-     * command.
+     * A special entry point for handling global errors if the original command
+     * is unknown.
      * 
      * @param ex
      *            AN exception

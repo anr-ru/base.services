@@ -26,7 +26,7 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 /**
- * Model for API body for request.
+ * A base model for an API request.
  *
  *
  * @author Alexey Romanchuk
@@ -42,17 +42,17 @@ public class RequestModel extends ResponseModel implements Serializable {
     private static final long serialVersionUID = 7797203596478650118L;
 
     /**
-     * List of field for sorting
+     * A list of fields used for sorting
      */
     private List<SortModel> sorted;
 
     /**
-     * Full-text search query
+     * A full-text search query string
      */
     private String search;
 
     /**
-     * List of fields required in result set
+     * A list of fields required in result set
      */
     private List<String> fields;
 

@@ -1,5 +1,17 @@
-/**
+/*
+ * Copyright 2014 the original author or authors.
  * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  */
 package ru.anr.base.domain.api.models;
 
@@ -29,7 +41,7 @@ public class BaseObjectModel extends RequestModel {
     private static final long serialVersionUID = -752471039342963751L;
 
     /**
-     * Identifier of the object
+     * The identifier of the object
      */
     private Long id;
 
@@ -75,24 +87,6 @@ public class BaseObjectModel extends RequestModel {
     public static <S> S nullSafe(S o, Class<S> clazz) {
 
         return Optional.ofNullable(o).orElse(BaseParent.inst(clazz, new Class<?>[]{}));
-    }
-
-    /**
-     * A variant of the nullSafe(..) function for safe creation of models
-     * 
-     * @param value
-     *            A value to check before creation of a model
-     * @param callback
-     *            The callback used to specify the way of creation
-     * @return A model instance or null
-     * @param <S>
-     *            The class of the model
-     * @param <V>
-     *            The class of the value
-     */
-    protected <S, V> S nullSafe(V value, ModelCreator<S, V> callback) {
-
-        return (value == null) ? null : callback.newValue(value);
     }
 
     /**

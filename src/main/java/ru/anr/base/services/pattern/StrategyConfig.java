@@ -22,7 +22,7 @@ import org.apache.commons.lang3.ArrayUtils;
 import ru.anr.base.BaseParent;
 
 /**
- * A storage for the way how a stategy should be handled. It's used by
+ * A storage for the way how a strategy should be handled. It is used by the
  * {@link StrategyFactory} algorithm.
  *
  *
@@ -34,12 +34,12 @@ import ru.anr.base.BaseParent;
 public class StrategyConfig {
 
     /**
-     * True, if a strategy can be applied for specified object
+     * True, if a strategy can be applied for the specified object
      */
     private final boolean applicable;
 
     /**
-     * Original object for strategy application
+     * The original object for strategy application
      */
     private final Object object;
 
@@ -49,7 +49,7 @@ public class StrategyConfig {
     private final StrategyModes mode;
 
     /**
-     * An array of additinal params
+     * An array of additional parameters
      */
     private final Object[] params;
 
@@ -135,11 +135,11 @@ public class StrategyConfig {
      */
     public enum StrategyModes {
         /**
-         * Normal execution of strategies chain
+         * Normal execution of the strategies' chain
          */
         Normal,
         /**
-         * After this strategy, further execution must be stopped (current
+         * After this strategy further execution must be stopped (current
          * strategy is the last)
          */
         TerminateAfter;

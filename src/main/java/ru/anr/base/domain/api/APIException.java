@@ -18,8 +18,7 @@ package ru.anr.base.domain.api;
 import ru.anr.base.ApplicationException;
 
 /**
- * Special kind of exception with an integer error code.
- *
+ * Special kind of exception with an integer or string error code.
  *
  * @author Alexey Romanchuk
  * @created Nov 10, 2014
@@ -44,17 +43,17 @@ public final class APIException extends ApplicationException {
     private static final long serialVersionUID = -1705171832150544996L;
 
     /**
-     * Error code is useful for automatic parsing
+     * An error code is useful for automatic parsing
      */
     private final int errorCode;
 
     /**
-     * Constructor
+     * A constructor
      * 
      * @param msg
-     *            Error message
+     *            An error message
      * @param errorCode
-     *            Error code
+     *            An error code
      */
     private APIException(String msg, int errorCode) {
 
@@ -63,7 +62,7 @@ public final class APIException extends ApplicationException {
     }
 
     /**
-     * Generates a validation exception
+     * Generates a validation exception object
      * 
      * @param errorId
      *            A string identifier of the error

@@ -31,7 +31,7 @@ import org.springframework.util.Assert;
 import ru.anr.base.BaseParent;
 
 /**
- * Common Authorization / ACL configurator.
+ * A common Authorization / ACL configurator.
  *
  *
  * @author Alexey Romanchuk

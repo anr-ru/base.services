@@ -19,7 +19,7 @@ import ru.anr.base.services.BaseServiceImpl;
 import ru.anr.base.services.pattern.StrategyConfig.StrategyModes;
 
 /**
- * No operation strategy. Just do nothing and can be used for test purposes.
+ * No operation strategy. Just does nothing and can be used for test purposes.
  *
  *
  * @author Alexey Romanchuk
