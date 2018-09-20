@@ -17,6 +17,7 @@ package ru.anr.base.services.serializer;
 
 import com.fasterxml.jackson.databind.AnnotationIntrospector;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.introspect.AnnotationIntrospectorPair;
 import com.fasterxml.jackson.databind.introspect.JacksonAnnotationIntrospector;
 import com.fasterxml.jackson.module.jaxb.JaxbAnnotationIntrospector;
@@ -46,5 +47,18 @@ public class JSONSerializerImpl extends AbstractSerializerImpl {
         AnnotationIntrospector secondary = new JacksonAnnotationIntrospector();
 
         mapper().setAnnotationIntrospector(new AnnotationIntrospectorPair(introspector, secondary));
+    }
+
+    /**
+     * A constructor with the flag of formatted output which is convenient for
+     * debugging.
+     * 
+     * @param prettyOutput
+     *            true, if the pretty formatted output is required
+     */
+    public JSONSerializerImpl(boolean prettyOutput) {
+
+        this();
+        mapper().configure(SerializationFeature.INDENT_OUTPUT, prettyOutput);
     }
 }
