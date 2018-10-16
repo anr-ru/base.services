@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/anr-ru/base.services.svg?branch=master)](https://travis-ci.org/anr-ru/base.services)
+
 ## Base.Platform Project
 
 # Base.Services
