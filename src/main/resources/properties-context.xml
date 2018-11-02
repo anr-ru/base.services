@@ -19,22 +19,22 @@
 
     <!-- If defined the profile for CI environments -->
     <beans profile="CI">
-        <context:property-placeholder location="classpath:application.properties,classpath:application-ci.properties" 
+        <context:property-placeholder location="classpath:application.properties,classpath:application-ci.properties,classpath:application-CI.properties" 
             ignore-resource-not-found="true" />
     </beans>
     <!-- If defined the profile for development environments -->
     <beans profile="DEV">
-        <context:property-placeholder location="classpath:application.properties,classpath:application-dev.properties" 
+        <context:property-placeholder location="classpath:application.properties,classpath:application-dev.properties,classpath:application-DEV.properties" 
             ignore-resource-not-found="true" />
     </beans>
     <!-- If defined the profile for QA environments -->
     <beans profile="QA">
-        <context:property-placeholder location="classpath:application.properties,classpath:application-qa.properties" 
+        <context:property-placeholder location="classpath:application.properties,classpath:application-qa.properties,classpath:application-QA.properties" 
             ignore-resource-not-found="true" />
     </beans>
     <!-- If defined the profile for production environments -->
     <beans profile="PROD">
-        <context:property-placeholder location="classpath:application.properties,classpath:application-prod.properties" 
+        <context:property-placeholder location="classpath:application.properties,classpath:application-prod.properties,classpath:application-PROD.properties" 
             ignore-resource-not-found="true" />
     </beans>
     <!-- If nothing from above is defined, load the default one -->
