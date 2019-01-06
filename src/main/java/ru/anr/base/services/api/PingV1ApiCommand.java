@@ -22,7 +22,7 @@ import ru.anr.base.domain.api.models.ResponseModel;
 
 /**
  * A 'ping' api command. It's always successful, in spite of using
- * {@link ErrorModel} :-)
+ * {@link ResponseModel} :-)
  *
  *
  * @author Alexey Romanchuk
@@ -39,7 +39,7 @@ public class PingV1ApiCommand extends AbstractApiCommandStrategyImpl {
      *            Request model
      * @param method
      *            A method name (to check)
-     * @return Response model (we use {@link ErrorModel})
+     * @return Response model (we use {@link ResponseModel})
      */
     private ResponseModel build(RequestModel rq, String method) {
 
