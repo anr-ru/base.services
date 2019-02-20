@@ -87,7 +87,8 @@ public interface BaseRepository<T extends BaseEntity> extends JpaRepository<T, L
      * @param <S>
      *            Type of item in the list
      */
-    @PostFilter("hasPermission(filterObject,'read') or hasPermission(filterObject,'access_read')")
+    @PostFilter("hasPermission(filterObject,'read') or hasPermission(filterObject,'access_read') or "
+            + "hasRole('ROLE_ROOT')")
     <S extends BaseEntity> List<S> filter(Page<S> page);
 
     /**

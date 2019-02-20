@@ -9,7 +9,7 @@
     </parent>
 
     <artifactId>base.services</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.1-SNAPSHOT</version>
 
     <name>Base Services</name>
     <description>A set of base classes for business logic implementations</description>
