@@ -214,7 +214,7 @@
         <dependency>
             <groupId>ru.anr</groupId>
             <artifactId>base.utils</artifactId>
-            <version>1.0.0</version>
+            <version>${base.utils.version}</version>
         </dependency>
         <dependency>
             <groupId>ru.anr</groupId>
@@ -243,6 +243,8 @@
         <dbx.password></dbx.password>
         <dbx.driverClass>org.hsqldb.jdbcDriver</dbx.driverClass>
         <dbx.hibernateDialect>org.hibernate.dialect.HSQLDialect</dbx.hibernateDialect>
+        
+        <base.utils.version>1.0.1</base.utils.version>
         
     </properties>
 
