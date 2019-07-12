@@ -205,4 +205,16 @@ public class BaseRepositoryImpl<T extends BaseEntity> extends SimpleJpaRepositor
 
         return query.getResultList();
     }
+
+    @Override
+    public int execute(String queryStr, Object... params) {
+
+        Query q = entityManager.createQuery(queryStr);
+        if (params != null) {
+            for (int i = 0; i < params.length; i++) {
+                q.setParameter(i + 1, params[i]);
+            }
+        }
+        return q.executeUpdate();
+    }
 }
