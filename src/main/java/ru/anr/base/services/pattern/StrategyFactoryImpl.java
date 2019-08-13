@@ -87,7 +87,7 @@ public class StrategyFactoryImpl extends BaseSpringParent implements StrategyFac
         }
 
         if (strategies.isEmpty()) {
-            logger.warn("No one strategy executed due to an empty strategy list");
+            logger.debug("No one strategy executed due to an empty strategy list");
         }
         return new StrategyStatistic(o, list, results);
     }
