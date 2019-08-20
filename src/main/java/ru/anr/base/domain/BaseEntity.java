@@ -143,9 +143,10 @@ public class BaseEntity extends BaseParent implements Serializable, Accessible {
 
         String oldState = getState();
 
-        setState(newState);
-        setStateChanged(GregorianCalendar.from(now()));
-
+        if (!this.hasState(newState)) {
+            setState(newState);
+            setStateChanged(GregorianCalendar.from(now()));
+        }
         return oldState;
     }
 
