@@ -246,6 +246,22 @@ public class BaseServiceImpl extends BaseSpringParent implements BaseService {
     }
 
     /**
+     * Checks whether the parameter is wrong. It supposed to use some standard
+     * message ID to avoid to much parameters message writing.
+     * 
+     * @param condition
+     *            The condition to check
+     * @param paramId
+     *            The parameter ID
+     * @param value
+     *            The value of the parameter which is wrong
+     */
+    protected void checkParamWrong(boolean condition, String paramId, Object value) {
+
+        checkIsTrue(condition, "api.param.is.wrong", paramId, value);
+    }
+
+    /**
      * Checks the given value is not null
      * 
      * @param value
