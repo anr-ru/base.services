@@ -59,6 +59,15 @@ import ru.anr.base.services.validation.ValidationUtils;
 public class BaseServiceImpl extends BaseSpringParent implements BaseService {
 
     /**
+     * {@inheritDoc}
+     */
+    @Override
+    public <S> S getBean(Class<S> clazz) {
+
+        return super.bean(clazz);
+    }
+
+    /**
      * Logger
      */
     private static final Logger logger = LoggerFactory.getLogger(BaseServiceImpl.class);

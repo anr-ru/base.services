@@ -22,6 +22,7 @@ import javax.xml.bind.annotation.XmlAttribute;
 
 import ru.anr.base.BaseParent;
 import ru.anr.base.domain.BaseEntity;
+import ru.anr.base.services.BaseService;
 
 /**
  * A base model for all objects (contains id, state, created and other basic
@@ -125,6 +126,19 @@ public class BaseObjectModel extends RequestModel {
         this.modified = mo.getModified();
         this.state = mo.getState();
         this.stateChanged = mo.getStateChanged();
+    }
+
+    /**
+     * The common entry point for fill data from the model to the given object.
+     * 
+     * @param object
+     *            The object to apply
+     * @param service
+     *            The base service to extracts some additional data or other
+     *            services
+     */
+    public void fill(BaseEntity object, BaseService service) {
+
     }
 
     // /////////////////////////////////////////////////////////////////////////

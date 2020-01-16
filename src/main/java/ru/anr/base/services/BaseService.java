@@ -86,4 +86,15 @@ public interface BaseService {
      * @return A text with parameters replaced with the arguments
      */
     String textLocalized(String code, Locale locale, Object... args);
+
+    /**
+     * Finds the bean by its class
+     * 
+     * @param <S>
+     *            The type
+     * @param clazz
+     *            The class
+     * @return The bean instance
+     */
+    <S> S getBean(Class<S> clazz);
 }
