@@ -222,7 +222,7 @@
         <dbx.driverClass>org.hsqldb.jdbcDriver</dbx.driverClass>
         <dbx.hibernateDialect>org.hibernate.dialect.HSQLDialect</dbx.hibernateDialect>
         
-        <base.utils.version>1.0.1</base.utils.version>
+        <base.utils.version>1.0.1-SNAPSHOT-99fd047</base.utils.version>
         
     </properties>
 

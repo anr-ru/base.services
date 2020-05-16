@@ -16,15 +16,16 @@
 package ru.anr.base.domain.api;
 
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.*;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import ru.anr.base.BaseParent;
 import ru.anr.base.domain.api.models.RequestModel;
 import ru.anr.base.domain.api.models.SortModel;
@@ -284,6 +285,48 @@ public class APICommand extends BaseParent implements Serializable {
             list = list(array);
         }
         return list;
+    }
+
+    /**
+     * Parses the given parameter as the local date value
+     *
+     * @param name The name of the parameyet
+     * @param def The default date value if nothing parsed
+     * @return The date
+     */
+    public ZonedDateTime parseDate(String name, ZonedDateTime def) {
+        Map<String, ?> map = this.getContexts();
+        String strDate = nullSafe(map.get(name));
+
+        return parseLocalDate(strDate,"yyyy-MM-dd", def);
+    }
+
+    /**
+     * Searches all sorting parameters or set the default value if the sorting field not defined.
+     *
+     * @param def The default sort direction if the sort order was not parsed/defined
+     *
+     * @param fields The fields which are expected to be used for sorting
+     * @return The found sort order with the same
+     */
+    public Map<String, SortModel.SortDirection> findSorting(SortModel.SortDirection def, String ... fields) {
+
+        RequestModel rq = this.getRequest();
+        Map<String, SortModel.SortDirection> results = toMap();
+
+        if (rq.getSorted() != null) {
+            list(fields).forEach( field -> {
+
+                SortModel sm = first(filter(rq.getSorted(), f -> field.equals(f.getField())));
+                SortDirection direction = def;
+
+                if (sm != null) {
+                    direction = (sm.getDirection() == SortModel.SortDirection.ASC) ? SortDirection.ASC : SortDirection.DESC;
+                }
+                results.put(field, direction);
+            });
+        }
+        return results;
     }
 
     // /////////////////////////////////////////////////////////////////////////
