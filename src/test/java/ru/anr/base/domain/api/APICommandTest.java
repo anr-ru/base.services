@@ -1,6 +1,3 @@
-/**
- * 
- */
 package ru.anr.base.domain.api;
 
 import java.time.ZonedDateTime;
@@ -184,5 +181,9 @@ public class APICommandTest extends BaseParent {
                 cmd.parseDate("created", now()));
         Assert.assertEquals(z, cmd.parseDate("modified", z));
 
+        // If '+' was lost
+        m = cmd.params(toMap("sort", " x,-z")).getRequest();
+        Assert.assertEquals(list(new SortModel("x", SortDirection.ASC), new SortModel("z", SortDirection.DESC)),
+                m.getSorted());
     }
 }

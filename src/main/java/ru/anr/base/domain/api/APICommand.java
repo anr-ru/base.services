@@ -24,6 +24,8 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import ru.anr.base.BaseParent;
@@ -42,6 +44,11 @@ import ru.anr.base.domain.api.models.SortModel.SortDirection;
  */
 
 public class APICommand extends BaseParent implements Serializable {
+
+    /**
+     * The logger
+     */
+    private static final Logger logger = LoggerFactory.getLogger(APICommand.class);
 
     /**
      * Serial ID
@@ -205,6 +212,8 @@ public class APICommand extends BaseParent implements Serializable {
      */
     public APICommand params(Map<String, ?> params) {
 
+        logger.debug("Original parameters: {}", params);
+
         request = new RequestModel();
         Map<String, ?> copy = new HashMap<>(params);
 
@@ -241,6 +250,7 @@ public class APICommand extends BaseParent implements Serializable {
         if (v != null) {
             request.setSorted(parseSort(parseList(v.toString())));
             copy.remove("sort");
+            logger.trace("Parsed sorting: {}", request.getSorted());
         }
         /*
          * The rest of parameters is used depending on the context
@@ -260,7 +270,8 @@ public class APICommand extends BaseParent implements Serializable {
 
         List<SortModel> list = list();
         for (String v : values) {
-            if (v.charAt(0) == '+') {
+            // '+' is ignored
+            if (v.charAt(0) == '+' || v.charAt(0) == ' ') {
                 list.add(new SortModel(v.substring(1), SortDirection.ASC));
             } else if (v.charAt(0) == '-') {
                 list.add(new SortModel(v.substring(1), SortDirection.DESC));
