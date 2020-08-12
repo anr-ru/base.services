@@ -60,22 +60,20 @@ public class ApiSerializationTest extends BaseLocalServiceTestCase {
         String value = json.toStr(m);
         logger.info("JSON: {}", value);
 
-        Assert.assertEquals("{}", value);
+        Assert.assertEquals("{\"page\":5,\"per_page\":3}", value);
 
         RequestModel mx = json.fromStr(value, RequestModel.class);
         Assert.assertEquals(m, mx);
 
         // These fields are transient
-        Assert.assertNull(mx.getPage());
         Assert.assertNull(mx.getFields());
-        Assert.assertNull(mx.getPerPage());
         Assert.assertNull(mx.getSorted());
         Assert.assertNull(mx.getSearch());
 
         value = xml.toStr(m);
         logger.info("XML: {}", value);
 
-        Assert.assertEquals("<?xml version='1.0' encoding='UTF-8'?><request/>", value);
+        Assert.assertEquals("<?xml version='1.0' encoding='UTF-8'?><request page=\"5\" per_page=\"3\"/>", value);
 
         mx = xml.fromStr(value, RequestModel.class);
         Assert.assertEquals(m, mx);
