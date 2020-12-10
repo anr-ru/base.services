@@ -16,7 +16,9 @@
 package ru.anr.base.services.serializer;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
