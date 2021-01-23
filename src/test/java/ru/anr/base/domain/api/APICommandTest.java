@@ -1,8 +1,6 @@
-/**
- * 
- */
 package ru.anr.base.domain.api;
 
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -168,5 +166,24 @@ public class APICommandTest extends BaseParent {
         Assert.assertEquals(list(new SortModel("x", SortDirection.ASC), new SortModel("z", SortDirection.DESC)),
                 m.getSorted());
 
+        Map<String, SortDirection> rs = cmd.findSorting(SortDirection.DESC, "x", "z", "y");
+        Assert.assertEquals(SortDirection.ASC, rs.get("x"));
+        Assert.assertEquals(SortDirection.DESC, rs.get("z"));
+        Assert.assertEquals(SortDirection.DESC, rs.get("y"));
+
+        // Dates
+        map = toMap("created", "2020-05-14", "modified", "2020-22-11");
+        m = cmd.params(map).getRequest();
+
+        ZonedDateTime z = ZonedDateTime.of(2020, 5, 16, 0,0,0,0,DEFAULT_TIMEZONE);
+
+        Assert.assertEquals(ZonedDateTime.of(2020, 5, 14, 0,0,0,0,DEFAULT_TIMEZONE),
+                cmd.parseDate("created", now()));
+        Assert.assertEquals(z, cmd.parseDate("modified", z));
+
+        // If '+' was lost
+        m = cmd.params(toMap("sort", " x,-z")).getRequest();
+        Assert.assertEquals(list(new SortModel("x", SortDirection.ASC), new SortModel("z", SortDirection.DESC)),
+                m.getSorted());
     }
 }

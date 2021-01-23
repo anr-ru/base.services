@@ -1,21 +1,21 @@
 /**
- * 
+ *
  */
-package ru.anr.base.services;
-
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
+package ru.anr.base.services.serializer;
 
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-
+import ru.anr.base.BaseParent;
 import ru.anr.base.samples.domain.Model;
 import ru.anr.base.samples.domain.SubModel;
-import ru.anr.base.services.serializer.Serializer;
+import ru.anr.base.services.BaseLocalServiceTestCase;
+
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 
 /**
  * Tests for serialization services.
@@ -44,7 +44,7 @@ public class SerializationTest extends BaseLocalServiceTestCase {
         m.setField("xxx");
         m.setSum(new BigDecimal("322.032329300"));
         m.setTime(ZonedDateTime.of(2014, 9, 11, 10, 30, 0, 0, ZoneId.of("GMT")));
-        m.setSubs(list(new SubModel(1), new SubModel(2)));
+        m.setSubs(BaseParent.list(new SubModel(1), new SubModel(2)));
 
         return m;
     }
@@ -64,7 +64,7 @@ public class SerializationTest extends BaseLocalServiceTestCase {
 
     /**
      * JSON Tests
-     * 
+     *
      * @throws IOException
      *             If error occurs
      */
@@ -82,6 +82,37 @@ public class SerializationTest extends BaseLocalServiceTestCase {
 
         Assert.assertEquals(m.getTime(), mx.getTime());
         Assert.assertEquals(m, mx);
+
+        Assert.assertEquals(d("600").toPlainString(), d("600.00").stripTrailingZeros().toPlainString());
+    }
+
+    /**
+     * JSON stripped etalon
+     */
+    private static final String TEST_JSON_STRIPPED = "{\"field\":\"xxx\",\"time\":\"2014-09-11T10:30Z[GMT]\","
+            + "\"sub\":[{\"value\":1},{\"value\":2}],\"sum\":322.0323293}";
+
+
+    @Test
+    public void testJSONStripZeros() throws IOException {
+
+        Model m = newModel();
+
+        JSONSerializerImpl impl = new JSONSerializerImpl();
+        impl.useStripTrainlingZeroSerializer();
+
+        String value = impl.toStr(m);
+        logger.info("JSON: {}", value);
+
+        Assert.assertEquals(TEST_JSON_STRIPPED, value);
+
+        Model mx = impl.fromStr(value, Model.class);
+
+        Assert.assertEquals(m.getTime(), mx.getTime());
+        mx.setSum(mx.getSum().setScale(9, BigDecimal.ROUND_HALF_UP));
+        Assert.assertEquals(m, mx);
+
+        Assert.assertEquals(d("600").toPlainString(), d("600.00").stripTrailingZeros().toPlainString());
     }
 
     /**
@@ -93,7 +124,7 @@ public class SerializationTest extends BaseLocalServiceTestCase {
 
     /**
      * XML via Jackson
-     * 
+     *
      * @throws IOException
      *             If error occurs
      */

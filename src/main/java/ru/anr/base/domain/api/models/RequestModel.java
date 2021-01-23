@@ -66,16 +66,6 @@ public class RequestModel extends ResponseModel implements Serializable {
     // /////////////////////////////////////////////////////////////////////////
 
     /**
-     * @return the page
-     */
-    @Override
-    @XmlTransient
-    public Integer getPage() {
-
-        return super.getPage();
-    }
-
-    /**
      * @return the sorted
      */
     @XmlTransient
@@ -91,16 +81,6 @@ public class RequestModel extends ResponseModel implements Serializable {
     public void setSorted(List<SortModel> sorted) {
 
         this.sorted = sorted;
-    }
-
-    /**
-     * @return the perPage
-     */
-    @Override
-    @XmlTransient
-    public Integer getPerPage() {
-
-        return super.getPerPage();
     }
 
     /**

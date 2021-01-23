@@ -174,7 +174,7 @@ public class APICommandFactoryImpl extends BaseServiceImpl implements APICommand
     private Object doInvoke(ApiCommandStrategy s, APICommand cmd) {
 
         Object rs = null;
-        logger.debug("Invoking {} method for {}/{}", cmd.getType(), cmd.getCommandId(), cmd.getVersion());
+        logger.trace("Invoking {} method for {}/{}", cmd.getType(), cmd.getCommandId(), cmd.getVersion());
 
         switch (cmd.getType()) {
             case Get:
@@ -365,7 +365,7 @@ public class APICommandFactoryImpl extends BaseServiceImpl implements APICommand
 
             try {
 
-                logger.debug("Raw request data: {}", cmd.getRawModel());
+                logger.trace("Raw request data: {}", cmd.getRawModel());
 
                 RequestModel m = s.fromStr(cmd.getRawModel(), a.model());
                 if (cmd.getRequest() != null && (m != null)) {
@@ -388,7 +388,7 @@ public class APICommandFactoryImpl extends BaseServiceImpl implements APICommand
                 throw ex;
             }
         } else {
-            logger.debug("Raw model is null for {}", cmd);
+            logger.trace("Raw model is null for {}", cmd);
         }
     }
 

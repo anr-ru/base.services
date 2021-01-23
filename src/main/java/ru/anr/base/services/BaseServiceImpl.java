@@ -59,6 +59,15 @@ import ru.anr.base.services.validation.ValidationUtils;
 public class BaseServiceImpl extends BaseSpringParent implements BaseService {
 
     /**
+     * {@inheritDoc}
+     */
+    @Override
+    public <S> S getBean(Class<S> clazz) {
+
+        return super.bean(clazz);
+    }
+
+    /**
      * Logger
      */
     private static final Logger logger = LoggerFactory.getLogger(BaseServiceImpl.class);
@@ -246,6 +255,22 @@ public class BaseServiceImpl extends BaseSpringParent implements BaseService {
     }
 
     /**
+     * Checks whether the parameter is wrong. It supposed to use some standard
+     * message ID to avoid to much parameters message writing.
+     * 
+     * @param condition
+     *            The condition to check
+     * @param paramId
+     *            The parameter ID
+     * @param value
+     *            The value of the parameter which is wrong
+     */
+    protected void checkParamWrong(boolean condition, String paramId, Object value) {
+
+        checkIsTrue(condition, "api.param.is.wrong", paramId, value);
+    }
+
+    /**
      * Checks the given value is not null
      * 
      * @param value
@@ -359,7 +384,8 @@ public class BaseServiceImpl extends BaseSpringParent implements BaseService {
         }
         if (!transitionDone) {
             logger.error("Transition {} to {} is invalid", object.getState(), newState.name());
-            throw new AccessDeniedException("Unable to change the state");
+            throw new AccessDeniedException(
+                    "Unable to change the state from '" + object.getState() + "' to '" + newState.name() + "'");
         }
         return oldState;
     }

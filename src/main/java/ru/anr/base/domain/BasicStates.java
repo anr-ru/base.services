@@ -49,5 +49,9 @@ public enum BasicStates {
     /**
      * Some process was applied to an object and was cancelled.
      */
-    Cancelled;
+    Cancelled,
+    /**
+     * Some error state
+     */
+    Failed;
 }

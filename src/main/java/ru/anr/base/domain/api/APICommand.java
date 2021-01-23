@@ -16,15 +16,18 @@
 package ru.anr.base.domain.api;
 
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.*;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import ru.anr.base.BaseParent;
 import ru.anr.base.domain.api.models.RequestModel;
 import ru.anr.base.domain.api.models.SortModel;
@@ -41,6 +44,11 @@ import ru.anr.base.domain.api.models.SortModel.SortDirection;
  */
 
 public class APICommand extends BaseParent implements Serializable {
+
+    /**
+     * The logger
+     */
+    private static final Logger logger = LoggerFactory.getLogger(APICommand.class);
 
     /**
      * Serial ID
@@ -204,6 +212,8 @@ public class APICommand extends BaseParent implements Serializable {
      */
     public APICommand params(Map<String, ?> params) {
 
+        logger.debug("Original parameters: {}", params);
+
         request = new RequestModel();
         Map<String, ?> copy = new HashMap<>(params);
 
@@ -240,6 +250,7 @@ public class APICommand extends BaseParent implements Serializable {
         if (v != null) {
             request.setSorted(parseSort(parseList(v.toString())));
             copy.remove("sort");
+            logger.trace("Parsed sorting: {}", request.getSorted());
         }
         /*
          * The rest of parameters is used depending on the context
@@ -259,7 +270,8 @@ public class APICommand extends BaseParent implements Serializable {
 
         List<SortModel> list = list();
         for (String v : values) {
-            if (v.charAt(0) == '+') {
+            // '+' is ignored
+            if (v.charAt(0) == '+' || v.charAt(0) == ' ') {
                 list.add(new SortModel(v.substring(1), SortDirection.ASC));
             } else if (v.charAt(0) == '-') {
                 list.add(new SortModel(v.substring(1), SortDirection.DESC));
@@ -284,6 +296,48 @@ public class APICommand extends BaseParent implements Serializable {
             list = list(array);
         }
         return list;
+    }
+
+    /**
+     * Parses the given parameter as the local date value
+     *
+     * @param name The name of the parameyet
+     * @param def The default date value if nothing parsed
+     * @return The date
+     */
+    public ZonedDateTime parseDate(String name, ZonedDateTime def) {
+        Map<String, ?> map = this.getContexts();
+        String strDate = nullSafe(map.get(name));
+
+        return parseLocalDate(strDate,"yyyy-MM-dd", def);
+    }
+
+    /**
+     * Searches all sorting parameters or set the default value if the sorting field not defined.
+     *
+     * @param def The default sort direction if the sort order was not parsed/defined
+     *
+     * @param fields The fields which are expected to be used for sorting
+     * @return The found sort order with the same
+     */
+    public Map<String, SortModel.SortDirection> findSorting(SortModel.SortDirection def, String ... fields) {
+
+        RequestModel rq = this.getRequest();
+        Map<String, SortModel.SortDirection> results = toMap();
+
+        if (rq.getSorted() != null) {
+            list(fields).forEach( field -> {
+
+                SortModel sm = first(filter(rq.getSorted(), f -> field.equals(f.getField())));
+                SortDirection direction = def;
+
+                if (sm != null) {
+                    direction = (sm.getDirection() == SortModel.SortDirection.ASC) ? SortDirection.ASC : SortDirection.DESC;
+                }
+                results.put(field, direction);
+            });
+        }
+        return results;
     }
 
     // /////////////////////////////////////////////////////////////////////////
