@@ -1,12 +1,12 @@
 /*
  * Copyright 2014 the original author or authors.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -14,18 +14,6 @@
  * the License.
  */
 package ru.anr.base.services.api;
-
-import static java.nio.charset.StandardCharsets.UTF_8;
-
-import java.io.UnsupportedEncodingException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Objects;
-import java.util.Set;
-
-import javax.validation.ConstraintViolation;
-import javax.validation.ConstraintViolationException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,7 +23,6 @@ import org.springframework.context.annotation.Import;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.util.Assert;
 import org.springframework.web.util.UriUtils;
-
 import ru.anr.base.ApplicationException;
 import ru.anr.base.domain.api.APICommand;
 import ru.anr.base.domain.api.APIException;
@@ -46,14 +33,22 @@ import ru.anr.base.services.BaseServiceImpl;
 import ru.anr.base.services.serializer.SerializationConfig;
 import ru.anr.base.services.serializer.Serializer;
 
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Objects;
+import java.util.Set;
+
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 /**
  * API command factory - performs marchalling and unmarchalling of any api
  * commands.
  *
- *
  * @author Alexey Romanchuk
  * @created Nov 10, 2014
- *
  */
 @Import(SerializationConfig.class)
 public class APICommandFactoryImpl extends BaseServiceImpl implements APICommandFactory {
@@ -91,9 +86,8 @@ public class APICommandFactoryImpl extends BaseServiceImpl implements APICommand
 
     /**
      * Registration of found in spring context API commands
-     * 
-     * @param beans
-     *            Beans
+     *
+     * @param beans Beans
      */
     public void registerApi(Map<String, ApiCommandStrategy> beans) {
 
@@ -111,9 +105,8 @@ public class APICommandFactoryImpl extends BaseServiceImpl implements APICommand
 
     /**
      * Find annotaion of API Strategy command class
-     * 
-     * @param s
-     *            API Strategy command
+     *
+     * @param s API Strategy command
      * @return Annotation instance
      */
     private ApiStrategy getAnnotation(ApiCommandStrategy s) {
@@ -123,11 +116,9 @@ public class APICommandFactoryImpl extends BaseServiceImpl implements APICommand
 
     /**
      * Registration of found api command strategy
-     * 
-     * @param a
-     *            Strategy configuration
-     * @param s
-     *            API strategy bean
+     *
+     * @param a Strategy configuration
+     * @param s API strategy bean
      */
     private void register(ApiStrategy a, ApiCommandStrategy s) {
 
@@ -164,11 +155,9 @@ public class APICommandFactoryImpl extends BaseServiceImpl implements APICommand
 
     /**
      * Invokes specific API Strategy method
-     * 
-     * @param s
-     *            Found strategy
-     * @param cmd
-     *            A command
+     *
+     * @param s   Found strategy
+     * @param cmd A command
      * @return A model of response
      */
     private Object doInvoke(ApiCommandStrategy s, APICommand cmd) {
@@ -199,9 +188,8 @@ public class APICommandFactoryImpl extends BaseServiceImpl implements APICommand
     /**
      * Finds a strategy for specified command by its identifier and version
      * marker.
-     * 
-     * @param cmd
-     *            Original command
+     *
+     * @param cmd Original command
      * @return A processing strategy
      */
     private ApiCommandStrategy findStrategy(APICommand cmd) {
@@ -231,9 +219,8 @@ public class APICommandFactoryImpl extends BaseServiceImpl implements APICommand
     /**
      * Getting an error code. If an exception is {@link APIException},
      * extracting the code from it, otherwise using a system exception code.
-     * 
-     * @param reason
-     *            An exception
+     *
+     * @param reason An exception
      * @return integer code
      */
     private int resolveErrorCode(Throwable reason) {
@@ -297,20 +284,12 @@ public class APICommandFactoryImpl extends BaseServiceImpl implements APICommand
 
     /**
      * Encode message to UTF-8
-     * 
-     * @param message
-     *            original message
+     *
+     * @param message original message
      * @return encoded message
      */
     private String encodeToUTF8(String message) {
-
-        String result;
-        try {
-            result = UriUtils.encodePath(message, UTF_8.toString());
-        } catch (UnsupportedEncodingException exception) {
-            throw new IllegalStateException("Could not decode URL", exception);
-        }
-        return result;
+        return UriUtils.encodePath(message, UTF_8.toString());
     }
 
     /**
@@ -326,9 +305,8 @@ public class APICommandFactoryImpl extends BaseServiceImpl implements APICommand
      * A special processing for
      * {@link org.hibernate.exception.ConstraintViolationException}, which
      * occurs in validations.
-     * 
-     * @param reason
-     *            The reason exception
+     *
+     * @param reason The reason exception
      * @return Exception message
      */
     private String getExceptionMessage(Throwable reason) {
@@ -350,11 +328,9 @@ public class APICommandFactoryImpl extends BaseServiceImpl implements APICommand
     /**
      * Deserializing the raw content of a request into the required model. If
      * raw content is null, the function does nothing.
-     * 
-     * @param cmd
-     *            Command
-     * @param a
-     *            Annotation of strategy
+     *
+     * @param cmd Command
+     * @param a   Annotation of strategy
      */
     private void processRequestModel(APICommand cmd, ApiStrategy a) {
 
@@ -395,9 +371,8 @@ public class APICommandFactoryImpl extends BaseServiceImpl implements APICommand
     /**
      * Serializing a buit response model to raw string. If model is null, the
      * function does nothing.
-     * 
-     * @param cmd
-     *            Command
+     *
+     * @param cmd Command
      */
     private void processResponseModel(APICommand cmd) {
 
@@ -428,9 +403,8 @@ public class APICommandFactoryImpl extends BaseServiceImpl implements APICommand
 
     /**
      * Returns a serializer instance depending on specified format
-     * 
-     * @param format
-     *            Format code
+     *
+     * @param format Format code
      * @return Serializer instance
      */
     private Serializer getSerializer(RawFormatTypes format) {
@@ -455,8 +429,7 @@ public class APICommandFactoryImpl extends BaseServiceImpl implements APICommand
     // /////////////////////////////////////////////////////////////////////////
 
     /**
-     * @param errorCodePrefix
-     *            the errorCodePrefix to set
+     * @param errorCodePrefix the errorCodePrefix to set
      */
     public void setErrorCodePrefix(String errorCodePrefix) {
 

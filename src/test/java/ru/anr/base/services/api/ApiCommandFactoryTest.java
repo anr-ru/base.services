@@ -1,13 +1,9 @@
-/**
- * 
- */
 package ru.anr.base.services.api;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-
 import ru.anr.base.domain.api.APICommand;
 import ru.anr.base.domain.api.APIException;
 import ru.anr.base.domain.api.RawFormatTypes;
@@ -17,10 +13,8 @@ import ru.anr.base.services.BaseLocalServiceTestCase;
 /**
  * Tests for api commmand
  *
- *
  * @author Alexey Romanchuk
  * @created Nov 10, 2014
- *
  */
 
 public class ApiCommandFactoryTest extends BaseLocalServiceTestCase {
@@ -54,8 +48,8 @@ public class ApiCommandFactoryTest extends BaseLocalServiceTestCase {
         APICommand rs = factory.process(ping);
         ResponseModel m = rs.getResponse();
 
-        Assert.assertEquals(Integer.valueOf(0), m.getCode());
-        Assert.assertEquals("hello 1 GET", m.getMessage());
+        Assertions.assertEquals(Integer.valueOf(0), m.getCode());
+        Assertions.assertEquals("hello 1 GET", m.getMessage());
 
         // Ping version 2
         ping = new APICommand(PING, "v2");
@@ -64,8 +58,8 @@ public class ApiCommandFactoryTest extends BaseLocalServiceTestCase {
         rs = factory.process(ping);
         m = rs.getResponse();
 
-        Assert.assertEquals(Integer.valueOf(-1), m.getCode()); // Yes!
-        Assert.assertEquals("hello 2 Get", m.getMessage());
+        Assertions.assertEquals(Integer.valueOf(-1), m.getCode()); // Yes!
+        Assertions.assertEquals("hello 2 Get", m.getMessage());
 
         // Ping version 3 (does not exists)
         ping = new APICommand(PING, "v3");
@@ -73,15 +67,15 @@ public class ApiCommandFactoryTest extends BaseLocalServiceTestCase {
 
         try {
 
-            rs = factory.process(ping);
-            Assert.fail();
+            factory.process(ping);
+            Assertions.fail();
 
         } catch (IllegalArgumentException ex) {
 
-            Assert.assertEquals("Version 'v3' for a command 'ping' does not exist", ex.getMessage());
+            Assertions.assertEquals("Version 'v3' for a command 'ping' does not exist", ex.getMessage());
             rs = factory.error(ping, ex);
 
-            Assert.assertEquals("{\"code\":1,\"message\":\"Version 'v3' for a command 'ping' does not exist\"}",
+            Assertions.assertEquals("{\"code\":1,\"message\":\"Version 'v3' for a command 'ping' does not exist\"}",
                     rs.getRawModel());
         }
     }
@@ -101,8 +95,8 @@ public class ApiCommandFactoryTest extends BaseLocalServiceTestCase {
         APICommand rs = factory.process(ping);
         ResponseModel m = rs.getResponse();
 
-        Assert.assertEquals(Integer.valueOf(0), m.getCode());
-        Assert.assertEquals("hello x GET", m.getMessage());
+        Assertions.assertEquals(Integer.valueOf(0), m.getCode());
+        Assertions.assertEquals("hello x GET", m.getMessage());
     }
 
     /**
@@ -114,18 +108,18 @@ public class ApiCommandFactoryTest extends BaseLocalServiceTestCase {
         APICommand e = new APICommand("Error", "v1");
         e = e.method(GET);
 
-        APICommand rs = null;
+        APICommand rs;
         try {
 
-            rs = factory.process(e);
-            Assert.fail();
+            factory.process(e);
+            Assertions.fail();
 
         } catch (APIException ex) {
 
-            Assert.assertEquals("Exception", ex.getMessage());
+            Assertions.assertEquals("Exception", ex.getMessage());
             rs = factory.error(e, ex);
 
-            Assert.assertEquals("{\"code\":5,\"message\":\"Exception\"}", rs.getRawModel());
+            Assertions.assertEquals("{\"code\":5,\"message\":\"Exception\"}", rs.getRawModel());
         }
     }
 
@@ -144,7 +138,7 @@ public class ApiCommandFactoryTest extends BaseLocalServiceTestCase {
         APICommand rs = factory.process(ping);
         ResponseModel m = rs.getResponse();
 
-        Assert.assertEquals(Integer.valueOf(0), m.getCode());
+        Assertions.assertEquals(Integer.valueOf(0), m.getCode());
     }
 
     /**
@@ -159,7 +153,7 @@ public class ApiCommandFactoryTest extends BaseLocalServiceTestCase {
 
         APICommand rs = factory.process(ping);
         ResponseModel m = rs.getResponse();
-        Assert.assertEquals("hello GET", m.getMessage());
+        Assertions.assertEquals("hello GET", m.getMessage());
 
         // PUT
         ping = new APICommand(PING, "v1");
@@ -167,7 +161,7 @@ public class ApiCommandFactoryTest extends BaseLocalServiceTestCase {
 
         rs = factory.process(ping);
         m = rs.getResponse();
-        Assert.assertEquals("hello PUT", m.getMessage());
+        Assertions.assertEquals("hello PUT", m.getMessage());
 
         // POST
         ping = new APICommand(PING, "v1");
@@ -175,7 +169,7 @@ public class ApiCommandFactoryTest extends BaseLocalServiceTestCase {
 
         rs = factory.process(ping);
         m = rs.getResponse();
-        Assert.assertEquals("hello POST", m.getMessage());
+        Assertions.assertEquals("hello POST", m.getMessage());
 
         // DELETE
         ping = new APICommand(PING, "v1");
@@ -183,7 +177,7 @@ public class ApiCommandFactoryTest extends BaseLocalServiceTestCase {
 
         rs = factory.process(ping);
         m = rs.getResponse();
-        Assert.assertEquals("hello DELETE", m.getMessage());
+        Assertions.assertEquals("hello DELETE", m.getMessage());
     }
 
     /**
@@ -198,12 +192,12 @@ public class ApiCommandFactoryTest extends BaseLocalServiceTestCase {
         try {
 
             factory.process(ping);
-            Assert.fail();
+            Assertions.fail();
 
         } catch (Exception ex) {
 
             APICommand rs = factory.error(ex);
-            Assert.assertEquals("{\"code\":-1,\"message\":\"[The value is expected to be NOT NULL]\"}",
+            Assertions.assertEquals("{\"code\":-1,\"message\":\"[The value is expected to be NOT NULL]\"}",
                     rs.getRawModel());
         }
     }

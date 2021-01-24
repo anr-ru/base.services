@@ -1,13 +1,12 @@
 /**
- * 
+ *
  */
 package ru.anr.base.services;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.test.context.ContextConfiguration;
-
 import ru.anr.base.tests.BaseTestCase;
 
 /**
@@ -39,7 +38,7 @@ public class EnvironmentPropertiesTest extends BaseTestCase {
     @Test
     public void testPropertiesOverriding() {
 
-        Assert.assertEquals(System.getenv("USER"), value);
-        Assert.assertEquals(System.getenv("USER"), value3);
+        Assertions.assertEquals(System.getenv("USER"), value);
+        Assertions.assertEquals(System.getenv("USER"), value3);
     }
 }

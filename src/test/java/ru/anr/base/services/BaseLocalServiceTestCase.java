@@ -1,21 +1,20 @@
 /**
- * 
+ *
  */
 package ru.anr.base.services;
 
-import javax.validation.ConstraintViolationException;
-
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Ignore;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.ContextConfiguration;
-
 import ru.anr.base.services.validation.ValidationUtils;
 import ru.anr.base.tests.BaseLocalDaoTestCase;
+
+import javax.validation.ConstraintViolationException;
 
 /**
  * A parent class for all service layer tests.
@@ -26,7 +25,7 @@ import ru.anr.base.tests.BaseLocalDaoTestCase;
  *
  */
 @ContextConfiguration(locations = "classpath:/tests-service-context.xml", inheritLocations = false)
-@Ignore
+@Disabled
 public class BaseLocalServiceTestCase extends BaseLocalDaoTestCase {
 
     /**
@@ -37,7 +36,7 @@ public class BaseLocalServiceTestCase extends BaseLocalDaoTestCase {
 
     /**
      * Performs authentication and when it's successfull - sets security context
-     * 
+     *
      * @param token
      *            A token for authentication
      * @return Authrorised user
@@ -46,7 +45,7 @@ public class BaseLocalServiceTestCase extends BaseLocalDaoTestCase {
 
         Authentication r = authenticationManager.authenticate(token);
 
-        Assert.assertTrue(r.isAuthenticated());
+        Assertions.assertTrue(r.isAuthenticated());
         SecurityContextHolder.getContext().setAuthentication(r);
 
         return r;
@@ -55,7 +54,7 @@ public class BaseLocalServiceTestCase extends BaseLocalDaoTestCase {
     /**
      * {@inheritDoc}
      */
-    @Before
+    @BeforeEach
     @Override
     public void setUp() {
 

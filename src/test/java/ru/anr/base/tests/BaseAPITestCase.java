@@ -1,12 +1,11 @@
 /**
- * 
+ *
  */
 package ru.anr.base.tests;
 
-import org.junit.Assert;
-import org.junit.Ignore;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import ru.anr.base.domain.api.APICommand;
 import ru.anr.base.domain.api.MethodTypes;
 import ru.anr.base.domain.api.models.RequestModel;
@@ -22,7 +21,7 @@ import ru.anr.base.services.api.APICommandFactory;
  * @created Dec 18, 2014
  *
  */
-@Ignore
+@Disabled
 public class BaseAPITestCase extends BaseLocalServiceTestCase {
 
     /**
@@ -33,7 +32,7 @@ public class BaseAPITestCase extends BaseLocalServiceTestCase {
 
     /**
      * Executes API command and parses the result
-     * 
+     *
      * @param cmdId
      *            Identified of Command
      * @param version
@@ -46,12 +45,12 @@ public class BaseAPITestCase extends BaseLocalServiceTestCase {
      *            Context arrays ( key/value pairs, usually are parts of url in
      *            REST paradigm)
      * @return String result
-     * 
+     *
      * @param <S>
      *            Type of response model
      */
     protected <S extends ResponseModel> S doAPI(String cmdId, String version, MethodTypes method,
-            RequestModel request, Object... contexts) {
+                                                RequestModel request, Object... contexts) {
 
         APICommand cmd = new APICommand(cmdId, version).context(contexts);
 
@@ -59,7 +58,7 @@ public class BaseAPITestCase extends BaseLocalServiceTestCase {
         cmd.setRequest(request);
 
         APICommand r = factory.process(cmd);
-        Assert.assertNotNull(r.getRawModel()); // json by default
+        Assertions.assertNotNull(r.getRawModel()); // json by default
 
         return r.getResponse();
     }

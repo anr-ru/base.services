@@ -1,29 +1,23 @@
-/**
- * 
- */
 package ru.anr.base.services;
 
-import java.util.Locale;
-
-import org.junit.Before;
-import org.junit.Ignore;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.test.context.ContextConfiguration;
-
 import ru.anr.base.dao.AbstractDaoTestCase;
+
+import java.util.Locale;
 
 /**
  * A parent class for all service layer tests.
  *
- *
  * @author Alexey Romanchuk
  * @created Nov 6, 2014
- *
  */
 @ContextConfiguration(locations = "classpath:/tests-service-context.xml", inheritLocations = false)
-@Ignore
+@Disabled
 public class BaseServiceTestCase extends AbstractDaoTestCase {
 
     /**
@@ -36,7 +30,7 @@ public class BaseServiceTestCase extends AbstractDaoTestCase {
     /**
      * Default test settings
      */
-    @Before
+    @BeforeEach
     public void setUp() {
 
         LocaleContextHolder.setLocale(Locale.US);

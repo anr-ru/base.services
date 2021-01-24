@@ -1,15 +1,10 @@
-/**
- * 
- */
 package ru.anr.base.services.api;
 
-import java.util.List;
-
-import org.junit.Assert;
-import org.junit.Test;
+import com.fasterxml.jackson.core.type.TypeReference;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-
 import ru.anr.base.domain.api.models.RequestModel;
 import ru.anr.base.domain.api.models.ResponseModel;
 import ru.anr.base.domain.api.models.SortModel;
@@ -17,15 +12,13 @@ import ru.anr.base.domain.api.models.SortModel.SortDirection;
 import ru.anr.base.services.BaseLocalServiceTestCase;
 import ru.anr.base.services.serializer.Serializer;
 
-import com.fasterxml.jackson.core.type.TypeReference;
+import java.util.List;
 
 /**
  * Tests for serialization of API command models
  *
- *
  * @author Alexey Romanchuk
  * @created Nov 7, 2014
- *
  */
 
 public class ApiSerializationTest extends BaseLocalServiceTestCase {
@@ -60,23 +53,23 @@ public class ApiSerializationTest extends BaseLocalServiceTestCase {
         String value = json.toStr(m);
         logger.info("JSON: {}", value);
 
-        Assert.assertEquals("{\"page\":5,\"per_page\":3}", value);
+        Assertions.assertEquals("{\"page\":5,\"per_page\":3}", value);
 
         RequestModel mx = json.fromStr(value, RequestModel.class);
-        Assert.assertEquals(m, mx);
+        Assertions.assertEquals(m, mx);
 
         // These fields are transient
-        Assert.assertNull(mx.getFields());
-        Assert.assertNull(mx.getSorted());
-        Assert.assertNull(mx.getSearch());
+        Assertions.assertNull(mx.getFields());
+        Assertions.assertNull(mx.getSorted());
+        Assertions.assertNull(mx.getSearch());
 
         value = xml.toStr(m);
         logger.info("XML: {}", value);
 
-        Assert.assertEquals("<?xml version='1.0' encoding='UTF-8'?><request page=\"5\" per_page=\"3\"/>", value);
+        Assertions.assertEquals("<?xml version='1.0' encoding='UTF-8'?><request page=\"5\" per_page=\"3\"/>", value);
 
         mx = xml.fromStr(value, RequestModel.class);
-        Assert.assertEquals(m, mx);
+        Assertions.assertEquals(m, mx);
     }
 
     /**
@@ -93,10 +86,10 @@ public class ApiSerializationTest extends BaseLocalServiceTestCase {
         String value = json.toStr(m);
         logger.info("JSON: {}", value);
 
-        Assert.assertEquals("{\"code\":5,\"page\":2,\"per_page\":1}", value);
+        Assertions.assertEquals("{\"code\":5,\"page\":2,\"per_page\":1}", value);
 
         ResponseModel mx = json.fromStr(value, ResponseModel.class);
-        Assert.assertEquals(m, mx);
+        Assertions.assertEquals(m, mx);
 
         /*
          * XML
@@ -104,11 +97,11 @@ public class ApiSerializationTest extends BaseLocalServiceTestCase {
         value = xml.toStr(m);
         logger.info("XML: {}", value);
 
-        Assert.assertEquals("<?xml version='1.0' encoding='UTF-8'?><response code=\"5\" page=\"2\" per_page=\"1\"/>",
+        Assertions.assertEquals("<?xml version='1.0' encoding='UTF-8'?><response code=\"5\" page=\"2\" per_page=\"1\"/>",
                 value);
 
         mx = xml.fromStr(value, ResponseModel.class);
-        Assert.assertEquals(m, mx);
+        Assertions.assertEquals(m, mx);
     }
 
     /**
@@ -125,7 +118,7 @@ public class ApiSerializationTest extends BaseLocalServiceTestCase {
         e2.setCode(2);
 
         List<ResponseModel> errors = list(e1, e2);
-        Assert.assertEquals("[{\"code\":1},{\"code\":2}]", json.toStr(errors));
+        Assertions.assertEquals("[{\"code\":1},{\"code\":2}]", json.toStr(errors));
 
         TypeReference<List<ResponseModel>> ref = new TypeReference<List<ResponseModel>>() {
         };
@@ -133,8 +126,8 @@ public class ApiSerializationTest extends BaseLocalServiceTestCase {
         String js = "[{\"code\":1},{\"code\":2}]";
 
         errors = json.fromStr(js, ref);
-        Assert.assertEquals(Integer.valueOf(1), errors.get(0).getCode());
-        Assert.assertEquals(Integer.valueOf(2), errors.get(1).getCode());
+        Assertions.assertEquals(Integer.valueOf(1), errors.get(0).getCode());
+        Assertions.assertEquals(Integer.valueOf(2), errors.get(1).getCode());
     }
 
     /**
@@ -152,10 +145,10 @@ public class ApiSerializationTest extends BaseLocalServiceTestCase {
         String value = json.toStr(m);
         logger.info("JSON: {}", value);
 
-        Assert.assertEquals("{\"code\":64,\"message\":\"Ошибка\",\"description\":\"Description of Ошибка\"}", value);
+        Assertions.assertEquals("{\"code\":64,\"message\":\"Ошибка\",\"description\":\"Description of Ошибка\"}", value);
 
         ResponseModel mx = json.fromStr(value, ResponseModel.class);
-        Assert.assertEquals(m, mx);
+        Assertions.assertEquals(m, mx);
 
         /*
          * XML
@@ -163,10 +156,10 @@ public class ApiSerializationTest extends BaseLocalServiceTestCase {
         value = xml.toStr(m);
         logger.info("XML: {}", value);
 
-        Assert.assertEquals("<?xml version='1.0' encoding='UTF-8'?><response code=\"64\">"
+        Assertions.assertEquals("<?xml version='1.0' encoding='UTF-8'?><response code=\"64\">"
                 + "<message>Ошибка</message><description>Description of Ошибка</description></response>", value);
 
         mx = xml.fromStr(value, ResponseModel.class);
-        Assert.assertEquals(m, mx);
+        Assertions.assertEquals(m, mx);
     }
 }

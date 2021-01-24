@@ -1,5 +1,5 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
@@ -27,15 +27,6 @@
         <tag>HEAD</tag>
     </scm>
 
-    <developers>
-        <developer>
-            <id>alex</id>
-            <name>Alexey Romanchuk</name>
-            <email>alexey.p.romanchuk@gmail.com</email>
-            <timezone>5</timezone>
-        </developer>
-    </developers>
-
     <build>
         <plugins>
             <plugin>
@@ -44,7 +35,7 @@
                 <executions>
                     <execution>
                         <phase>package</phase>
-                        <goals>                            
+                        <goals>
                             <goal>test-jar</goal>
                         </goals>
                         <configuration>
@@ -57,13 +48,13 @@
                         </configuration>
                     </execution>
                 </executions>
-            </plugin>        
+            </plugin>
         </plugins>
         <extensions>
-           <extension>
-              <groupId>io.packagecloud.maven.wagon</groupId>
-              <artifactId>maven-packagecloud-wagon</artifactId>
-           </extension>
+            <extension>
+                <groupId>io.packagecloud.maven.wagon</groupId>
+                <artifactId>maven-packagecloud-wagon</artifactId>
+            </extension>
         </extensions>
     </build>
 
@@ -87,13 +78,13 @@
             <artifactId>spring-aspects</artifactId>
         </dependency>
         <dependency>
-          <groupId>org.springframework.security</groupId>
-          <artifactId>spring-security-aspects</artifactId>        
-        </dependency>                    
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-aspects</artifactId>
+        </dependency>
         <dependency>
-          <groupId>org.springframework.security</groupId>
-          <artifactId>spring-security-acl</artifactId>        
-        </dependency>                    
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-acl</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-orm</artifactId>
@@ -110,7 +101,18 @@
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-ehcache</artifactId>
         </dependency>
-
+        <dependency>
+            <groupId>org.hibernate.validator</groupId>
+            <artifactId>hibernate-validator</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>javax.el</groupId>
+            <artifactId>javax.el-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.web</groupId>
+            <artifactId>javax.el</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-config</artifactId>
@@ -123,16 +125,11 @@
             <groupId>org.springframework.security.oauth</groupId>
             <artifactId>spring-security-oauth2</artifactId>
         </dependency>
-        <dependency>
-           <groupId>javax.el</groupId>
-           <artifactId>javax.el-api</artifactId>
-           <scope>provided</scope>
-        </dependency>
 
         <!-- JSON/XML serializarion tools -->
         <dependency>
-        	<groupId>com.fasterxml.jackson.core</groupId>
-        	<artifactId>jackson-core</artifactId>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
@@ -143,30 +140,34 @@
             <artifactId>jackson-module-jaxb-annotations</artifactId>
         </dependency>
         <dependency>
-          <groupId>com.fasterxml.jackson.dataformat</groupId>
-          <artifactId>jackson-dataformat-xml</artifactId>
+            <groupId>com.fasterxml.jackson.dataformat</groupId>
+            <artifactId>jackson-dataformat-xml</artifactId>
         </dependency>
-		<dependency>
-		    <groupId>com.fasterxml.jackson.datatype</groupId>
-		    <artifactId>jackson-datatype-jsr310</artifactId>
-		</dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jsr310</artifactId>
+        </dependency>
         <dependency>
             <groupId>commons-io</groupId>
-            <artifactId>commons-io</artifactId>        
+            <artifactId>commons-io</artifactId>
         </dependency>
         <dependency>
             <groupId>commons-beanutils</groupId>
             <artifactId>commons-beanutils</artifactId>
             <scope>test</scope>
-        </dependency>        
+        </dependency>
         <dependency>
             <groupId>commons-validator</groupId>
             <artifactId>commons-validator</artifactId>
-        </dependency>        
+        </dependency>
         <dependency>
             <groupId>javax.validation</groupId>
             <artifactId>validation-api</artifactId>
-        </dependency>        
+        </dependency>
+        <dependency>
+            <groupId>javax.annotation</groupId>
+            <artifactId>javax.annotation-api</artifactId>
+        </dependency>
 
         <!-- Internal dependencies -->
         <dependency>
@@ -181,9 +182,9 @@
         </dependency>
 
         <!-- TESTS -->
-        <dependency>  
-            <groupId>org.hsqldb</groupId>  
-            <artifactId>hsqldb</artifactId>  
+        <dependency>
+            <groupId>org.hsqldb</groupId>
+            <artifactId>hsqldb</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -195,10 +196,10 @@
     </dependencies>
 
     <properties>
-        
+
         <dbx.url>jdbc:hsqldb:mem:testdb</dbx.url>
         <dbx.user>sa</dbx.user>
-        <dbx.password />
+        <dbx.password/>
         <dbx.driverClass>org.hsqldb.jdbcDriver</dbx.driverClass>
         <dbx.hibernateDialect>org.hibernate.dialect.HSQLDialect</dbx.hibernateDialect>
 

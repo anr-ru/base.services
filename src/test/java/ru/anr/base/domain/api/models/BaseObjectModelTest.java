@@ -1,24 +1,18 @@
-/**
- * 
- */
 package ru.anr.base.domain.api.models;
 
-import java.util.GregorianCalendar;
-
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.springframework.test.context.ContextConfiguration;
-
 import ru.anr.base.domain.BaseEntity;
 import ru.anr.base.tests.BaseTestCase;
+
+import java.util.GregorianCalendar;
 
 /**
  * Description ...
  *
- *
  * @author Alexey Romanchuk
  * @created Jun 8, 2015
- *
  */
 @ContextConfiguration(classes = BaseObjectModelTest.class)
 public class BaseObjectModelTest extends BaseTestCase {
@@ -38,19 +32,19 @@ public class BaseObjectModelTest extends BaseTestCase {
 
         BaseObjectModel m = new BaseObjectModel(o);
 
-        Assert.assertEquals(o.getId(), m.getId());
-        Assert.assertEquals(o.getState(), m.getState());
-        Assert.assertEquals(o.getCreated(), m.getCreated());
-        Assert.assertEquals(o.getModified(), m.getModified());
-        Assert.assertEquals(o.getStateChanged(), m.getStateChanged());
+        Assertions.assertEquals(o.getId(), m.getId());
+        Assertions.assertEquals(o.getState(), m.getState());
+        Assertions.assertEquals(o.getCreated(), m.getCreated());
+        Assertions.assertEquals(o.getModified(), m.getModified());
+        Assertions.assertEquals(o.getStateChanged(), m.getStateChanged());
 
         BaseObjectModel mx = new BaseObjectModel(m);
 
-        Assert.assertEquals(m.getId(), mx.getId());
-        Assert.assertEquals(m.getState(), mx.getState());
-        Assert.assertEquals(m.getCreated(), mx.getCreated());
-        Assert.assertEquals(m.getModified(), mx.getModified());
-        Assert.assertEquals(m.getStateChanged(), mx.getStateChanged());
+        Assertions.assertEquals(m.getId(), mx.getId());
+        Assertions.assertEquals(m.getState(), mx.getState());
+        Assertions.assertEquals(m.getCreated(), mx.getCreated());
+        Assertions.assertEquals(m.getModified(), mx.getModified());
+        Assertions.assertEquals(m.getStateChanged(), mx.getStateChanged());
 
     }
 
@@ -62,19 +56,19 @@ public class BaseObjectModelTest extends BaseTestCase {
 
         BaseObjectModel m = new BaseObjectModel((BaseEntity) null);
 
-        Assert.assertNull(m.getId());
-        Assert.assertNull(m.getState());
-        Assert.assertNull(m.getCreated());
-        Assert.assertNull(m.getModified());
-        Assert.assertNull(m.getStateChanged());
+        Assertions.assertNull(m.getId());
+        Assertions.assertNull(m.getState());
+        Assertions.assertNull(m.getCreated());
+        Assertions.assertNull(m.getModified());
+        Assertions.assertNull(m.getStateChanged());
 
         m = new BaseObjectModel((BaseObjectModel) null);
 
-        Assert.assertNull(m.getId());
-        Assert.assertNull(m.getState());
-        Assert.assertNull(m.getCreated());
-        Assert.assertNull(m.getModified());
-        Assert.assertNull(m.getStateChanged());
+        Assertions.assertNull(m.getId());
+        Assertions.assertNull(m.getState());
+        Assertions.assertNull(m.getCreated());
+        Assertions.assertNull(m.getModified());
+        Assertions.assertNull(m.getStateChanged());
 
     }
 

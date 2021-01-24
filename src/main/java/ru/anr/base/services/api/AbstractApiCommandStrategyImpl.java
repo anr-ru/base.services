@@ -1,12 +1,12 @@
 /*
  * Copyright 2014 the original author or authors.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -15,10 +15,6 @@
  */
 package ru.anr.base.services.api;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.NotImplementedException;
 import org.slf4j.Logger;
@@ -26,16 +22,18 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
-
 import ru.anr.base.domain.api.APICommand;
 import ru.anr.base.services.BaseDataAwareServiceImpl;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 /**
  * An implementation of the base API strategy.
  *
  * @author Alexey Romanchuk
  * @created Nov 10, 2014
- *
  */
 
 public class AbstractApiCommandStrategyImpl extends BaseDataAwareServiceImpl implements ApiCommandStrategy {
@@ -47,9 +45,8 @@ public class AbstractApiCommandStrategyImpl extends BaseDataAwareServiceImpl imp
 
     /**
      * GET method
-     * 
-     * @param cmd
-     *            API Command
+     *
+     * @param cmd API Command
      * @return Response model
      */
     @Override
@@ -60,9 +57,8 @@ public class AbstractApiCommandStrategyImpl extends BaseDataAwareServiceImpl imp
 
     /**
      * POST method
-     * 
-     * @param cmd
-     *            API Command
+     *
+     * @param cmd API Command
      * @return Response model
      */
     @Override
@@ -73,9 +69,8 @@ public class AbstractApiCommandStrategyImpl extends BaseDataAwareServiceImpl imp
 
     /**
      * PUT method
-     * 
-     * @param cmd
-     *            API Command
+     *
+     * @param cmd API Command
      * @return Response model
      */
 
@@ -87,9 +82,8 @@ public class AbstractApiCommandStrategyImpl extends BaseDataAwareServiceImpl imp
 
     /**
      * DELETE method
-     * 
-     * @param cmd
-     *            API Command
+     *
+     * @param cmd API Command
      * @return Response model
      */
 
@@ -102,29 +96,25 @@ public class AbstractApiCommandStrategyImpl extends BaseDataAwareServiceImpl imp
     /**
      * Prepares a {@link Pageable} object based on provided data. Handles the
      * case when paging parameters are null.
-     * 
-     * @param cmd
-     *            An API Command
-     * @param direction
-     *            A direction of sorting
-     * @param properties
-     *            Names of properties used for sorting
+     *
+     * @param cmd        An API Command
+     * @param direction  A direction of sorting
+     * @param properties Names of properties used for sorting
      * @return A new created {@link Pageable}
      */
     protected Pageable safePageable(APICommand cmd, Direction direction, String... properties) {
 
         logger.trace("Page parameters: {}:{}", cmd.getRequest().getPage(), cmd.getRequest().getPerPage());
 
-        Integer page = Optional.ofNullable(cmd.getRequest().getPage()).orElse(0);
-        Integer perPage = Optional.ofNullable(cmd.getRequest().getPerPage()).orElse(10);
+        int page = Optional.ofNullable(cmd.getRequest().getPage()).orElse(0);
+        int perPage = Optional.ofNullable(cmd.getRequest().getPerPage()).orElse(10);
         if (page < 0) {
             page = 0;
         }
         if (perPage <= 0) {
             perPage = 10;
         }
-        return ArrayUtils.isEmpty(properties) ? new PageRequest(page, perPage)
-                : new PageRequest(page, perPage, direction, properties);
+        return ArrayUtils.isEmpty(properties) ? PageRequest.of(page, perPage) : PageRequest.of(page, perPage, direction, properties);
     }
 
     /**
@@ -136,9 +126,8 @@ public class AbstractApiCommandStrategyImpl extends BaseDataAwareServiceImpl imp
 
         /**
          * Finds an object by the given identifier
-         * 
-         * @param id
-         *            The identifier
+         *
+         * @param id The identifier
          * @return A found object or null if nothing found.
          */
         S find(Long id);
@@ -147,11 +136,10 @@ public class AbstractApiCommandStrategyImpl extends BaseDataAwareServiceImpl imp
     /**
      * Searches and returns id parameters from the specified context of the api
      * command
-     * 
-     * @param cmd
-     *            the API Command
+     *
+     * @param cmd the API Command
      * @return Long value of identifier or raises an exception if it is absent
-     *         or unparsible
+     * or unparsible
      */
     protected Long extractId(APICommand cmd) {
 
@@ -162,9 +150,8 @@ public class AbstractApiCommandStrategyImpl extends BaseDataAwareServiceImpl imp
     /**
      * Returns an identifier from the request parameters and check whether it
      * has been correctly parsed or not.
-     * 
-     * @param cmd
-     *            An original API command
+     *
+     * @param cmd An original API command
      * @return Parsed not null identifier
      */
     protected Long extractIdStrict(APICommand cmd) {
@@ -179,11 +166,9 @@ public class AbstractApiCommandStrategyImpl extends BaseDataAwareServiceImpl imp
 
     /**
      * Extracts request parameters from the command
-     * 
-     * @param cmd
-     *            The API command
-     * @param keys
-     *            A set of key to find in the request parameters
+     *
+     * @param cmd  The API command
+     * @param keys A set of key to find in the request parameters
      * @return A resulted map which definitely contains not-empty keys
      */
     protected Map<String, Object> extract(APICommand cmd, String... keys) {
@@ -200,16 +185,12 @@ public class AbstractApiCommandStrategyImpl extends BaseDataAwareServiceImpl imp
     /**
      * Performs a search of an object by its identifier located inside of a
      * {@link APICommand}.
-     * 
-     * @param cmd
-     *            A command to parse
-     * @param callback
-     *            A callback function used to delegate the search procedure to a
-     *            service
+     *
+     * @param cmd      A command to parse
+     * @param callback A callback function used to delegate the search procedure to a
+     *                 service
+     * @param <S>      A class of the object
      * @return A found object (cab be null).
-     * 
-     * @param <S>
-     *            A class of the object
      */
     protected <S> S findObjectByID(APICommand cmd, ObjectFindCallback<S> callback) {
 

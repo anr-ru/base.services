@@ -1,12 +1,8 @@
-/**
- * 
- */
 package ru.anr.base.services.validation;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import ru.anr.base.ApplicationException;
 import ru.anr.base.samples.domain.Samples;
 import ru.anr.base.samples.services.validation.SampleService;
@@ -15,10 +11,8 @@ import ru.anr.base.services.BaseLocalServiceTestCase;
 /**
  * Description ...
  *
- *
  * @author Alexey Romanchuk
  * @created Jan 21, 2016
- *
  */
 
 public class ValidationTest extends BaseLocalServiceTestCase {
@@ -41,9 +35,9 @@ public class ValidationTest extends BaseLocalServiceTestCase {
         o.setName("Here is Error");
         try {
             service.doValidate(o);
-            Assert.fail();
+            Assertions.fail();
         } catch (ApplicationException ex) {
-            Assert.assertEquals("Error", ex.getMessage());
+            Assertions.assertEquals("Error", ex.getMessage());
         }
     }
 }

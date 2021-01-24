@@ -1,10 +1,7 @@
-/**
- * 
- */
 package ru.anr.base.services;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.access.AccessDeniedException;
@@ -19,10 +16,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 /**
  * Tests of security settings.
  *
- *
  * @author Alexey Romanchuk
  * @created Nov 7, 2014
- *
  */
 
 public class SecurityTest extends BaseLocalServiceTestCase {
@@ -73,11 +68,11 @@ public class SecurityTest extends BaseLocalServiceTestCase {
         try {
 
             fully.text("hello.world");
-            Assert.fail();
+            Assertions.fail();
 
         } catch (AuthenticationCredentialsNotFoundException ex) {
 
-            Assert.assertEquals("An Authentication object was not found in the SecurityContext", ex.getMessage());
+            Assertions.assertEquals("An Authentication object was not found in the SecurityContext", ex.getMessage());
 
         }
 
@@ -92,11 +87,11 @@ public class SecurityTest extends BaseLocalServiceTestCase {
         try {
 
             roled.text("hello.world"); // but this is not
-            Assert.fail();
+            Assertions.fail();
 
         } catch (AccessDeniedException ex) {
 
-            Assert.assertEquals("Access is denied", ex.getMessage());
+            Assertions.assertEquals("Access is denied", ex.getMessage());
         }
 
         /*
@@ -112,11 +107,11 @@ public class SecurityTest extends BaseLocalServiceTestCase {
 
             roled.text("hello.world"); // But this is not
 
-            Assert.fail();
+            Assertions.fail();
 
         } catch (AccessDeniedException ex) {
 
-            Assert.assertEquals("Access is denied", ex.getMessage());
+            Assertions.assertEquals("Access is denied", ex.getMessage());
         }
 
         /*
@@ -127,7 +122,7 @@ public class SecurityTest extends BaseLocalServiceTestCase {
         token = authenticationManager.authenticate(new TestingAuthenticationToken("xxx", "yyy", list(role)));
         SecurityContextHolder.getContext().setAuthentication(token);
 
-        Assert.assertNotNull(roled.text("hello.world")); // Both are OK
-        Assert.assertNotNull(fully.text("hello.world"));
+        Assertions.assertNotNull(roled.text("hello.world")); // Both are OK
+        Assertions.assertNotNull(fully.text("hello.world"));
     }
 }

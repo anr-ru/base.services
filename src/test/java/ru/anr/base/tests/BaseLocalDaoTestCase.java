@@ -1,23 +1,22 @@
 /**
- * 
+ *
  */
 package ru.anr.base.tests;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.Map;
-import java.util.Map.Entry;
-
 import org.apache.commons.beanutils.PropertyUtils;
-import org.junit.Ignore;
+import org.junit.jupiter.api.Disabled;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.transaction.annotation.Transactional;
-
 import ru.anr.base.ApplicationException;
 import ru.anr.base.dao.BaseRepositoryImpl;
 import ru.anr.base.dao.repository.BaseRepository;
 import ru.anr.base.domain.BaseEntity;
+
+import java.lang.reflect.InvocationTargetException;
+import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  * Base parent for all local tests.
@@ -28,7 +27,7 @@ import ru.anr.base.domain.BaseEntity;
  *
  */
 @ContextConfiguration(locations = "classpath:/tests-dao-context.xml", inheritLocations = false)
-@Ignore
+@Disabled
 @Transactional(transactionManager = "transactionManager")
 public class BaseLocalDaoTestCase extends BaseTestCase {
 
@@ -42,14 +41,14 @@ public class BaseLocalDaoTestCase extends BaseTestCase {
     /**
      * Creation of sample entity with specified list of property name/value
      * pairs
-     * 
+     *
      * @param entityClass
      *            Entity class to create
      * @param propsAndValues
      *            List of property name/value paits, like: "login",
      *            "alex","weight", 100
      * @return Entity instance, stored in database
-     * 
+     *
      * @param <S>
      *            Entity class
      */
@@ -73,8 +72,8 @@ public class BaseLocalDaoTestCase extends BaseTestCase {
 
     /**
      * A short-cut method for {@link BaseRepositoryImpl#entityClass(BaseEntity)}
-     * 
-     * 
+     *
+     *
      * @param e
      *            Some entity
      * @return Entity class
@@ -86,11 +85,11 @@ public class BaseLocalDaoTestCase extends BaseTestCase {
 
     /**
      * A short-cut method for {@link BaseRepositoryImpl#entity(BaseEntity)}
-     * 
+     *
      * @param e
      *            Some entity
      * @return The entity without proxies
-     * 
+     *
      * @param <S>
      *            Entity type to cast to
      */

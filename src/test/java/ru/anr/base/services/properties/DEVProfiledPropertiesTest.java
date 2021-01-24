@@ -1,15 +1,11 @@
-/**
- * 
- */
 package ru.anr.base.services.properties;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
-
 import ru.anr.base.services.BaseService;
 import ru.anr.base.services.TargetEnvironments;
 import ru.anr.base.tests.BaseTestCase;
@@ -17,13 +13,11 @@ import ru.anr.base.tests.BaseTestCase;
 /**
  * DEV Profiles
  *
- *
  * @author Alexey Romanchuk
  * @created Nov 3, 2016
- *
  */
 @ContextConfiguration(locations = "classpath:tests-properties-context.xml", inheritLocations = false)
-@ActiveProfiles(profiles = { "DEV", "developers" })
+@ActiveProfiles(profiles = {"DEV", "developers"})
 public class DEVProfiledPropertiesTest extends BaseTestCase {
 
     /**
@@ -44,8 +38,7 @@ public class DEVProfiledPropertiesTest extends BaseTestCase {
     @Test
     public void testCheckValue() {
 
-        Assert.assertEquals("dev-value", value);
-
-        Assert.assertSame(TargetEnvironments.DEV, service.getTargetEnv());
+        Assertions.assertEquals("dev-value", value);
+        Assertions.assertSame(TargetEnvironments.DEV, service.getTargetEnv());
     }
 }

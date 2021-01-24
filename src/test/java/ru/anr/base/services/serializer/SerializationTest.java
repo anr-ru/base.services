@@ -3,8 +3,8 @@
  */
 package ru.anr.base.services.serializer;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import ru.anr.base.BaseParent;
@@ -76,14 +76,14 @@ public class SerializationTest extends BaseLocalServiceTestCase {
         String value = json.toStr(m);
         logger.info("JSON: {}", value);
 
-        Assert.assertEquals(TEST_JSON, value);
+        Assertions.assertEquals(TEST_JSON, value);
 
         Model mx = json.fromStr(value, Model.class);
 
-        Assert.assertEquals(m.getTime(), mx.getTime());
-        Assert.assertEquals(m, mx);
+        Assertions.assertEquals(m.getTime(), mx.getTime());
+        Assertions.assertEquals(m, mx);
 
-        Assert.assertEquals(d("600").toPlainString(), d("600.00").stripTrailingZeros().toPlainString());
+        Assertions.assertEquals(d("600").toPlainString(), d("600.00").stripTrailingZeros().toPlainString());
     }
 
     /**
@@ -104,15 +104,15 @@ public class SerializationTest extends BaseLocalServiceTestCase {
         String value = impl.toStr(m);
         logger.info("JSON: {}", value);
 
-        Assert.assertEquals(TEST_JSON_STRIPPED, value);
+        Assertions.assertEquals(TEST_JSON_STRIPPED, value);
 
         Model mx = impl.fromStr(value, Model.class);
 
-        Assert.assertEquals(m.getTime(), mx.getTime());
+        Assertions.assertEquals(m.getTime(), mx.getTime());
         mx.setSum(mx.getSum().setScale(9, BigDecimal.ROUND_HALF_UP));
-        Assert.assertEquals(m, mx);
+        Assertions.assertEquals(m, mx);
 
-        Assert.assertEquals(d("600").toPlainString(), d("600.00").stripTrailingZeros().toPlainString());
+        Assertions.assertEquals(d("600").toPlainString(), d("600.00").stripTrailingZeros().toPlainString());
     }
 
     /**
@@ -136,9 +136,9 @@ public class SerializationTest extends BaseLocalServiceTestCase {
         String value = xml.toStr(m);
         logger.info("XML: {}", value);
 
-        Assert.assertEquals(TEST_XML, value);
+        Assertions.assertEquals(TEST_XML, value);
 
         Model mx = xml.fromStr(value, Model.class);
-        Assert.assertEquals(m, mx);
+        Assertions.assertEquals(m, mx);
     }
 }

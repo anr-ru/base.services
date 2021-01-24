@@ -1,21 +1,15 @@
-/**
- * 
- */
 package ru.anr.base.services.pattern;
 
-import org.junit.Assert;
-import org.junit.Test;
-
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import ru.anr.base.samples.domain.Samples;
 import ru.anr.base.services.BaseLocalServiceTestCase;
 
 /**
  * Tests for strategy factory
  *
- *
  * @author Alexey Romanchuk
  * @created Nov 10, 2014
- *
  */
 public class StrategyFactoryImplTest extends BaseLocalServiceTestCase {
 
@@ -26,7 +20,7 @@ public class StrategyFactoryImplTest extends BaseLocalServiceTestCase {
 
     /**
      * The first sequence of strategies - with one not applicable in the middle
-     * 
+     *
      * @return {@link StrategyFactory}
      */
     public StrategyFactory strategyFactory1() {
@@ -37,7 +31,7 @@ public class StrategyFactoryImplTest extends BaseLocalServiceTestCase {
     /**
      * The second sequence of strategies - with one in terminated mode in the
      * middle
-     * 
+     *
      * @return {@link StrategyFactory}
      */
     public StrategyFactory strategyFactory2() {
@@ -52,9 +46,9 @@ public class StrategyFactoryImplTest extends BaseLocalServiceTestCase {
     @Test
     public void testApplicable() {
 
-        Assert.assertTrue(new NopStrategyImpl().check(etalon).isApplicable());
-        Assert.assertFalse(new FalseStrategyImpl().check(etalon).isApplicable());
-        Assert.assertTrue(new TerminateStrategyImpl().check(etalon).isApplicable());
+        Assertions.assertTrue(new NopStrategyImpl().check(etalon).isApplicable());
+        Assertions.assertFalse(new FalseStrategyImpl().check(etalon).isApplicable());
+        Assertions.assertTrue(new TerminateStrategyImpl().check(etalon).isApplicable());
     }
 
     /**
@@ -68,13 +62,13 @@ public class StrategyFactoryImplTest extends BaseLocalServiceTestCase {
         StrategyFactory sf = strategyFactory1();
         StrategyStatistic st = sf.process(o);
 
-        Assert.assertSame(o, st.getObject());
+        Assertions.assertSame(o, st.getObject());
 
         logger.debug("Result: {}", st.getAppliedStrategies());
 
-        Assert.assertEquals(2, st.getAppliedStrategies().size());
-        Assert.assertTrue(st.getAppliedStrategies().contains(NopStrategyImpl.class));
-        Assert.assertFalse(st.getAppliedStrategies().contains(FalseStrategyImpl.class));
+        Assertions.assertEquals(2, st.getAppliedStrategies().size());
+        Assertions.assertTrue(st.getAppliedStrategies().contains(NopStrategyImpl.class));
+        Assertions.assertFalse(st.getAppliedStrategies().contains(FalseStrategyImpl.class));
     }
 
     /**
@@ -90,12 +84,12 @@ public class StrategyFactoryImplTest extends BaseLocalServiceTestCase {
         StrategyFactory sf = strategyFactory2();
         StrategyStatistic st = sf.process(o);
 
-        Assert.assertSame(o, st.getObject());
+        Assertions.assertSame(o, st.getObject());
         logger.debug("Result: {}", st.getAppliedStrategies());
 
         // terminated after the second
-        Assert.assertEquals(2, st.getAppliedStrategies().size());
-        Assert.assertTrue(
+        Assertions.assertEquals(2, st.getAppliedStrategies().size());
+        Assertions.assertTrue(
                 st.getAppliedStrategies().containsAll(list(NopStrategyImpl.class, TerminateStrategyImpl.class)));
     }
 }

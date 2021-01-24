@@ -1,24 +1,21 @@
 package ru.anr.base.domain.api;
 
-import java.time.ZonedDateTime;
-import java.util.List;
-import java.util.Map;
-
-import org.junit.Assert;
-import org.junit.Test;
-
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import ru.anr.base.BaseParent;
 import ru.anr.base.domain.api.models.RequestModel;
 import ru.anr.base.domain.api.models.SortModel;
 import ru.anr.base.domain.api.models.SortModel.SortDirection;
 
+import java.time.ZonedDateTime;
+import java.util.List;
+import java.util.Map;
+
 /**
  * Testing a command builder
  *
- *
  * @author Alexey Romanchuk
  * @created Nov 10, 2014
- *
  */
 
 public class APICommandTest extends BaseParent {
@@ -43,17 +40,17 @@ public class APICommandTest extends BaseParent {
                 new APICommand(USERS, VER).responseFormat(RawFormatTypes.XML).method("POST").context("id", 100L)
                         .params(toMap("page", 64)).addRaw("{}");
 
-        Assert.assertEquals("{}", cmd.getRawModel());
-        Assert.assertEquals(RawFormatTypes.JSON, cmd.getRequestFormat());
-        Assert.assertEquals(RawFormatTypes.XML, cmd.getResponseFormat());
+        Assertions.assertEquals("{}", cmd.getRawModel());
+        Assertions.assertEquals(RawFormatTypes.JSON, cmd.getRequestFormat());
+        Assertions.assertEquals(RawFormatTypes.XML, cmd.getResponseFormat());
 
-        Assert.assertEquals(VER, cmd.getVersion());
-        Assert.assertEquals(MethodTypes.Post, cmd.getType());
+        Assertions.assertEquals(VER, cmd.getVersion());
+        Assertions.assertEquals(MethodTypes.Post, cmd.getType());
 
-        Assert.assertEquals(USERS, cmd.getCommandId());
-        Assert.assertEquals(100L, cmd.getContexts().get("id"));
-        Assert.assertNotNull(cmd.getRequest());
-        Assert.assertEquals(64, cmd.getRequest().getPage().intValue());
+        Assertions.assertEquals(USERS, cmd.getCommandId());
+        Assertions.assertEquals(100L, cmd.getContexts().get("id"));
+        Assertions.assertNotNull(cmd.getRequest());
+        Assertions.assertEquals(64, cmd.getRequest().getPage());
     }
 
     /**
@@ -63,33 +60,33 @@ public class APICommandTest extends BaseParent {
     public void testCommandBuilderForType() {
 
         APICommand cmd = new APICommand(USERS, VER).method("GET");
-        Assert.assertEquals(MethodTypes.Get, cmd.getType());
+        Assertions.assertEquals(MethodTypes.Get, cmd.getType());
 
         cmd = new APICommand(USERS, VER).method("PUT");
-        Assert.assertEquals(MethodTypes.Put, cmd.getType());
+        Assertions.assertEquals(MethodTypes.Put, cmd.getType());
 
         cmd = new APICommand(USERS, VER).method("DELETE");
-        Assert.assertEquals(MethodTypes.Delete, cmd.getType());
+        Assertions.assertEquals(MethodTypes.Delete, cmd.getType());
 
         try {
             new APICommand(USERS, VER).method("XXX");
-            Assert.fail();
+            Assertions.fail();
         } catch (UnsupportedOperationException ex) {
-            Assert.assertEquals("XXX", ex.getMessage());
+            Assertions.assertEquals("XXX", ex.getMessage());
         }
 
         try {
             new APICommand(USERS, VER).method(null);
-            Assert.fail();
+            Assertions.fail();
         } catch (Exception ex) {
-            Assert.assertEquals("Method is null", ex.getMessage());
+            Assertions.assertEquals("Method is null", ex.getMessage());
         }
 
         try {
             new APICommand(USERS, VER).method("");
-            Assert.fail();
+            Assertions.fail();
         } catch (UnsupportedOperationException ex) {
-            Assert.assertEquals("", ex.getMessage());
+            Assertions.assertEquals("", ex.getMessage());
         }
 
     }
@@ -107,18 +104,18 @@ public class APICommandTest extends BaseParent {
 
         RequestModel m = cmd.params(map).getRequest();
 
-        Assert.assertEquals(100, m.getPage().intValue());
-        Assert.assertEquals(75, m.getPerPage().intValue());
-        Assert.assertEquals("xxx", m.getSearch());
-        Assert.assertEquals(list("id", "version"), m.getFields());
+        Assertions.assertEquals(100, m.getPage().intValue());
+        Assertions.assertEquals(75, m.getPerPage().intValue());
+        Assertions.assertEquals("xxx", m.getSearch());
+        Assertions.assertEquals(list("id", "version"), m.getFields());
 
         List<SortModel> sorts = m.getSorted();
-        Assert.assertEquals(2, sorts.size());
-        Assert.assertEquals("id", sorts.get(0).getField());
-        Assert.assertEquals(SortModel.SortDirection.ASC, sorts.get(0).getDirection());
+        Assertions.assertEquals(2, sorts.size());
+        Assertions.assertEquals("id", sorts.get(0).getField());
+        Assertions.assertEquals(SortModel.SortDirection.ASC, sorts.get(0).getDirection());
 
-        Assert.assertEquals("value", sorts.get(1).getField());
-        Assert.assertEquals(SortModel.SortDirection.DESC, sorts.get(1).getDirection());
+        Assertions.assertEquals("value", sorts.get(1).getField());
+        Assertions.assertEquals(SortModel.SortDirection.DESC, sorts.get(1).getDirection());
 
         /*
          * Missing cases
@@ -126,11 +123,11 @@ public class APICommandTest extends BaseParent {
         map = toMap();
         m = cmd.params(map).getRequest();
 
-        Assert.assertNull(m.getPage());
-        Assert.assertNull(m.getPerPage());
-        Assert.assertNull(m.getFields());
-        Assert.assertNull(m.getSorted());
-        Assert.assertNull(m.getSearch());
+        Assertions.assertNull(m.getPage());
+        Assertions.assertNull(m.getPerPage());
+        Assertions.assertNull(m.getFields());
+        Assertions.assertNull(m.getSorted());
+        Assertions.assertNull(m.getSearch());
 
         /*
          * Missing cases
@@ -138,52 +135,52 @@ public class APICommandTest extends BaseParent {
         map = toMap("page", "xwlejkdr4", "per_page", "dd", "fields", ",,,,,,", "sort", "!");
         m = cmd.params(map).getRequest();
 
-        Assert.assertNull(m.getPage());
-        Assert.assertNull(m.getPerPage());
-        Assert.assertNull(m.getFields());
-        Assert.assertEquals(list(), m.getSorted());
+        Assertions.assertNull(m.getPage());
+        Assertions.assertNull(m.getPerPage());
+        Assertions.assertNull(m.getFields());
+        Assertions.assertEquals(list(), m.getSorted());
 
         /*
          * One field
          */
         m = cmd.params(toMap("fields", "xx")).getRequest();
-        Assert.assertEquals(list("xx"), m.getFields());
+        Assertions.assertEquals(list("xx"), m.getFields());
 
         // comma in the end
         m = cmd.params(toMap("fields", "yy,")).getRequest();
-        Assert.assertEquals(list("yy"), m.getFields());
+        Assertions.assertEquals(list("yy"), m.getFields());
 
         m = cmd.params(toMap("fields", "yy,,,zz")).getRequest();
-        Assert.assertEquals(list("yy", "zz"), m.getFields());
+        Assertions.assertEquals(list("yy", "zz"), m.getFields());
 
         /*
          * Sorting details
          */
         m = cmd.params(toMap("sort", "x,z")).getRequest();
-        Assert.assertEquals(list(), m.getSorted());
+        Assertions.assertEquals(list(), m.getSorted());
 
         m = cmd.params(toMap("sort", "+x,-z")).getRequest();
-        Assert.assertEquals(list(new SortModel("x", SortDirection.ASC), new SortModel("z", SortDirection.DESC)),
+        Assertions.assertEquals(list(new SortModel("x", SortDirection.ASC), new SortModel("z", SortDirection.DESC)),
                 m.getSorted());
 
         Map<String, SortDirection> rs = cmd.findSorting(SortDirection.DESC, "x", "z", "y");
-        Assert.assertEquals(SortDirection.ASC, rs.get("x"));
-        Assert.assertEquals(SortDirection.DESC, rs.get("z"));
-        Assert.assertEquals(SortDirection.DESC, rs.get("y"));
+        Assertions.assertEquals(SortDirection.ASC, rs.get("x"));
+        Assertions.assertEquals(SortDirection.DESC, rs.get("z"));
+        Assertions.assertEquals(SortDirection.DESC, rs.get("y"));
 
         // Dates
         map = toMap("created", "2020-05-14", "modified", "2020-22-11");
         m = cmd.params(map).getRequest();
 
-        ZonedDateTime z = ZonedDateTime.of(2020, 5, 16, 0,0,0,0,DEFAULT_TIMEZONE);
+        ZonedDateTime z = ZonedDateTime.of(2020, 5, 16, 0, 0, 0, 0, DEFAULT_TIMEZONE);
 
-        Assert.assertEquals(ZonedDateTime.of(2020, 5, 14, 0,0,0,0,DEFAULT_TIMEZONE),
+        Assertions.assertEquals(ZonedDateTime.of(2020, 5, 14, 0, 0, 0, 0, DEFAULT_TIMEZONE),
                 cmd.parseDate("created", now()));
-        Assert.assertEquals(z, cmd.parseDate("modified", z));
+        Assertions.assertEquals(z, cmd.parseDate("modified", z));
 
         // If '+' was lost
         m = cmd.params(toMap("sort", " x,-z")).getRequest();
-        Assert.assertEquals(list(new SortModel("x", SortDirection.ASC), new SortModel("z", SortDirection.DESC)),
+        Assertions.assertEquals(list(new SortModel("x", SortDirection.ASC), new SortModel("z", SortDirection.DESC)),
                 m.getSorted());
     }
 }

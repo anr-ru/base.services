@@ -1,35 +1,34 @@
 /**
- * 
+ *
  */
 package ru.anr.base.dao;
+
+import org.hibernate.Session;
+import org.hibernate.stat.QueryStatistics;
+import org.hibernate.stat.Statistics;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import ru.anr.base.samples.dao.MyDao;
+import ru.anr.base.samples.domain.Samples;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.hibernate.Session;
-import org.hibernate.stat.QueryStatistics;
-import org.hibernate.stat.Statistics;
-import org.junit.Assert;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-
-import ru.anr.base.samples.dao.MyDao;
-import ru.anr.base.samples.domain.Samples;
-
 /**
  * Some simple tests
- * 
- * 
+ *
+ *
  * @author Alexey Romanchuk
  * @created Oct 29, 2014
- * 
+ *
  */
-@Ignore
+@Disabled
 public class CacheTest extends AbstractDaoTestCase {
 
     /**
@@ -53,10 +52,10 @@ public class CacheTest extends AbstractDaoTestCase {
         newSample("yyy");
 
         List<Samples> rs = mydao.findCachedSamples();
-        Assert.assertNotNull(rs);
+        Assertions.assertNotNull(rs);
 
         rs = mydao.findCachedSamples();
-        Assert.assertNotNull(rs);
+        Assertions.assertNotNull(rs);
         rs = mydao.findCachedSamples();
 
         Map<String, QueryStatistics> map = getQueryStats();
@@ -65,8 +64,8 @@ public class CacheTest extends AbstractDaoTestCase {
         logger.info("RS: {}", rs);
 
         QueryStatistics s1 = map.get("From Samples");
-        Assert.assertTrue(s1.getExecutionCount() > 0); // It's executed
-        Assert.assertTrue(s1.getCacheHitCount() > 0); // at least one hit
+        Assertions.assertTrue(s1.getExecutionCount() > 0); // It's executed
+        Assertions.assertTrue(s1.getCacheHitCount() > 0); // at least one hit
     }
 
     /**
@@ -80,18 +79,18 @@ public class CacheTest extends AbstractDaoTestCase {
         s = mydao.saveAndFlush(s);
 
         List<Samples> rs = mydao.findSamples("xxx");
-        Assert.assertNotNull(rs);
+        Assertions.assertNotNull(rs);
 
         rs = mydao.findSamples("xxx");
-        Assert.assertNotNull(rs);
+        Assertions.assertNotNull(rs);
 
         Map<String, QueryStatistics> map = getQueryStats();
         logger.debug("Query statistic: {}", map);
 
         QueryStatistics s2 = map.get("From Samples where name like :x");
-        Assert.assertTrue(s2.getExecutionCount() > 0); // It's executed
-        Assert.assertTrue(s2.getCacheHitCount() == 0); // no one in cache
-        Assert.assertTrue(s2.getCachePutCount() == 0);
+        Assertions.assertTrue(s2.getExecutionCount() > 0); // It's executed
+        Assertions.assertEquals(0, s2.getCacheHitCount()); // no one in cache
+        Assertions.assertEquals(0, s2.getCachePutCount());
     }
 
     /**

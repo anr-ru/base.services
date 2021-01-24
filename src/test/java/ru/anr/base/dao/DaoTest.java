@@ -1,29 +1,28 @@
 /**
- * 
+ *
  */
 package ru.anr.base.dao;
 
-import java.util.List;
-
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
-
 import ru.anr.base.samples.dao.MyDao;
 import ru.anr.base.samples.domain.Samples;
 
+import java.util.List;
+
 /**
  * Some simple tests
- * 
- * 
+ *
+ *
  * @author Alexey Romanchuk
  * @created Oct 29, 2014
- * 
+ *
  */
 public class DaoTest extends AbstractDaoTestCase {
 
@@ -43,12 +42,12 @@ public class DaoTest extends AbstractDaoTestCase {
         Samples s = newSample("yyy");
 
         List<Samples> rs = mydao.findCachedSamples();
-        Assert.assertFalse(rs.isEmpty());
+        Assertions.assertFalse(rs.isEmpty());
 
         mydao.updateSamples(s.getId());
 
         mydao.refresh(s);
-        Assert.assertEquals("xxx", s.getName());
+        Assertions.assertEquals("xxx", s.getName());
     }
 
     /**
@@ -61,7 +60,7 @@ public class DaoTest extends AbstractDaoTestCase {
         Samples s = newSample("xx");
         Samples x = mydao.find(Samples.class, s.getId());
 
-        Assert.assertEquals(s, x);
+        Assertions.assertEquals(s, x);
     }
 
     /**
@@ -76,52 +75,52 @@ public class DaoTest extends AbstractDaoTestCase {
         Samples s4 = newSample("04");
         Samples s5 = newSample("05");
 
-        Pageable p = new PageRequest(0, 2);
+        Pageable p = PageRequest.of(0, 2);
         Page<Samples> page = mydao.pages(p);
 
         // Page 0
-        Assert.assertEquals(3, page.getTotalPages());
-        Assert.assertEquals(5, page.getTotalElements());
+        Assertions.assertEquals(3, page.getTotalPages());
+        Assertions.assertEquals(5, page.getTotalElements());
 
-        Assert.assertEquals(0, page.getNumber());
-        Assert.assertEquals(2, page.getNumberOfElements());
+        Assertions.assertEquals(0, page.getNumber());
+        Assertions.assertEquals(2, page.getNumberOfElements());
 
         List<Samples> rs = page.getContent();
-        Assert.assertTrue(rs.contains(s1));
-        Assert.assertTrue(rs.contains(s2));
+        Assertions.assertTrue(rs.contains(s1));
+        Assertions.assertTrue(rs.contains(s2));
 
         page = mydao.pages(page.nextPageable());
 
         // Page 1
-        Assert.assertEquals(3, page.getTotalPages());
-        Assert.assertEquals(5, page.getTotalElements());
+        Assertions.assertEquals(3, page.getTotalPages());
+        Assertions.assertEquals(5, page.getTotalElements());
 
-        Assert.assertEquals(1, page.getNumber());
-        Assert.assertEquals(2, page.getNumberOfElements());
+        Assertions.assertEquals(1, page.getNumber());
+        Assertions.assertEquals(2, page.getNumberOfElements());
 
         rs = page.getContent();
-        Assert.assertTrue(rs.contains(s3));
-        Assert.assertTrue(rs.contains(s4));
+        Assertions.assertTrue(rs.contains(s3));
+        Assertions.assertTrue(rs.contains(s4));
 
         page = mydao.pages(page.nextPageable());
 
         // Page 2
-        Assert.assertEquals(3, page.getTotalPages());
-        Assert.assertEquals(5, page.getTotalElements());
+        Assertions.assertEquals(3, page.getTotalPages());
+        Assertions.assertEquals(5, page.getTotalElements());
 
-        Assert.assertEquals(2, page.getNumber());
-        Assert.assertEquals(1, page.getNumberOfElements());
+        Assertions.assertEquals(2, page.getNumber());
+        Assertions.assertEquals(1, page.getNumberOfElements());
 
         rs = page.getContent();
-        Assert.assertTrue(rs.contains(s5));
+        Assertions.assertTrue(rs.contains(s5));
 
         // Once more
         page = mydao.pages(page.nextPageable());
-        Assert.assertTrue(page.hasContent());
-        Assert.assertFalse(page.hasNext());
+        Assertions.assertTrue(page.hasContent());
+        Assertions.assertFalse(page.hasNext());
 
         rs = page.getContent();
-        Assert.assertTrue(rs.contains(s5)); // the same page
+        Assertions.assertTrue(rs.contains(s5)); // the same page
     }
 
     /**
@@ -136,46 +135,46 @@ public class DaoTest extends AbstractDaoTestCase {
         Samples s4 = newSample("04");
         Samples s5 = newSample("05");
 
-        Pageable p = new PageRequest(0, 3, Direction.DESC, "name");
+        Pageable p = PageRequest.of(0, 3, Direction.DESC, "name");
         Page<Samples> page = mydao.pages(p);
 
         // Page 0
-        Assert.assertEquals(2, page.getTotalPages());
-        Assert.assertEquals(5, page.getTotalElements());
+        Assertions.assertEquals(2, page.getTotalPages());
+        Assertions.assertEquals(5, page.getTotalElements());
 
-        Assert.assertEquals(0, page.getNumber());
-        Assert.assertEquals(3, page.getNumberOfElements());
+        Assertions.assertEquals(0, page.getNumber());
+        Assertions.assertEquals(3, page.getNumberOfElements());
 
         List<Samples> rs = page.getContent();
-        Assert.assertEquals(s5, rs.get(0));
-        Assert.assertEquals(s4, rs.get(1));
-        Assert.assertEquals(s3, rs.get(2));
+        Assertions.assertEquals(s5, rs.get(0));
+        Assertions.assertEquals(s4, rs.get(1));
+        Assertions.assertEquals(s3, rs.get(2));
 
         page = mydao.pages(page.nextPageable());
 
         // Page 1
-        Assert.assertEquals(2, page.getTotalPages());
-        Assert.assertEquals(5, page.getTotalElements());
+        Assertions.assertEquals(2, page.getTotalPages());
+        Assertions.assertEquals(5, page.getTotalElements());
 
-        Assert.assertEquals(1, page.getNumber());
-        Assert.assertEquals(2, page.getNumberOfElements());
+        Assertions.assertEquals(1, page.getNumber());
+        Assertions.assertEquals(2, page.getNumberOfElements());
 
         rs = page.getContent();
-        Assert.assertEquals(s2, rs.get(0));
-        Assert.assertEquals(s1, rs.get(1));
+        Assertions.assertEquals(s2, rs.get(0));
+        Assertions.assertEquals(s1, rs.get(1));
 
         // Changing order
-        page = mydao.pages(new PageRequest(1, 3, Direction.ASC, "name"));
+        page = mydao.pages(PageRequest.of(1, 3, Direction.ASC, "name"));
 
-        Assert.assertEquals(2, page.getTotalPages());
-        Assert.assertEquals(5, page.getTotalElements());
+        Assertions.assertEquals(2, page.getTotalPages());
+        Assertions.assertEquals(5, page.getTotalElements());
 
-        Assert.assertEquals(1, page.getNumber());
-        Assert.assertEquals(2, page.getNumberOfElements());
+        Assertions.assertEquals(1, page.getNumber());
+        Assertions.assertEquals(2, page.getNumberOfElements());
 
         rs = page.getContent();
-        Assert.assertEquals(s4, rs.get(0));
-        Assert.assertEquals(s5, rs.get(1));
+        Assertions.assertEquals(s4, rs.get(0));
+        Assertions.assertEquals(s5, rs.get(1));
     }
 
     /**
@@ -187,12 +186,12 @@ public class DaoTest extends AbstractDaoTestCase {
         Samples s = newSample("yyy");
 
         List<Samples> rs = mydao.query("from Samples where id = ?1", s.getId());
-        Assert.assertEquals(1, rs.size());
+        Assertions.assertEquals(1, rs.size());
 
-        Assert.assertEquals(s, rs.get(0));
+        Assertions.assertEquals(s, rs.get(0));
 
         rs = mydao.query("from Samples where id = 0");
-        Assert.assertEquals(0, rs.size());
+        Assertions.assertEquals(0, rs.size());
     }
 
     /**
@@ -208,7 +207,7 @@ public class DaoTest extends AbstractDaoTestCase {
 
         Samples x = mydao.getOne(s.getId());
         // TODO: can't create a HibernateProxy
-        Assert.assertEquals(Samples.class, entityClass(x.getParent()));
+        Assertions.assertEquals(Samples.class, entityClass(x.getParent()));
     }
 
     /**
@@ -221,12 +220,12 @@ public class DaoTest extends AbstractDaoTestCase {
         s = mydao.save(s);
 
         // Update it
-        Assert.assertEquals(1, mydao.execute("update Samples set name = ?", "zzz"));
+        Assertions.assertEquals(1, mydao.execute("update Samples set name = ?", "zzz"));
 
         Samples x = mydao.getOne(s.getId());
         mydao.refresh(x);
 
-        Assert.assertEquals("zzz", x.getName());
+        Assertions.assertEquals("zzz", x.getName());
     }
 
 }

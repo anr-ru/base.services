@@ -1,22 +1,16 @@
-/**
- * 
- */
 package ru.anr.base.services;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.test.context.ContextConfiguration;
-
 import ru.anr.base.tests.BaseTestCase;
 
 /**
  * This test shows how to avoid usage of environment variables.
  *
- *
  * @author Alexey Romanchuk
  * @created Jan 30, 2015
- *
  */
 @ContextConfiguration(locations = "classpath:/tests-localproperties-context.xml", inheritLocations = false)
 public class LocalPropertiesTest extends BaseTestCase {
@@ -33,7 +27,7 @@ public class LocalPropertiesTest extends BaseTestCase {
     @Test
     public void testPropertiesOverriding() {
 
-        Assert.assertEquals("nemo", value);
+        Assertions.assertEquals("nemo", value);
     }
 
     /**
@@ -54,8 +48,8 @@ public class LocalPropertiesTest extends BaseTestCase {
     @Test
     public void testPropertySubstitution() {
 
-        Assert.assertEquals("12345", value1);
-        Assert.assertEquals("12345", value2);
+        Assertions.assertEquals("12345", value1);
+        Assertions.assertEquals("12345", value2);
     }
 
 }

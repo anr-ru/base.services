@@ -1,57 +1,54 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
- xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
- xmlns:context="http://www.springframework.org/schema/context"
- xmlns:jpa="http://www.springframework.org/schema/data/jpa"
- xmlns:p="http://www.springframework.org/schema/p"
- xmlns:util="http://www.springframework.org/schema/util"
- xmlns:security="http://www.springframework.org/schema/security"
- xmlns:tx="http://www.springframework.org/schema/tx"
- xsi:schemaLocation="http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd
-    http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
     http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
-    http://www.springframework.org/schema/data/jpa http://www.springframework.org/schema/data/jpa/spring-jpa.xsd
+
     http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
     http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
 
     <import resource="classpath:tests-dao-context.xml"/>
 
-    <bean id="messageConfig" 
-        class="ru.anr.base.services.MessagePropertiesConfig" 
-        p:paths-ref="messages"/>
-                
+    <bean id="messageConfig"
+          class="ru.anr.base.services.MessagePropertiesConfig"
+          p:paths-ref="messages"/>
+
     <util:list id="messages">
         <value>classpath:/messages/data</value>
     </util:list>
 
 
     <!-- SECURITY AND ACL -->
-    <bean id="securityConfig" class="ru.anr.base.services.security.SecurityConfig"  
-        p:providers-ref="testAuthenticator"/>
-    <bean id = "testAuthenticator" class="org.springframework.security.authentication.TestingAuthenticationProvider" />
-    
-    <bean id = "aclConfig" class = "ru.anr.base.services.security.ACLConfig" 
-        p:dataSource-ref="datasource"
-        p:aclCacheName="samples"
-        p:authenticationManager-ref="authenticationManager" p:useAcls="true" />
-        
-    <bean id = "aclManager" class = "ru.anr.base.services.security.ACLManagerImpl" />        
-    
-    
-    <!-- Test service -->
-    <bean id = "base" class = "ru.anr.base.services.BaseServiceImpl" />
-    
-    <bean id = "baseData" class = "ru.anr.base.services.BaseDataAwareServiceImpl" 
-        p:dao-ref="sampledao"/>
+    <bean id="securityConfig" class="ru.anr.base.services.security.SecurityConfig"
+          p:providers-ref="testAuthenticator"/>
+    <bean id="testAuthenticator" class="org.springframework.security.authentication.TestingAuthenticationProvider"/>
 
-    <context:component-scan base-package="ru.anr.base.samples.services" />
+    <bean id="aclConfig" class="ru.anr.base.services.security.ACLConfig" lazy-init="false"
+          p:dataSource-ref="datasource"
+          p:aclCacheName="samples"
+          p:authenticationManager-ref="authenticationManager" p:useAcls="true"/>
+
+    <bean id="aclManager" class="ru.anr.base.services.security.ACLManagerImpl"/>
+
+
+    <!-- Test service -->
+    <bean id="base" class="ru.anr.base.services.BaseServiceImpl"/>
+
+    <bean id="baseData" class="ru.anr.base.services.BaseDataAwareServiceImpl"
+          p:dao-ref="sampledao"/>
+
+    <context:component-scan base-package="ru.anr.base.samples.services"/>
 
     <!-- API Commands (config + standard ping) -->
-    <bean id = "apiConfig" class = "ru.anr.base.services.api.ApiConfig" />
-    <bean id = "api_ping" class="ru.anr.base.services.api.PingV1ApiCommand" />
+    <bean id="apiConfig" class="ru.anr.base.services.api.ApiConfig"/>
+    <bean id="api_ping" class="ru.anr.base.services.api.PingV1ApiCommand"/>
 
     <!-- Validations -->
-    <bean id = "validationConfig" class = "ru.anr.base.services.validation.ValidationConfig" />
+    <bean id="validationConfig" class="ru.anr.base.services.validation.ValidationConfig"/>
 
 
     <tx:annotation-driven/>

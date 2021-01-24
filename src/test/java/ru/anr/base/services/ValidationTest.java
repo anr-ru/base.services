@@ -1,31 +1,24 @@
-/**
- * 
- */
 package ru.anr.base.services;
 
-import java.util.Iterator;
-import java.util.Set;
-
-import javax.validation.ConstraintViolation;
-import javax.validation.ConstraintViolationException;
-import javax.validation.Validator;
-
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-
 import ru.anr.base.ApplicationException;
 import ru.anr.base.samples.domain.SomeValidated;
 import ru.anr.base.samples.services.ValidatedMethods;
 
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
+import javax.validation.Validator;
+import java.util.Iterator;
+import java.util.Set;
+
 /**
  * Description ...
  *
- *
  * @author Alexey Romanchuk
  * @created Jan 30, 2015
- *
  */
 
 public class ValidationTest extends BaseLocalServiceTestCase {
@@ -46,7 +39,7 @@ public class ValidationTest extends BaseLocalServiceTestCase {
         v.setDigit(4);
 
         Set<ConstraintViolation<SomeValidated>> errors = validator.validate(v);
-        Assert.assertEquals(2, errors.size());
+        Assertions.assertEquals(2, errors.size());
 
         /*
          * Check values are read from message source properly
@@ -62,9 +55,9 @@ public class ValidationTest extends BaseLocalServiceTestCase {
             logger.debug("Checking : {}", c.getPropertyPath());
 
             if (safeEquals("digit", c.getPropertyPath().toString())) {
-                Assert.assertEquals("The value 4 must be greater then 5", c.getMessage());
+                Assertions.assertEquals("The value 4 must be greater then 5", c.getMessage());
             } else {
-                Assert.assertEquals("The value is expected to be NOT NULL", c.getMessage());
+                Assertions.assertEquals("The value is expected to be NOT NULL", c.getMessage());
             }
             c = i.next();
 
@@ -89,12 +82,12 @@ public class ValidationTest extends BaseLocalServiceTestCase {
         try {
 
             service.method1(null);
-            Assert.fail();
+            Assertions.fail();
 
         } catch (ConstraintViolationException ex) {
 
-            Assert.assertEquals(1, ex.getConstraintViolations().size());
-            Assert.assertEquals("The value is expected to be NOT NULL", ex.getConstraintViolations().iterator().next()
+            Assertions.assertEquals(1, ex.getConstraintViolations().size());
+            Assertions.assertEquals("The value is expected to be NOT NULL", ex.getConstraintViolations().iterator().next()
                     .getMessage());
 
             service.method1("x");
@@ -104,11 +97,11 @@ public class ValidationTest extends BaseLocalServiceTestCase {
 
         try {
             service.method2(null);
-            Assert.fail();
+            Assertions.fail();
         } catch (ConstraintViolationException ex) {
 
-            Assert.assertEquals(1, ex.getConstraintViolations().size());
-            Assert.assertEquals("may not be null", ex.getConstraintViolations().iterator().next().getMessage());
+            Assertions.assertEquals(1, ex.getConstraintViolations().size());
+            Assertions.assertEquals("may not be null", ex.getConstraintViolations().iterator().next().getMessage());
 
             service.method2("x");
         }
@@ -120,7 +113,7 @@ public class ValidationTest extends BaseLocalServiceTestCase {
     @Test
     public void baseValidator() {
 
-        Assert.assertNotNull(service.method3());
+        Assertions.assertNotNull(service.method3());
     }
 
     /**
@@ -133,9 +126,9 @@ public class ValidationTest extends BaseLocalServiceTestCase {
 
         try {
             service.method4("not.null.value");
-            Assert.fail();
+            Assertions.fail();
         } catch (ApplicationException ex) {
-            Assert.assertEquals("The value is expected to be NOT NULL", ex.getMessage());
+            Assertions.assertEquals("The value is expected to be NOT NULL", ex.getMessage());
         }
     }
 
@@ -153,13 +146,13 @@ public class ValidationTest extends BaseLocalServiceTestCase {
             Set<ConstraintViolation<SomeValidated>> errors = validator.validate(v);
             service.method5(errors);
 
-            Assert.fail();
+            Assertions.fail();
 
         } catch (ApplicationException ex) {
 
             String s = ex.getMessage();
-            Assert.assertTrue(s.contains("The value is expected to be NOT NULL"));
-            Assert.assertTrue(s.contains("The value 4 must be greater then 5"));
+            Assertions.assertTrue(s.contains("The value is expected to be NOT NULL"));
+            Assertions.assertTrue(s.contains("The value 4 must be greater then 5"));
         }
     }
 }

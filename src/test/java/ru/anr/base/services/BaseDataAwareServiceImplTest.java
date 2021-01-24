@@ -1,15 +1,11 @@
-/**
- * 
- */
 package ru.anr.base.services;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.TestingAuthenticationToken;
-
 import ru.anr.base.dao.repository.BaseRepository;
 import ru.anr.base.domain.BaseEntity;
 import ru.anr.base.samples.domain.Samples;
@@ -17,15 +13,13 @@ import ru.anr.base.samples.domain.Samples;
 /**
  * Tests for {@link BaseDataAwareServiceImpl}.
  *
- *
  * @author Alexey Romanchuk
  * @created Nov 7, 2014
- *
  */
 public class BaseDataAwareServiceImplTest extends BaseLocalServiceTestCase {
 
     /**
-     * 
+     *
      */
     @Autowired
     @Qualifier("baseData")
@@ -46,12 +40,12 @@ public class BaseDataAwareServiceImplTest extends BaseLocalServiceTestCase {
         s.changeState("New");
 
         s = impl.dao().save(s);
-        Assert.assertNotNull(s.getId());
+        Assertions.assertNotNull(s.getId());
 
         BaseRepository<Samples> d = impl.dao();
 
-        Samples e = d.findOne(s.getId());
-        Assert.assertEquals(s, e);
+        Samples e = d.find(Samples.class, s.getId());
+        Assertions.assertEquals(s, e);
     }
 
     /**
@@ -69,7 +63,7 @@ public class BaseDataAwareServiceImplTest extends BaseLocalServiceTestCase {
     private BaseRepository<BaseEntity> bean;
 
     /**
-     * 
+     *
      */
     @Autowired
     @Qualifier("TestDataService")
@@ -82,9 +76,9 @@ public class BaseDataAwareServiceImplTest extends BaseLocalServiceTestCase {
     public void testAutowired() {
 
         BaseDataAwareServiceImpl impl = target(testService);
-        Assert.assertNotNull(impl.dao());
+        Assertions.assertNotNull(impl.dao());
 
-        Assert.assertNull(bean);
+        Assertions.assertNull(bean);
     }
 
     /**
@@ -100,16 +94,16 @@ public class BaseDataAwareServiceImplTest extends BaseLocalServiceTestCase {
 
         Samples ex = testService.save(e);
 
-        Assert.assertEquals(e, ex);
-        Assert.assertNotNull(ex.getId());
+        Assertions.assertEquals(e, ex);
+        Assertions.assertNotNull(ex.getId());
 
         ex.setName("read");
 
         try {
             testService.save(ex);
-            Assert.fail();
+            Assertions.fail();
         } catch (AccessDeniedException exp) {
-            Assert.assertEquals("Access is denied", exp.getMessage());
+            Assertions.assertEquals("Access is denied", exp.getMessage());
         }
 
         e = new Samples();
@@ -118,9 +112,9 @@ public class BaseDataAwareServiceImplTest extends BaseLocalServiceTestCase {
         try {
             logger.debug("Started");
             testService.save(e);
-            Assert.fail();
+            Assertions.fail();
         } catch (AccessDeniedException exp) {
-            Assert.assertEquals("Access is denied", exp.getMessage());
+            Assertions.assertEquals("Access is denied", exp.getMessage());
         }
 
     }

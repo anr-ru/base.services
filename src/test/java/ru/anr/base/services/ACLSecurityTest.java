@@ -1,12 +1,10 @@
 /**
- * 
+ *
  */
 package ru.anr.base.services;
 
-import java.util.List;
-
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
@@ -19,11 +17,12 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.TestingAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-
 import ru.anr.base.samples.dao.MyDao;
 import ru.anr.base.samples.domain.Samples;
 import ru.anr.base.samples.services.ACLSecured;
 import ru.anr.base.services.security.ACLManager;
+
+import java.util.List;
 
 /**
  * Tests for ACL Security.
@@ -58,7 +57,7 @@ public class ACLSecurityTest extends BaseLocalServiceTestCase {
 
     /**
      * Authentication
-     * 
+     *
      * @param user
      *            A user
      * @return Authenticated token
@@ -86,9 +85,9 @@ public class ACLSecurityTest extends BaseLocalServiceTestCase {
 
         try {
             service.getObject(s.getId());
-            Assert.fail();
+            Assertions.fail();
         } catch (AccessDeniedException ex) {
-            Assert.assertEquals("Access is denied", ex.getMessage());
+            Assertions.assertEquals("Access is denied", ex.getMessage());
         }
 
         acls.grant(s, new PrincipalSid("user"), BasePermission.READ);
@@ -111,11 +110,11 @@ public class ACLSecurityTest extends BaseLocalServiceTestCase {
 
             service.apply(s);
 
-            Assert.fail();
+            Assertions.fail();
 
         } catch (AccessDeniedException ex) {
 
-            Assert.assertEquals("Access is denied", ex.getMessage());
+            Assertions.assertEquals("Access is denied", ex.getMessage());
         }
 
         // Now adding just an ACL access
@@ -132,10 +131,10 @@ public class ACLSecurityTest extends BaseLocalServiceTestCase {
 
         try {
             service.apply(s);
-            Assert.fail();
+            Assertions.fail();
 
         } catch (AccessDeniedException ex) {
-            Assert.assertEquals("Access is denied", ex.getMessage());
+            Assertions.assertEquals("Access is denied", ex.getMessage());
         }
     }
 
@@ -149,7 +148,7 @@ public class ACLSecurityTest extends BaseLocalServiceTestCase {
          * Default user
          */
         Authentication token = authenticate("user1");
-        Assert.assertTrue(token.isAuthenticated());
+        Assertions.assertTrue(token.isAuthenticated());
 
         Samples s = create(Samples.class, "name", null);
 
@@ -163,7 +162,7 @@ public class ACLSecurityTest extends BaseLocalServiceTestCase {
         service.apply(s);
 
         token = authenticate("user2");
-        Assert.assertTrue(token.isAuthenticated());
+        Assertions.assertTrue(token.isAuthenticated());
 
         service.getObject(s.getId());
         service.apply(s);
@@ -181,7 +180,7 @@ public class ACLSecurityTest extends BaseLocalServiceTestCase {
 
         service.apply(null);
 
-        Assert.assertTrue(true);
+        Assertions.assertTrue(true);
     }
 
     /**
@@ -201,20 +200,20 @@ public class ACLSecurityTest extends BaseLocalServiceTestCase {
         Samples s1 = create(Samples.class, "name", "read");
         Samples s2 = create(Samples.class, "name", "write");
 
-        Page<Samples> p = myDao.pages(new PageRequest(0, 10));
-        Assert.assertEquals(2, p.getContent().size());
-        Assert.assertTrue(p.getContent().containsAll(list(s1, s2)));
+        Page<Samples> p = myDao.pages(PageRequest.of(0, 10));
+        Assertions.assertEquals(2, p.getContent().size());
+        Assertions.assertTrue(p.getContent().containsAll(list(s1, s2)));
 
         List<Samples> rs = myDao.filter(p);
-        Assert.assertEquals(1, rs.size());
-        Assert.assertTrue(rs.contains(s1));
-        Assert.assertFalse(rs.contains(s2));
+        Assertions.assertEquals(1, rs.size());
+        Assertions.assertTrue(rs.contains(s1));
+        Assertions.assertFalse(rs.contains(s2));
 
         // Access granted via ACL
         acls.grant(s2, new PrincipalSid("user"), BasePermission.READ);
 
         rs = myDao.filter(p);
-        Assert.assertEquals(2, rs.size());
-        Assert.assertTrue(rs.containsAll(list(s1, s2)));
+        Assertions.assertEquals(2, rs.size());
+        Assertions.assertTrue(rs.containsAll(list(s1, s2)));
     }
 }

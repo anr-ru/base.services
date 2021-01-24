@@ -1,14 +1,13 @@
 /**
- * 
+ *
  */
 package ru.anr.base.services.properties;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.test.context.ContextConfiguration;
-
 import ru.anr.base.services.BaseService;
 import ru.anr.base.tests.BaseTestCase;
 
@@ -41,8 +40,7 @@ public class DefaultProfiledPropertiesTest extends BaseTestCase {
     @Test
     public void testCheckValue() {
 
-        Assert.assertEquals("default-value", value);
-
-        Assert.assertNull(service.getTargetEnv());
+        Assertions.assertEquals("default-value", value);
+        Assertions.assertNull(service.getTargetEnv());
     }
 }

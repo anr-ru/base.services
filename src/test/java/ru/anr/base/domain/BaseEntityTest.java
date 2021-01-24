@@ -1,23 +1,17 @@
-/**
- * 
- */
 package ru.anr.base.domain;
 
-import java.util.Set;
-
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.springframework.test.context.ContextConfiguration;
-
 import ru.anr.base.tests.BaseTestCase;
+
+import java.util.Set;
 
 /**
  * Tests for base entity.
  *
- *
  * @author Alexey Romanchuk
  * @created Nov 5, 2014
- *
  */
 @ContextConfiguration(classes = BaseEntityTest.class)
 public class BaseEntityTest extends BaseTestCase {
@@ -31,26 +25,26 @@ public class BaseEntityTest extends BaseTestCase {
         BaseEntity a = new BaseEntity();
         BaseEntity b = new BaseEntity();
 
-        Assert.assertNotEquals(a, b);
+        Assertions.assertNotEquals(a, b);
 
         logger.debug("a = {}, b = {}", a, b);
 
         b = a;
-        Assert.assertEquals(a, b);
+        Assertions.assertEquals(a, b);
 
         a = new BaseEntity();
         b = new BaseEntity();
-        Assert.assertNotEquals(a, b);
+        Assertions.assertNotEquals(a, b);
 
         a.setId(1L);
-        Assert.assertNotEquals(a, b);
+        Assertions.assertNotEquals(a, b);
 
         b.setId(2L);
         logger.debug("a = {}, b = {}", a, b);
-        Assert.assertNotEquals(a, b);
+        Assertions.assertNotEquals(a, b);
 
         b.setId(1L);
-        Assert.assertEquals(a, b);
+        Assertions.assertEquals(a, b);
     }
 
     /**
@@ -63,31 +57,31 @@ public class BaseEntityTest extends BaseTestCase {
         BaseEntity b = new BaseEntity();
 
         Set<BaseEntity> s = set(a, b);
-        Assert.assertEquals(2, s.size());
-        Assert.assertTrue(s.contains(a));
-        Assert.assertTrue(s.contains(b));
+        Assertions.assertEquals(2, s.size());
+        Assertions.assertTrue(s.contains(a));
+        Assertions.assertTrue(s.contains(b));
 
         a.setId(1L);
         b.setId(2L);
 
-        Assert.assertEquals(2, s.size());
-        Assert.assertFalse(s.contains(a)); // Another key
-        Assert.assertFalse(s.contains(b));
+        Assertions.assertEquals(2, s.size());
+        Assertions.assertFalse(s.contains(a)); // Another key
+        Assertions.assertFalse(s.contains(b));
 
         a.setId(1L);
         b.setId(1L);
 
-        Assert.assertEquals(2, s.size());
-        Assert.assertFalse(s.contains(a));
-        Assert.assertFalse(s.contains(b));
+        Assertions.assertEquals(2, s.size());
+        Assertions.assertFalse(s.contains(a));
+        Assertions.assertFalse(s.contains(b));
 
         /*
          * Now it's the same
          */
         s = set(a, b);
-        Assert.assertEquals(1, s.size());
-        Assert.assertTrue(s.contains(a));
-        Assert.assertTrue(s.contains(b));
+        Assertions.assertEquals(1, s.size());
+        Assertions.assertTrue(s.contains(a));
+        Assertions.assertTrue(s.contains(b));
     }
 
     /**
@@ -97,10 +91,10 @@ public class BaseEntityTest extends BaseTestCase {
     public void testEnumStates() {
 
         BaseEntity e = new BaseEntity();
-        Assert.assertNull(e.changeState(BasicStates.Active));
+        Assertions.assertNull(e.changeState(BasicStates.Active));
 
-        Assert.assertSame(BasicStates.Active, e.changeState(BasicStates.Inactive));
-        Assert.assertSame(BasicStates.Inactive, e.changeState(BasicStates.New));
+        Assertions.assertSame(BasicStates.Active, e.changeState(BasicStates.Inactive));
+        Assertions.assertSame(BasicStates.Inactive, e.changeState(BasicStates.New));
     }
 
     /**
@@ -112,11 +106,11 @@ public class BaseEntityTest extends BaseTestCase {
         BaseEntity e = new BaseEntity();
         e.changeState(BasicStates.Active);
 
-        Assert.assertTrue(e.hasState(BasicStates.Active));
-        Assert.assertTrue(e.hasState(BasicStates.Active, BasicStates.Inactive, BasicStates.New));
-        Assert.assertTrue(e.hasState(BasicStates.Active, BasicStates.New));
+        Assertions.assertTrue(e.hasState(BasicStates.Active));
+        Assertions.assertTrue(e.hasState(BasicStates.Active, BasicStates.Inactive, BasicStates.New));
+        Assertions.assertTrue(e.hasState(BasicStates.Active, BasicStates.New));
 
-        Assert.assertFalse(e.hasState(BasicStates.Inactive, BasicStates.New));
-        Assert.assertFalse(e.hasState(BasicStates.New));
+        Assertions.assertFalse(e.hasState(BasicStates.Inactive, BasicStates.New));
+        Assertions.assertFalse(e.hasState(BasicStates.New));
     }
 }
