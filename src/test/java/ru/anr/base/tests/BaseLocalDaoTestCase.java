@@ -26,7 +26,7 @@ import java.util.Map.Entry;
  * @created Nov 27, 2014
  *
  */
-@ContextConfiguration(locations = "classpath:/tests-dao-context.xml", inheritLocations = false)
+@ContextConfiguration(value = "classpath:/tests-dao-context.xml", inheritLocations = false)
 @Disabled
 @Transactional(transactionManager = "transactionManager")
 public class BaseLocalDaoTestCase extends BaseTestCase {

@@ -1,23 +1,20 @@
 /**
- * 
+ *
  */
 package ru.anr.base.tests;
 
-import java.beans.PropertyVetoException;
-
-import javax.sql.DataSource;
-
+import com.mchange.v2.c3p0.ComboPooledDataSource;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-
 import ru.anr.base.ApplicationException;
 import ru.anr.base.dao.AbstractJPADaoConfig;
 import ru.anr.base.dao.BaseRepositoryFactoryBean;
 
-import com.mchange.v2.c3p0.ComboPooledDataSource;
+import javax.sql.DataSource;
+import java.beans.PropertyVetoException;
 
 /**
  * Test JPA configuration, which uses pooled data source.
- * 
+ *
  * Unfortunately, repositoryFactoryBeanClass should be repeated in all
  * descendants of this class.
  *

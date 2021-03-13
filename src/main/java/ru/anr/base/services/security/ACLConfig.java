@@ -5,6 +5,7 @@ import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler;
 import org.springframework.security.access.expression.method.MethodSecurityExpressionHandler;
 import org.springframework.security.access.intercept.RunAsManager;
@@ -24,6 +25,7 @@ import org.springframework.security.config.annotation.method.configuration.Globa
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.util.Assert;
+import ru.anr.base.BaseParent;
 
 import javax.sql.DataSource;
 
@@ -38,19 +40,14 @@ import javax.sql.DataSource;
 public class ACLConfig extends GlobalMethodSecurityConfiguration {
 
     /**
-     * Ref to datasource to store acl data
-     */
-    private DataSource dataSource;
-
-    /**
      * An authority to manage acl (take ownership, modify, ...)
      */
-    private String aclManageRole = "ROLE_ACL_ADMIN";
+    private final String aclManageRole;
 
     /**
      * The name for cache. This name must be define in cache managent system
      */
-    private String aclCacheName;
+    private final String aclCacheName;
 
     /**
      * Class identity query - a way to get next identifier. By default used a
@@ -58,7 +55,7 @@ public class ACLConfig extends GlobalMethodSecurityConfiguration {
      * <p>
      * For example, "SELECT HIBERNATE_SEQUENCE.CURRVAL FROM DUAL"
      */
-    private String classIdentityQuery;
+    private final String classIdentityQuery;
 
     /**
      * Sid identity query - a way to get next identifier. By default used a HSQL
@@ -66,35 +63,45 @@ public class ACLConfig extends GlobalMethodSecurityConfiguration {
      * <p>
      * For example, "SELECT HIBERNATE_SEQUENCE.CURRVAL FROM DUAL"
      */
-    private String sidIdentityQuery;
+    private final String sidIdentityQuery;
 
     /**
      * To use or not use the acls
      */
-    private boolean useAcls = true;
+    private final boolean useAcls;
+
+    private final RunAsManager runAs;
+
+    private final AuthenticationManager authenticationManagerRef;
+
 
     /**
-     * Ref to {@link RunAsManager} is required
+     * Construction of the configuration
      */
-    private RunAsManager runAs;
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected RunAsManager runAsManager() {
-
-        return runAs;
+    public ACLConfig(String aclManageRole, String aclCacheName,
+                     String classIdentityQuery, String sidIdentityQuery,
+                     boolean useAcls, RunAsManager runAs,
+                     AuthenticationManager authenticationManagerRef) {
+        this.aclManageRole = aclManageRole;
+        this.aclCacheName = aclCacheName;
+        this.classIdentityQuery = classIdentityQuery;
+        this.sidIdentityQuery = sidIdentityQuery;
+        this.useAcls = useAcls;
+        this.runAs = runAs;
+        this.authenticationManagerRef = authenticationManagerRef;
     }
+
 
     /**
      * An 'AclService' bean. Uses a preconfigured spring {@link CacheManager}.
      *
      * @param cacheManager A ref to Spring {@link CacheManager}
+     * @param datasource   The datasource
      * @return The bean instance.
      */
     @Bean(name = "aclService")
-    public MutableAclService aclServiceBuild(CacheManager cacheManager) {
+    @DependsOn({"cacheManager", "datasource"})
+    public MutableAclService aclServiceBuild(CacheManager cacheManager, DataSource datasource) {
 
         PermissionGrantingStrategy grantingStrategy = new DefaultPermissionGrantingStrategy(new Slf4jAuditLogger());
         GrantedAuthority role = new SimpleGrantedAuthority(aclManageRole);
@@ -108,14 +115,14 @@ public class ACLConfig extends GlobalMethodSecurityConfiguration {
         AclCache aclCache = new SpringCacheBasedAclCache(cache, grantingStrategy, authorizationStrategy);
 
         LookupStrategy lookupStrategy =
-                new BasicLookupStrategy(dataSource, aclCache, authorizationStrategy, grantingStrategy);
+                new BasicLookupStrategy(datasource, aclCache, authorizationStrategy, grantingStrategy);
 
-        JdbcMutableAclService s = new JdbcMutableAclService(dataSource, lookupStrategy, aclCache);
+        JdbcMutableAclService s = new JdbcMutableAclService(datasource, lookupStrategy, aclCache);
 
-        if (classIdentityQuery != null) {
+        if (BaseParent.notEmpty(classIdentityQuery)) {
             s.setClassIdentityQuery(classIdentityQuery);
         }
-        if (sidIdentityQuery != null) {
+        if (BaseParent.notEmpty(sidIdentityQuery)) {
             s.setSidIdentityQuery(sidIdentityQuery);
         }
 
@@ -137,87 +144,13 @@ public class ACLConfig extends GlobalMethodSecurityConfiguration {
         return expressionHandler;
     }
 
-    // /////////////// Overrides //////////////////////////////////////////////\
-
-    /**
-     * Ref to {@link AuthenticationManager}
-     */
-    @Autowired
-    private AuthenticationManager authenticationManagerRef;
-
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected AuthenticationManager authenticationManager() {
-        return authenticationManagerRef;
+        return this.authenticationManagerRef;
     }
 
-    // /////////////////////////////////////////////////////////////////////////
-    // /// getters/setters
-    // /////////////////////////////////////////////////////////////////////////
-
-    /**
-     * @param dataSource the dataSource to set
-     */
-    public void setDataSource(DataSource dataSource) {
-
-        this.dataSource = dataSource;
-    }
-
-    /**
-     * @param aclManageRole the aclManageRole to set
-     */
-    public void setAclManageRole(String aclManageRole) {
-
-        this.aclManageRole = aclManageRole;
-    }
-
-    /**
-     * @param aclCacheName the aclCacheName to set
-     */
-    public void setAclCacheName(String aclCacheName) {
-
-        this.aclCacheName = aclCacheName;
-    }
-
-    /**
-     * @param classIdentityQuery the classIdentityQuery to set
-     */
-    public void setClassIdentityQuery(String classIdentityQuery) {
-
-        this.classIdentityQuery = classIdentityQuery;
-    }
-
-    /**
-     * @param sidIdentityQuery the sidIdentityQuery to set
-     */
-    public void setSidIdentityQuery(String sidIdentityQuery) {
-
-        this.sidIdentityQuery = sidIdentityQuery;
-    }
-
-    /**
-     * @param authenticationManager the authenticationManager to set
-     */
-    public void setAuthenticationManager(AuthenticationManager authenticationManager) {
-
-        this.authenticationManagerRef = authenticationManager;
-    }
-
-    /**
-     * @param runAsManager the runAsManager
-     */
-    public void setRunAsManager(RunAsManager runAsManager) {
-
-        this.runAs = runAsManager;
-    }
-
-    /**
-     * @param useAcls the useAcls to set
-     */
-    public void setUseAcls(boolean useAcls) {
-
-        this.useAcls = useAcls;
+    @Override
+    protected RunAsManager runAsManager() {
+        return runAs;
     }
 }

@@ -1,12 +1,12 @@
 /*
  * Copyright 2014 the original author or authors.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -14,8 +14,6 @@
  * the License.
  */
 package ru.anr.base.services.security;
-
-import java.util.List;
 
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
@@ -26,20 +24,19 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.DefaultAuthenticationEventPublisher;
 import org.springframework.security.authentication.ProviderManager;
 
+import java.util.List;
+
 /**
  * Spring security configuration. This context config should be imported to add
  * base authentication/authorization settings.
- * 
- * 
+ * <p>
  * See
  * {@link org.springframework.security.config.annotation.method.configuration.GlobalMethodSecurityConfiguration}
  * implementation to understand a default
  * {@link org.springframework.security.access.AccessDecisionManager}.
  *
- *
  * @author Alexey Romanchuk
  * @created Nov 7, 2014
- *
  */
 @Configuration
 public class SecurityConfig {
@@ -51,17 +48,13 @@ public class SecurityConfig {
 
     /**
      * Defining a {@link AuthenticationManager} bean
-     * 
-     * @param messageSource
-     *            Message source instance
+     *
+     * @param messageSource Message source instance
      * @return A bean instance
-     * 
-     * @throws Exception
-     *             In case of ProviderManager initialization error
      */
     @Bean(name = "authenticationManager")
     @DependsOn("messageSource")
-    public AuthenticationManager authenticationManager(MessageSource messageSource) throws Exception {
+    public AuthenticationManager authenticationManager(MessageSource messageSource) {
 
         ProviderManager providerManager = new ProviderManager(providers);
         providerManager.setMessageSource(messageSource);
@@ -76,8 +69,7 @@ public class SecurityConfig {
     // /////////////////////////////////////////////////////////////////////////
 
     /**
-     * @param providers
-     *            the providers to set
+     * @param providers the providers to set
      */
     public void setProviders(List<AuthenticationProvider> providers) {
 

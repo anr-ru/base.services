@@ -220,7 +220,7 @@ public class DaoTest extends AbstractDaoTestCase {
         s = mydao.save(s);
 
         // Update it
-        Assertions.assertEquals(1, mydao.execute("update Samples set name = ?", "zzz"));
+        Assertions.assertEquals(1, mydao.execute("update Samples set name = ?1", "zzz"));
 
         Samples x = mydao.getOne(s.getId());
         mydao.refresh(x);

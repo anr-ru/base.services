@@ -24,7 +24,7 @@ import javax.validation.ConstraintViolationException;
  * @created Nov 6, 2014
  *
  */
-@ContextConfiguration(locations = "classpath:/tests-service-context.xml", inheritLocations = false)
+@ContextConfiguration(value = "classpath:/tests-service-context.xml", inheritLocations = false)
 @Disabled
 public class BaseLocalServiceTestCase extends BaseLocalDaoTestCase {
 

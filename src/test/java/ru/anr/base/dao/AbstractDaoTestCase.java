@@ -1,19 +1,17 @@
 /**
- * 
+ *
  */
 package ru.anr.base.dao;
-
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
-
 import ru.anr.base.dao.repository.BaseRepository;
 import ru.anr.base.samples.domain.Samples;
 import ru.anr.base.tests.BaseLocalDaoTestCase;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 
 /**
  * Abstract parent for different tests.
@@ -24,7 +22,6 @@ import ru.anr.base.tests.BaseLocalDaoTestCase;
  *
  */
 @ActiveProfiles(value = "test")
-@ContextConfiguration(locations = "classpath:/tests-dao-context.xml")
 public abstract class AbstractDaoTestCase extends BaseLocalDaoTestCase {
 
     /**
@@ -36,7 +33,7 @@ public abstract class AbstractDaoTestCase extends BaseLocalDaoTestCase {
 
     /**
      * Creation of new sample object
-     * 
+     *
      * @param name
      *            Name param
      * @return Object instance stored in database

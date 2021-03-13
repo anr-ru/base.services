@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<configuration  debug="true">
+<configuration debug="true">
 
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
@@ -7,14 +7,14 @@
         </encoder>
     </appender>
 
-    <logger name="org.springframework" level="INFO"/>
+    <logger name="org.springframework" level="DEBUG"/>
     <logger name="org.springframework.security" level="INFO"/>
-    
+
     <!-- To see what a cache does -->
     <logger name="org.springframework.cache" level="INFO"/>
     <logger name="org.hibernate.cache" level="INFO"/>
     <logger name="net.sf.ehcache" level="INFO"/>
-    
+
     <logger name="ru.anr" level="DEBUG"/>
 
     <root level="INFO">

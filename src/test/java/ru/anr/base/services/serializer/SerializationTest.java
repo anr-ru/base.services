@@ -1,6 +1,3 @@
-/**
- *
- */
 package ru.anr.base.services.serializer;
 
 import org.junit.jupiter.api.Assertions;
@@ -12,27 +9,23 @@ import ru.anr.base.samples.domain.Model;
 import ru.anr.base.samples.domain.SubModel;
 import ru.anr.base.services.BaseLocalServiceTestCase;
 
-import java.io.IOException;
 import java.math.BigDecimal;
-import java.time.ZoneId;
+import java.math.RoundingMode;
 import java.time.ZonedDateTime;
 
 /**
  * Tests for serialization services.
  *
- *
  * @author Alexey Romanchuk
  * @created Nov 7, 2014
- *
  */
-
 public class SerializationTest extends BaseLocalServiceTestCase {
 
     /**
      * XML etalon
      */
-    private static final String TEST_XML = "<?xml version=\'1.0\' encoding=\'UTF-8\'?>"
-            + "<model field=\"xxx\" time=\"2014-09-11T10:30Z[GMT]\" sum=\"322.032329300\">"
+    private static final String TEST_XML = "<?xml version='1.0' encoding='UTF-8'?>"
+            + "<model field=\"xxx\" time=\"2014-09-11T10:30Z\" sum=\"322.032329300\">"
             + "<subs><sub>1</sub><sub>2</sub></subs></model>";
 
     /**
@@ -43,7 +36,7 @@ public class SerializationTest extends BaseLocalServiceTestCase {
         Model m = new Model();
         m.setField("xxx");
         m.setSum(new BigDecimal("322.032329300"));
-        m.setTime(ZonedDateTime.of(2014, 9, 11, 10, 30, 0, 0, ZoneId.of("GMT")));
+        m.setTime(ZonedDateTime.of(2014, 9, 11, 10, 30, 0, 0, DEFAULT_TIMEZONE));
         m.setSubs(BaseParent.list(new SubModel(1), new SubModel(2)));
 
         return m;
@@ -52,7 +45,7 @@ public class SerializationTest extends BaseLocalServiceTestCase {
     /**
      * JSON etalon
      */
-    private static final String TEST_JSON = "{\"field\":\"xxx\",\"time\":\"2014-09-11T10:30Z[GMT]\","
+    private static final String TEST_JSON = "{\"field\":\"xxx\",\"time\":\"2014-09-11T10:30Z\","
             + "\"sub\":[{\"value\":1},{\"value\":2}],\"sum\":322.032329300}";
 
     /**
@@ -64,12 +57,9 @@ public class SerializationTest extends BaseLocalServiceTestCase {
 
     /**
      * JSON Tests
-     *
-     * @throws IOException
-     *             If error occurs
      */
     @Test
-    public void testJSON() throws IOException {
+    public void testJSON() {
 
         Model m = newModel();
 
@@ -89,12 +79,12 @@ public class SerializationTest extends BaseLocalServiceTestCase {
     /**
      * JSON stripped etalon
      */
-    private static final String TEST_JSON_STRIPPED = "{\"field\":\"xxx\",\"time\":\"2014-09-11T10:30Z[GMT]\","
+    private static final String TEST_JSON_STRIPPED = "{\"field\":\"xxx\",\"time\":\"2014-09-11T10:30Z\","
             + "\"sub\":[{\"value\":1},{\"value\":2}],\"sum\":322.0323293}";
 
 
     @Test
-    public void testJSONStripZeros() throws IOException {
+    public void testJSONStripZeros() {
 
         Model m = newModel();
 
@@ -109,7 +99,7 @@ public class SerializationTest extends BaseLocalServiceTestCase {
         Model mx = impl.fromStr(value, Model.class);
 
         Assertions.assertEquals(m.getTime(), mx.getTime());
-        mx.setSum(mx.getSum().setScale(9, BigDecimal.ROUND_HALF_UP));
+        mx.setSum(mx.getSum().setScale(9, RoundingMode.HALF_UP));
         Assertions.assertEquals(m, mx);
 
         Assertions.assertEquals(d("600").toPlainString(), d("600.00").stripTrailingZeros().toPlainString());
@@ -124,12 +114,9 @@ public class SerializationTest extends BaseLocalServiceTestCase {
 
     /**
      * XML via Jackson
-     *
-     * @throws IOException
-     *             If error occurs
      */
     @Test
-    public void testJacksonXML() throws IOException {
+    public void testJacksonXML() {
 
         Model m = newModel();
 
@@ -139,6 +126,8 @@ public class SerializationTest extends BaseLocalServiceTestCase {
         Assertions.assertEquals(TEST_XML, value);
 
         Model mx = xml.fromStr(value, Model.class);
+
+        Assertions.assertEquals(m.getTime(), mx.getTime());
         Assertions.assertEquals(m, mx);
     }
 }

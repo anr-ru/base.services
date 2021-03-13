@@ -101,7 +101,7 @@ public class ValidationTest extends BaseLocalServiceTestCase {
         } catch (ConstraintViolationException ex) {
 
             Assertions.assertEquals(1, ex.getConstraintViolations().size());
-            Assertions.assertEquals("may not be null", ex.getConstraintViolations().iterator().next().getMessage());
+            Assertions.assertEquals("must not be null", ex.getConstraintViolations().iterator().next().getMessage());
 
             service.method2("x");
         }

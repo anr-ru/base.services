@@ -12,6 +12,21 @@
     http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
 
     <import resource="classpath:tests-dao-context.xml"/>
+    <context:annotation-config/>
+    <context:component-scan base-package="ru.anr.base.samples.services"/>
+
+    <bean class="ru.anr.base.services.security.ACLConfig">
+        <constructor-arg index="0" value="ROLE_ACL_ADMIN"/>
+        <constructor-arg index="1" value="samples"/>
+        <constructor-arg index="2" value=""/>
+        <constructor-arg index="3" value=""/>
+        <constructor-arg index="4" value="true"/>
+        <constructor-arg index="5">
+            <null/>
+        </constructor-arg>
+        <constructor-arg index="6" ref="authenticationManager"/>
+    </bean>
+
 
     <bean id="messageConfig"
           class="ru.anr.base.services.MessagePropertiesConfig"
@@ -27,11 +42,6 @@
           p:providers-ref="testAuthenticator"/>
     <bean id="testAuthenticator" class="org.springframework.security.authentication.TestingAuthenticationProvider"/>
 
-    <bean id="aclConfig" class="ru.anr.base.services.security.ACLConfig" lazy-init="false"
-          p:dataSource-ref="datasource"
-          p:aclCacheName="samples"
-          p:authenticationManager-ref="authenticationManager" p:useAcls="true"/>
-
     <bean id="aclManager" class="ru.anr.base.services.security.ACLManagerImpl"/>
 
 
@@ -41,15 +51,12 @@
     <bean id="baseData" class="ru.anr.base.services.BaseDataAwareServiceImpl"
           p:dao-ref="sampledao"/>
 
-    <context:component-scan base-package="ru.anr.base.samples.services"/>
-
     <!-- API Commands (config + standard ping) -->
     <bean id="apiConfig" class="ru.anr.base.services.api.ApiConfig"/>
     <bean id="api_ping" class="ru.anr.base.services.api.PingV1ApiCommand"/>
 
     <!-- Validations -->
     <bean id="validationConfig" class="ru.anr.base.services.validation.ValidationConfig"/>
-
 
     <tx:annotation-driven/>
 
