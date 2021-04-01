@@ -1,5 +1,5 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
@@ -9,7 +9,7 @@
     </parent>
 
     <artifactId>base.services</artifactId>
-    <version>1.0.3-SNAPSHOT</version>
+    <version>1.1.0-SNAPSHOT</version>
 
     <name>Base Services</name>
     <description>A set of base classes for business logic implementations</description>
@@ -44,7 +44,7 @@
                 <executions>
                     <execution>
                         <phase>package</phase>
-                        <goals>                            
+                        <goals>
                             <goal>test-jar</goal>
                         </goals>
                         <configuration>
@@ -57,7 +57,7 @@
                         </configuration>
                     </execution>
                 </executions>
-            </plugin>        
+            </plugin>
         </plugins>
     </build>
 
@@ -81,13 +81,13 @@
             <artifactId>spring-aspects</artifactId>
         </dependency>
         <dependency>
-          <groupId>org.springframework.security</groupId>
-          <artifactId>spring-security-aspects</artifactId>        
-        </dependency>                    
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-aspects</artifactId>
+        </dependency>
         <dependency>
-          <groupId>org.springframework.security</groupId>
-          <artifactId>spring-security-acl</artifactId>        
-        </dependency>                    
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-acl</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-entitymanager</artifactId>
@@ -115,7 +115,7 @@
         <dependency>
             <artifactId>hibernate-ehcache</artifactId>
             <groupId>org.hibernate</groupId>
-        </dependency>        
+        </dependency>
 
         <dependency>
             <groupId>org.springframework.security</groupId>
@@ -130,25 +130,25 @@
             <artifactId>spring-security-oauth2</artifactId>
         </dependency>
         <dependency>
-           <groupId>org.hibernate</groupId>
-           <artifactId>hibernate-validator</artifactId>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-validator</artifactId>
         </dependency>
         <dependency>
-           <groupId>javax.el</groupId>
-           <artifactId>javax.el-api</artifactId>
-           <scope>provided</scope>
+            <groupId>javax.el</groupId>
+            <artifactId>javax.el-api</artifactId>
+            <scope>provided</scope>
         </dependency>
         <dependency>
-           <groupId>org.glassfish.web</groupId>
-           <artifactId>javax.el</artifactId>
-           <scope>provided</scope>
+            <groupId>org.glassfish.web</groupId>
+            <artifactId>javax.el</artifactId>
+            <scope>provided</scope>
         </dependency>
-        
-        
+
+
         <!-- JSON/XML serializarion tools -->
         <dependency>
-        	<groupId>com.fasterxml.jackson.core</groupId>
-        	<artifactId>jackson-core</artifactId>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
@@ -159,34 +159,34 @@
             <artifactId>jackson-module-jaxb-annotations</artifactId>
         </dependency>
         <dependency>
-          <groupId>com.fasterxml.jackson.dataformat</groupId>
-          <artifactId>jackson-dataformat-xml</artifactId>
-        </dependency>        
-        <dependency>
-        	<groupId>org.codehaus.woodstox</groupId>
-        	<artifactId>woodstox-core-asl</artifactId>
+            <groupId>com.fasterxml.jackson.dataformat</groupId>
+            <artifactId>jackson-dataformat-xml</artifactId>
         </dependency>
-		<dependency>
-		    <groupId>com.fasterxml.jackson.datatype</groupId>
-		    <artifactId>jackson-datatype-jsr310</artifactId>
-		</dependency>
+        <dependency>
+            <groupId>org.codehaus.woodstox</groupId>
+            <artifactId>woodstox-core-asl</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jsr310</artifactId>
+        </dependency>
         <dependency>
             <groupId>commons-io</groupId>
-            <artifactId>commons-io</artifactId>        
+            <artifactId>commons-io</artifactId>
         </dependency>
         <dependency>
             <groupId>commons-beanutils</groupId>
             <artifactId>commons-beanutils</artifactId>
             <scope>test</scope>
-        </dependency>        
+        </dependency>
         <dependency>
             <groupId>commons-validator</groupId>
             <artifactId>commons-validator</artifactId>
-        </dependency>        
+        </dependency>
         <dependency>
             <groupId>javax.validation</groupId>
             <artifactId>validation-api</artifactId>
-        </dependency>        
+        </dependency>
 
         <!-- Internal dependencies -->
         <dependency>
@@ -201,9 +201,9 @@
         </dependency>
 
         <!-- TESTS -->
-        <dependency>  
-            <groupId>org.hsqldb</groupId>  
-            <artifactId>hsqldb</artifactId>  
+        <dependency>
+            <groupId>org.hsqldb</groupId>
+            <artifactId>hsqldb</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -215,15 +215,15 @@
     </dependencies>
 
     <properties>
-        
+
         <dbx.url>jdbc:hsqldb:mem:testdb</dbx.url>
         <dbx.user>sa</dbx.user>
         <dbx.password></dbx.password>
         <dbx.driverClass>org.hsqldb.jdbcDriver</dbx.driverClass>
         <dbx.hibernateDialect>org.hibernate.dialect.HSQLDialect</dbx.hibernateDialect>
-        
+
         <base.utils.version>1.0.1-SNAPSHOT-99fd047</base.utils.version>
-        
+
     </properties>
 
 </project>
