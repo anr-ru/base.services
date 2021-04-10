@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package ru.anr.base.services.api;
 
@@ -7,11 +7,11 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-
 import ru.anr.base.domain.api.APICommand;
 import ru.anr.base.domain.api.APIException;
 import ru.anr.base.domain.api.RawFormatTypes;
 import ru.anr.base.domain.api.models.ResponseModel;
+import ru.anr.base.samples.services.api.EmptyV1ApiCommand;
 import ru.anr.base.services.BaseLocalServiceTestCase;
 
 /**
@@ -206,5 +206,12 @@ public class ApiCommandFactoryTest extends BaseLocalServiceTestCase {
             Assert.assertEquals("{\"code\":-1,\"message\":\"[The value is expected to be NOT NULL]\"}",
                     rs.getRawModel());
         }
+    }
+
+    @Test
+    public void testAPIInfoExtraction() {
+        ApiStrategy api = ApiUtils.extract(EmptyV1ApiCommand.class);
+        Assert.assertEquals("Empty", api.id());
+        Assert.assertEquals("v1", api.version());
     }
 }
