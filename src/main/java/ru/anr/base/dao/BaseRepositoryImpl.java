@@ -1,12 +1,12 @@
 /*
  * Copyright 2014 the original author or authors.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -15,14 +15,6 @@
  */
 package ru.anr.base.dao;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import javax.persistence.EntityManager;
-import javax.persistence.Parameter;
-import javax.persistence.Query;
-
 import org.hibernate.proxy.HibernateProxy;
 import org.hibernate.transform.AliasToEntityMapResultTransformer;
 import org.slf4j.Logger;
@@ -30,21 +22,24 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
-
 import ru.anr.base.BaseParent;
 import ru.anr.base.dao.repository.BaseRepository;
 import ru.anr.base.domain.BaseEntity;
+
+import javax.persistence.EntityManager;
+import javax.persistence.Parameter;
+import javax.persistence.Query;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * A custom implementation for DAO Repositories. Added some useful functions
  * from {@link EntityManager}.
  *
- *
+ * @param <T> Entity Type
  * @author Alexey Romanchuk
  * @created Nov 6, 2014
- *
- * @param <T>
- *            Entity Type
  */
 
 public class BaseRepositoryImpl<T extends BaseEntity> extends SimpleJpaRepository<T, Long>
@@ -62,11 +57,9 @@ public class BaseRepositoryImpl<T extends BaseEntity> extends SimpleJpaRepositor
 
     /**
      * Constructor of repository instance
-     * 
-     * @param domainClass
-     *            Entity class
-     * @param entityManager
-     *            {@link EntityManager}
+     *
+     * @param domainClass   Entity class
+     * @param entityManager {@link EntityManager}
      */
     public BaseRepositoryImpl(Class<T> domainClass, EntityManager entityManager) {
 
@@ -112,12 +105,17 @@ public class BaseRepositoryImpl<T extends BaseEntity> extends SimpleJpaRepositor
         return (S) entityManager.find(entityClass, id);
     }
 
+    @Override
+    @SuppressWarnings("unchecked")
+    public <S extends BaseEntity> S findSecured(Class<?> entityClass, Long id) {
+        return (S) entityManager.find(entityClass, id);
+    }
+
     /**
      * Extracts the entity's class for the specified entity which can be a
      * proxied hibernate entity. The implementation is Hibernate specific.
-     * 
-     * @param entity
-     *            Entity
+     *
+     * @param entity Entity
      * @return Entity's class
      */
     public static Class<?> entityClass(BaseEntity entity) {
@@ -129,13 +127,10 @@ public class BaseRepositoryImpl<T extends BaseEntity> extends SimpleJpaRepositor
     /**
      * Extracts a pure entity for the given hibernate entity which can be a
      * proxied. The implementation is Hibernate specific.
-     * 
-     * @param entity
-     *            The entity
+     *
+     * @param entity The entity
+     * @param <S>    Object type
      * @return Pure entity
-     * 
-     * @param <S>
-     *            Object type
      */
     @SuppressWarnings("unchecked")
     public static <S extends BaseEntity> S entity(S entity) {

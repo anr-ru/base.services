@@ -1,9 +1,7 @@
 /**
- * 
+ *
  */
 package ru.anr.base.services;
-
-import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -19,11 +17,12 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.TestingAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-
 import ru.anr.base.samples.dao.MyDao;
 import ru.anr.base.samples.domain.Samples;
 import ru.anr.base.samples.services.ACLSecured;
 import ru.anr.base.services.security.ACLManager;
+
+import java.util.List;
 
 /**
  * Tests for ACL Security.
@@ -58,7 +57,7 @@ public class ACLSecurityTest extends BaseLocalServiceTestCase {
 
     /**
      * Authentication
-     * 
+     *
      * @param user
      *            A user
      * @return Authenticated token
@@ -217,4 +216,25 @@ public class ACLSecurityTest extends BaseLocalServiceTestCase {
         Assert.assertEquals(2, rs.size());
         Assert.assertTrue(rs.containsAll(list(s1, s2)));
     }
+
+    @Test
+    public void testAccessToEntity() {
+
+        authenticate("user");
+
+        Samples s = create(Samples.class, "name", "none");
+
+        try {
+            dao.findSecured(Samples.class, s.getId());
+            Assert.fail();
+        } catch (AccessDeniedException ex) {
+            Assert.assertEquals("Access is denied", ex.getMessage());
+        }
+
+        s.setName("read");
+
+        Samples sx = dao.findSecured(Samples.class, s.getId());
+        Assert.assertEquals(s, sx);
+    }
+
 }
