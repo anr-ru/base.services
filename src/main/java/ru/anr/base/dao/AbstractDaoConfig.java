@@ -21,6 +21,7 @@ import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.ehcache.EhCacheCacheManager;
 import org.springframework.cache.ehcache.EhCacheManagerFactoryBean;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
@@ -50,6 +51,7 @@ public abstract class AbstractDaoConfig extends BaseSpringParent implements Tran
      * {@inheritDoc}
      */
     @Override
+    @DependsOn({"transactionManager"})
     public PlatformTransactionManager annotationDrivenTransactionManager() {
 
         return transactionManager();

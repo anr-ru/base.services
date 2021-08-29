@@ -16,6 +16,7 @@
 package ru.anr.base.dao;
 
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
@@ -80,6 +81,7 @@ public abstract class AbstractJPADaoConfig extends AbstractDaoConfig {
      * @return Bean instance
      */
     @Bean(name = "entityManagerFactory")
+    @DependsOn({"dataSource"})
     public EntityManagerFactory entityManagerFactory() {
 
         HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
@@ -98,6 +100,7 @@ public abstract class AbstractJPADaoConfig extends AbstractDaoConfig {
      */
     @Override
     @Bean(name = "transactionManager")
+    @DependsOn({"dataSource", "entityManagerFactory"})
     public PlatformTransactionManager transactionManager() {
 
         JpaTransactionManager txManager = new JpaTransactionManager();
