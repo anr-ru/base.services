@@ -10,7 +10,7 @@
     <context:property-placeholder location="classpath:application.properties"/>
     <context:annotation-config/>
 
-    <bean id="config" class="ru.anr.base.dao.LocalDaoConfig"
+    <bean id="config" class="ru.anr.base.dao.config.LocalDaoConfig"
           p:jdbcDriverClassName="${db.driverClass}"
           p:jdbcUrl="${db.url}"
           p:userName="${db.user}"

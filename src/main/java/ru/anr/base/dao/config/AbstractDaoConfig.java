@@ -14,7 +14,7 @@
  * the License.
  */
 
-package ru.anr.base.dao;
+package ru.anr.base.dao.config;
 
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
