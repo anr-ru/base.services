@@ -7,7 +7,7 @@ import ru.anr.base.domain.api.models.RequestModel;
 import ru.anr.base.domain.api.models.SortModel;
 import ru.anr.base.domain.api.models.SortModel.SortDirection;
 
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -172,11 +172,11 @@ public class APICommandTest extends BaseParent {
         map = toMap("created", "2020-05-14", "modified", "2020-22-11");
         m = cmd.params(map).getRequest();
 
-        ZonedDateTime z = ZonedDateTime.of(2020, 5, 16, 0, 0, 0, 0, DEFAULT_TIMEZONE);
+        LocalDateTime z = LocalDateTime.of(2020, 5, 16, 0, 0);
 
-        Assertions.assertEquals(ZonedDateTime.of(2020, 5, 14, 0, 0, 0, 0, DEFAULT_TIMEZONE),
-                cmd.parseDate("created", now()));
-        Assertions.assertEquals(z, cmd.parseDate("modified", z));
+        Assertions.assertEquals(LocalDateTime.of(2020, 5, 14, 0, 0),
+                cmd.parseDate("created", now().toLocalDate()));
+        Assertions.assertEquals(z, cmd.parseDate("modified", z.toLocalDate()));
 
         // If '+' was lost
         m = cmd.params(toMap("sort", " x,-z")).getRequest();

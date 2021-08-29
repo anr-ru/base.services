@@ -11,10 +11,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.ContextConfiguration;
-import ru.anr.base.services.validation.ValidationUtils;
 import ru.anr.base.tests.BaseLocalDaoTestCase;
-
-import javax.validation.ConstraintViolationException;
 
 /**
  * A parent class for all service layer tests.
@@ -59,20 +56,6 @@ public class BaseLocalServiceTestCase extends BaseLocalDaoTestCase {
     public void setUp() {
 
         super.setUp();
-
         SecurityContextHolder.clearContext();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected String extractMessage(Throwable ex) {
-
-        String msg = super.extractMessage(ex);
-        if (ex instanceof ConstraintViolationException) {
-            msg = ValidationUtils.getAllErrorsAsString(((ConstraintViolationException) ex).getConstraintViolations());
-        }
-        return msg;
     }
 }

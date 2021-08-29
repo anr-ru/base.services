@@ -1,12 +1,12 @@
 /*
  * Copyright 2014 the original author or authors.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -15,24 +15,22 @@
  */
 package ru.anr.base.dao;
 
-import javax.persistence.EntityManagerFactory;
-import javax.sql.DataSource;
-
 import org.springframework.context.annotation.Bean;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 
+import javax.persistence.EntityManagerFactory;
+import javax.sql.DataSource;
+
 /**
  * An annotation-based dao config for non-JTA environments. It includes an
  * abstract datasource definition, JPA based entity factory and JPA transaction
  * manager.
  *
- *
  * @author Alexey Romanchuk
  * @created Nov 6, 2014
- *
  */
 public abstract class AbstractJPADaoConfig extends AbstractDaoConfig {
 
@@ -63,12 +61,11 @@ public abstract class AbstractJPADaoConfig extends AbstractDaoConfig {
 
     /**
      * {@link DataSource} definition to override in descendants
-     * 
+     *
      * @return A pooled datasource
      */
-    @Bean(name = "datasource")
+    @Bean(name = "dataSource")
     public DataSource dataSource() {
-
         return jndiDataSource;
     }
 
@@ -79,7 +76,7 @@ public abstract class AbstractJPADaoConfig extends AbstractDaoConfig {
 
     /**
      * Definition of {@link EntityManagerFactory}
-     * 
+     *
      * @return Bean instance
      */
     @Bean(name = "entityManagerFactory")
@@ -104,7 +101,6 @@ public abstract class AbstractJPADaoConfig extends AbstractDaoConfig {
     public PlatformTransactionManager transactionManager() {
 
         JpaTransactionManager txManager = new JpaTransactionManager();
-
         txManager.setEntityManagerFactory(entityManagerFactory());
         txManager.setDataSource(dataSource());
         return txManager;
@@ -115,8 +111,7 @@ public abstract class AbstractJPADaoConfig extends AbstractDaoConfig {
     // /////////////////////////////////////////////////////////////////////////
 
     /**
-     * @param userName
-     *            the userName to set
+     * @param userName the userName to set
      */
     public void setUserName(String userName) {
 
@@ -124,8 +119,7 @@ public abstract class AbstractJPADaoConfig extends AbstractDaoConfig {
     }
 
     /**
-     * @param password
-     *            the password to set
+     * @param password the password to set
      */
     public void setPassword(String password) {
 
@@ -133,8 +127,7 @@ public abstract class AbstractJPADaoConfig extends AbstractDaoConfig {
     }
 
     /**
-     * @param jdbcUrl
-     *            the jdbcUrl to set
+     * @param jdbcUrl the jdbcUrl to set
      */
     public void setJdbcUrl(String jdbcUrl) {
 
@@ -174,8 +167,7 @@ public abstract class AbstractJPADaoConfig extends AbstractDaoConfig {
     }
 
     /**
-     * @param jdbcDriverClassName
-     *            the jdbcDriverClassName to set
+     * @param jdbcDriverClassName the jdbcDriverClassName to set
      */
     public void setJdbcDriverClassName(String jdbcDriverClassName) {
 
@@ -183,8 +175,7 @@ public abstract class AbstractJPADaoConfig extends AbstractDaoConfig {
     }
 
     /**
-     * @param persistenceFileLocation
-     *            the persistenceFileLocation to set
+     * @param persistenceFileLocation the persistenceFileLocation to set
      */
     public void setPersistenceFileLocation(String persistenceFileLocation) {
 
@@ -192,8 +183,7 @@ public abstract class AbstractJPADaoConfig extends AbstractDaoConfig {
     }
 
     /**
-     * @param jndiDataSource
-     *            the jndiDataSource to set
+     * @param jndiDataSource the jndiDataSource to set
      */
     public void setJndiDataSource(DataSource jndiDataSource) {
 

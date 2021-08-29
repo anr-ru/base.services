@@ -1,6 +1,7 @@
 package ru.anr.base.services.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.context.annotation.Bean;
@@ -100,8 +101,8 @@ public class ACLConfig extends GlobalMethodSecurityConfiguration {
      * @return The bean instance.
      */
     @Bean(name = "aclService")
-    @DependsOn({"cacheManager", "datasource"})
-    public MutableAclService aclServiceBuild(CacheManager cacheManager, DataSource datasource) {
+    @DependsOn({"cacheManager", "dataSource"})
+    public MutableAclService aclServiceBuild(CacheManager cacheManager, @Qualifier("dataSource") DataSource datasource) {
 
         PermissionGrantingStrategy grantingStrategy = new DefaultPermissionGrantingStrategy(new Slf4jAuditLogger());
         GrantedAuthority role = new SimpleGrantedAuthority(aclManageRole);

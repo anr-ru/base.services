@@ -226,15 +226,15 @@ public class ACLSecurityTest extends BaseLocalServiceTestCase {
 
         try {
             dao.findSecured(Samples.class, s.getId());
-            Assert.fail();
+            Assertions.fail();
         } catch (AccessDeniedException ex) {
-            Assert.assertEquals("Access is denied", ex.getMessage());
+            Assertions.assertEquals("Access is denied", ex.getMessage());
         }
 
         s.setName("read");
 
         Samples sx = dao.findSecured(Samples.class, s.getId());
-        Assert.assertEquals(s, sx);
+        Assertions.assertEquals(s, sx);
     }
 
 }

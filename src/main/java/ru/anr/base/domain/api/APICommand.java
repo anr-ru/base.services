@@ -1,12 +1,12 @@
 /*
  * Copyright 2014 the original author or authors.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -15,32 +15,30 @@
  */
 package ru.anr.base.domain.api;
 
-import java.io.Serializable;
-import java.time.ZonedDateTime;
-import java.time.temporal.ChronoUnit;
-import java.util.*;
-
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import ru.anr.base.BaseParent;
 import ru.anr.base.domain.api.models.RequestModel;
 import ru.anr.base.domain.api.models.SortModel;
 import ru.anr.base.domain.api.models.SortModel.SortDirection;
 
+import java.io.Serializable;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+
 /**
  * A representation of a general API command (based on the RESTful API
  * approach).
  *
- *
  * @author Alexey Romanchuk
  * @created Nov 10, 2014
- *
  */
 
 public class APICommand extends BaseParent implements Serializable {
@@ -93,7 +91,8 @@ public class APICommand extends BaseParent implements Serializable {
     /**
      * Parsed request model
      */
-    private RequestModel request = new RequestModel();;
+    private RequestModel request = new RequestModel();
+    ;
 
     /**
      * Prepared response model
@@ -102,11 +101,9 @@ public class APICommand extends BaseParent implements Serializable {
 
     /**
      * Constructor of new command
-     * 
-     * @param commandId
-     *            Identifier of a command
-     * @param version
-     *            Command version id
+     *
+     * @param commandId Identifier of a command
+     * @param version   Command version id
      */
     public APICommand(String commandId, String version) {
 
@@ -119,9 +116,8 @@ public class APICommand extends BaseParent implements Serializable {
 
     /**
      * Adds the response format
-     * 
-     * @param t
-     *            A format of raw data for response
+     *
+     * @param t A format of raw data for response
      * @return This object
      */
     public APICommand responseFormat(RawFormatTypes t) {
@@ -132,9 +128,8 @@ public class APICommand extends BaseParent implements Serializable {
 
     /**
      * Adds the request format
-     * 
-     * @param t
-     *            A format of raw data request
+     *
+     * @param t A format of raw data request
      * @return This object
      */
     public APICommand requestFormat(RawFormatTypes t) {
@@ -145,9 +140,8 @@ public class APICommand extends BaseParent implements Serializable {
 
     /**
      * Adds raw request data (not parsed)
-     * 
-     * @param raw
-     *            A raw string with the request model
+     *
+     * @param raw A raw string with the request model
      * @return This object
      */
     public APICommand addRaw(String raw) {
@@ -158,9 +152,8 @@ public class APICommand extends BaseParent implements Serializable {
 
     /**
      * Sets the type of operation according to the specified http method
-     * 
-     * @param method
-     *            Method
+     *
+     * @param method Method
      * @return This
      */
     public APICommand method(String method) {
@@ -191,9 +184,8 @@ public class APICommand extends BaseParent implements Serializable {
 
     /**
      * Adds pairs name/value to the request parameters.
-     * 
-     * @param array
-     *            An array of pairs 'key/value'
+     *
+     * @param array An array of pairs 'key/value'
      * @return This object
      */
     public APICommand context(Object... array) {
@@ -205,9 +197,8 @@ public class APICommand extends BaseParent implements Serializable {
     /**
      * Parses predefined query parameters to set additional properties of the
      * command.
-     * 
-     * @param params
-     *            A map of request parameters.
+     *
+     * @param params A map of request parameters.
      * @return This object
      */
     public APICommand params(Map<String, ?> params) {
@@ -261,9 +252,8 @@ public class APICommand extends BaseParent implements Serializable {
 
     /**
      * Parsing string fields with +/- markers to {@link SortModel}.
-     * 
-     * @param values
-     *            A list of fields with expected prefixed
+     *
+     * @param values A list of fields with expected prefixed
      * @return A list of {@link SortModel} objects
      */
     private List<SortModel> parseSort(List<String> values) {
@@ -282,9 +272,8 @@ public class APICommand extends BaseParent implements Serializable {
 
     /**
      * Parsing values separated by comma (',').
-     * 
-     * @param s
-     *            A string with values
+     *
+     * @param s A string with values
      * @return Parsed values
      */
     private List<String> parseList(String s) {
@@ -302,31 +291,31 @@ public class APICommand extends BaseParent implements Serializable {
      * Parses the given parameter as the local date value
      *
      * @param name The name of the parameyet
-     * @param def The default date value if nothing parsed
+     * @param def  The default date value if nothing parsed
      * @return The date
      */
-    public ZonedDateTime parseDate(String name, ZonedDateTime def) {
+    public LocalDateTime parseDate(String name, LocalDate def) {
+
         Map<String, ?> map = this.getContexts();
         String strDate = nullSafe(map.get(name));
 
-        return parseLocalDate(strDate,"yyyy-MM-dd", def);
+        return parseLocal(strDate, "yyyy-MM-dd").orElse(def.atStartOfDay());
     }
 
     /**
      * Searches all sorting parameters or set the default value if the sorting field not defined.
      *
-     * @param def The default sort direction if the sort order was not parsed/defined
-     *
+     * @param def    The default sort direction if the sort order was not parsed/defined
      * @param fields The fields which are expected to be used for sorting
      * @return The found sort order with the same
      */
-    public Map<String, SortModel.SortDirection> findSorting(SortModel.SortDirection def, String ... fields) {
+    public Map<String, SortModel.SortDirection> findSorting(SortModel.SortDirection def, String... fields) {
 
         RequestModel rq = this.getRequest();
         Map<String, SortModel.SortDirection> results = toMap();
 
         if (rq.getSorted() != null) {
-            list(fields).forEach( field -> {
+            list(fields).forEach(field -> {
 
                 SortModel sm = first(filter(rq.getSorted(), f -> field.equals(f.getField())));
                 SortDirection direction = def;
@@ -362,8 +351,7 @@ public class APICommand extends BaseParent implements Serializable {
     }
 
     /**
-     * @param type
-     *            the type to set
+     * @param type the type to set
      */
     public void setType(MethodTypes type) {
 
@@ -379,8 +367,7 @@ public class APICommand extends BaseParent implements Serializable {
     }
 
     /**
-     * @param requestFormat
-     *            the requestFormat to set
+     * @param requestFormat the requestFormat to set
      */
     public void setRequestFormat(RawFormatTypes requestFormat) {
 
@@ -396,8 +383,7 @@ public class APICommand extends BaseParent implements Serializable {
     }
 
     /**
-     * @param responseFormat
-     *            the responseFormat to set
+     * @param responseFormat the responseFormat to set
      */
     public void setResponseFormat(RawFormatTypes responseFormat) {
 
@@ -413,8 +399,7 @@ public class APICommand extends BaseParent implements Serializable {
     }
 
     /**
-     * @param version
-     *            the version to set
+     * @param version the version to set
      */
     public void setVersion(String version) {
 
@@ -430,8 +415,7 @@ public class APICommand extends BaseParent implements Serializable {
     }
 
     /**
-     * @param commandId
-     *            the commandId to set
+     * @param commandId the commandId to set
      */
     public void setCommandId(String commandId) {
 
@@ -449,13 +433,10 @@ public class APICommand extends BaseParent implements Serializable {
     /**
      * Gets a parameter value of the command by its name. Uses the given default
      * value if the parameter's value is null.
-     * 
-     * @param name
-     *            The name of a parameter
-     * @param defaultValue
-     *            The value to be set if the value of the parameter is null
-     * @param <S>
-     *            The class of the parameter's value
+     *
+     * @param name         The name of a parameter
+     * @param defaultValue The value to be set if the value of the parameter is null
+     * @param <S>          The class of the parameter's value
      * @return The value of the parameter
      */
     public <S> S get(String name, S defaultValue) {
@@ -472,11 +453,9 @@ public class APICommand extends BaseParent implements Serializable {
     /**
      * Gets a parameter value of the command by its name without a default
      * value.
-     * 
-     * @param name
-     *            The name of a parameter
-     * @param <S>
-     *            The class of the parameter's value
+     *
+     * @param name The name of a parameter
+     * @param <S>  The class of the parameter's value
      * @return The value of the parameter
      */
     public <S> S get(String name) {
@@ -487,9 +466,8 @@ public class APICommand extends BaseParent implements Serializable {
     /**
      * Determines whether the parameter list or context has the given parameter
      * name
-     * 
-     * @param name
-     *            The name
+     *
+     * @param name The name
      * @return true, if it has
      */
     public boolean hasParam(String name) {
@@ -498,8 +476,7 @@ public class APICommand extends BaseParent implements Serializable {
     }
 
     /**
-     * @param contexts
-     *            the contexts to set
+     * @param contexts the contexts to set
      */
     public void setContexts(Map<String, Object> contexts) {
 
@@ -515,8 +492,7 @@ public class APICommand extends BaseParent implements Serializable {
     }
 
     /**
-     * @param rawModel
-     *            the rawModel to set
+     * @param rawModel the rawModel to set
      */
     public void setRawModel(String rawModel) {
 
@@ -524,10 +500,8 @@ public class APICommand extends BaseParent implements Serializable {
     }
 
     /**
+     * @param <S> Expected class
      * @return the request
-     * 
-     * @param <S>
-     *            Expected class
      */
     @SuppressWarnings("unchecked")
     public <S extends RequestModel> S getRequest() {
@@ -536,8 +510,7 @@ public class APICommand extends BaseParent implements Serializable {
     }
 
     /**
-     * @param request
-     *            the request to set
+     * @param request the request to set
      */
     public void setRequest(RequestModel request) {
 
@@ -545,10 +518,8 @@ public class APICommand extends BaseParent implements Serializable {
     }
 
     /**
+     * @param <S> Expected class
      * @return the response
-     * 
-     * @param <S>
-     *            Expected class
      */
     @SuppressWarnings("unchecked")
     public <S> S getResponse() {
@@ -557,8 +528,7 @@ public class APICommand extends BaseParent implements Serializable {
     }
 
     /**
-     * @param response
-     *            the response to set
+     * @param response the response to set
      */
     public void setResponse(Object response) {
 

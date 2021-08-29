@@ -26,14 +26,10 @@ import java.beans.PropertyVetoException;
 @EnableJpaRepositories(repositoryFactoryBeanClass = BaseRepositoryFactoryBean.class)
 public abstract class AbstractLocalDaoConfig extends AbstractJPADaoConfig {
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public DataSource dataSource() {
 
         ComboPooledDataSource ds = new ComboPooledDataSource();
-
         try {
 
             ds.setDriverClass(getJdbcDriverClassName());
@@ -48,7 +44,6 @@ public abstract class AbstractLocalDaoConfig extends AbstractJPADaoConfig {
         } catch (PropertyVetoException ex) {
             throw new ApplicationException(ex);
         }
-
         return ds;
     }
 }

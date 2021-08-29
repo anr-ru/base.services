@@ -1,12 +1,12 @@
 /*
  * Copyright 2014 the original author or authors.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -15,26 +15,23 @@
  */
 package ru.anr.base.services.validation;
 
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-
 import ru.anr.base.BaseSpringParent;
 import ru.anr.base.services.pattern.Strategy;
+
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
 
 /**
  * The implementation of the {@link ValidationFactory}.
  *
- *
  * @author Alexey Romanchuk
  * @created Jan 21, 2016
- *
  */
 public class ValidationFactoryImpl extends BaseSpringParent implements ValidationFactory {
 
@@ -46,7 +43,7 @@ public class ValidationFactoryImpl extends BaseSpringParent implements Validatio
     /**
      * A map with all defined validators
      */
-    private MultiValueMap<Class<?>, Strategy<Object>> validators = new LinkedMultiValueMap<>();
+    private final MultiValueMap<Class<?>, Strategy<Object>> validators = new LinkedMultiValueMap<>();
 
     /**
      * The method to sort validators
@@ -67,9 +64,8 @@ public class ValidationFactoryImpl extends BaseSpringParent implements Validatio
 
     /**
      * Initialization
-     * 
-     * @param beans
-     *            All beans which are the validators
+     *
+     * @param beans All beans which are the validators
      */
     @SuppressWarnings("unchecked")
     public void init(Map<String, Object> beans) {

@@ -25,9 +25,9 @@ import org.springframework.data.domain.Sort.Direction;
 import ru.anr.base.domain.api.APICommand;
 import ru.anr.base.services.BaseDataAwareServiceImpl;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * An implementation of the base API strategy.
@@ -174,10 +174,10 @@ public class AbstractApiCommandStrategyImpl extends BaseDataAwareServiceImpl imp
     protected Map<String, Object> extract(APICommand cmd, String... keys) {
 
         Map<String, Object> contexts = cmd.getContexts();
-        List<String> emptyParam = getEmptyKeys(contexts, list(keys));
+        Set<String> emptyParam = getEmptyKeys(contexts, list(keys));
 
         if (!emptyParam.isEmpty()) {
-            rejectAPI("api.param.is.null", emptyParam.get(0));
+            rejectAPI("api.param.is.null", first(emptyParam));
         }
         return contexts;
     }

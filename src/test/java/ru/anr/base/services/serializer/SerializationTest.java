@@ -2,8 +2,8 @@ package ru.anr.base.services.serializer;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.util.StdDateFormat;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import org.codehaus.jackson.map.util.StdDateFormat;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,8 +13,8 @@ import ru.anr.base.samples.domain.Model;
 import ru.anr.base.samples.domain.SubModel;
 import ru.anr.base.services.BaseLocalServiceTestCase;
 
+import java.io.IOException;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.time.ZonedDateTime;
 
 /**
@@ -29,7 +29,7 @@ public class SerializationTest extends BaseLocalServiceTestCase {
      * XML etalon
      */
     private static final String TEST_XML = "<?xml version='1.0' encoding='UTF-8'?>"
-            + "<model field=\"xxx\" time=\"2014-09-11T10:30:00Z\" calendar=\"2014-09-11T10:30:00.000+0000\" sum=\"322.0323293\">"
+            + "<model field=\"xxx\" time=\"2014-09-11T10:30:00Z\" calendar=\"2014-09-11T10:30:00.000+00:00\" sum=\"322.0323293\">"
             + "<subs><sub>1</sub><sub>2</sub></subs></model>";
 
     /**
@@ -50,7 +50,7 @@ public class SerializationTest extends BaseLocalServiceTestCase {
     /**
      * JSON etalon
      */
-    private static final String TEST_JSON = "{\"field\":\"xxx\",\"time\":\"2014-09-11T10:30:00Z\",\"calendar\":\"2014-09-11T10:30:00.000+0000\","
+    private static final String TEST_JSON = "{\"field\":\"xxx\",\"time\":\"2014-09-11T10:30:00Z\",\"calendar\":\"2014-09-11T10:30:00.000+00:00\","
             + "\"sub\":[{\"value\":1},{\"value\":2}],\"sum\":322.0323293}";
 
     /**
@@ -75,13 +75,13 @@ public class SerializationTest extends BaseLocalServiceTestCase {
 
         Model mx = json.fromStr(value, Model.class);
 
-        Assert.assertEquals(date(m.getCalendar()), date(mx.getCalendar()));
-        Assert.assertEquals(m.getTime(), mx.getTime());
+        Assertions.assertEquals(date(m.getCalendar()), date(mx.getCalendar()));
+        Assertions.assertEquals(m.getTime(), mx.getTime());
 
         // TODO: Two calendars differ by 'firstDayOfWeek' and 'minimalDaysInFirstWeek', WTF?
         m.setCalendar(null);
         mx.setCalendar(null);
-        Assert.assertEquals(m, mx);
+        Assertions.assertEquals(m, mx);
 
         Assertions.assertEquals(d("600").toPlainString(), d("600.00").stripTrailingZeros().toPlainString());
     }
@@ -89,7 +89,7 @@ public class SerializationTest extends BaseLocalServiceTestCase {
     /**
      * JSON stripped etalon
      */
-    private static final String TEST_JSON_STRIPPED = "{\"field\":\"xxx\",\"time\":\"2014-09-11T10:30:00Z\",\"calendar\":\"2014-09-11T10:30:00.000+0000\","
+    private static final String TEST_JSON_STRIPPED = "{\"field\":\"xxx\",\"time\":\"2014-09-11T10:30:00Z\",\"calendar\":\"2014-09-11T10:30:00.000+00:00\","
             + "\"sub\":[{\"value\":1},{\"value\":2}],\"sum\":322.0323293}";
 
 
@@ -107,16 +107,16 @@ public class SerializationTest extends BaseLocalServiceTestCase {
 
         Model mx = impl.fromStr(value, Model.class);
 
-        Assert.assertEquals(m.getTime(), mx.getTime());
+        Assertions.assertEquals(m.getTime(), mx.getTime());
         //mx.setSum(mx.getSum().setScale(9, BigDecimal.ROUND_HALF_UP));
 
-        Assert.assertEquals(date(m.getCalendar()), date(mx.getCalendar()));
+        Assertions.assertEquals(date(m.getCalendar()), date(mx.getCalendar()));
         // TODO: Two calendars differ by 'firstDayOfWeek' and 'minimalDaysInFirstWeek', WTF?
         m.setCalendar(null);
         mx.setCalendar(null);
 
-        Assert.assertEquals(m.getSum(), mx.getSum());
-        Assert.assertEquals(m, mx);
+        Assertions.assertEquals(m.getSum(), mx.getSum());
+        Assertions.assertEquals(m, mx);
 
         Assertions.assertEquals(d("600").toPlainString(), d("600.00").stripTrailingZeros().toPlainString());
     }
@@ -143,11 +143,11 @@ public class SerializationTest extends BaseLocalServiceTestCase {
 
         Model mx = xml.fromStr(value, Model.class);
 
-        Assert.assertEquals(date(m.getCalendar()), date(mx.getCalendar()));
+        Assertions.assertEquals(date(m.getCalendar()), date(mx.getCalendar()));
         // TODO: Two calendars differ by 'firstDayOfWeek' and 'minimalDaysInFirstWeek', WTF?
         m.setCalendar(null);
         mx.setCalendar(null);
-        Assert.assertEquals(m, mx);
+        Assertions.assertEquals(m, mx);
     }
 
     @Test
@@ -160,7 +160,7 @@ public class SerializationTest extends BaseLocalServiceTestCase {
 
         ZonedDateTime z = ZonedDateTime.of(2021, 4, 1, 10, 25, 27, 0, DEFAULT_TIMEZONE);
 
-        Assert.assertEquals("\"2021-04-01T10:25:27Z\"", m.writeValueAsString(z));
+        Assertions.assertEquals("\"2021-04-01T10:25:27Z\"", m.writeValueAsString(z));
     }
 
     @Test
@@ -173,6 +173,6 @@ public class SerializationTest extends BaseLocalServiceTestCase {
         JSONSerializerImpl impl = new JSONSerializerImpl();
 
         String value = impl.toStr(m);
-        Assert.assertEquals("{\"sum\":10}", value);
+        Assertions.assertEquals("{\"sum\":10}", value);
     }
 }

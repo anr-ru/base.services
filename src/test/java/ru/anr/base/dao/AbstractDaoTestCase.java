@@ -1,6 +1,3 @@
-/**
- *
- */
 package ru.anr.base.dao;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,10 +13,8 @@ import javax.persistence.PersistenceContext;
 /**
  * Abstract parent for different tests.
  *
- *
  * @author Alexey Romanchuk
  * @created Nov 6, 2014
- *
  */
 @ActiveProfiles(value = "test")
 public abstract class AbstractDaoTestCase extends BaseLocalDaoTestCase {
@@ -34,8 +29,7 @@ public abstract class AbstractDaoTestCase extends BaseLocalDaoTestCase {
     /**
      * Creation of new sample object
      *
-     * @param name
-     *            Name param
+     * @param name Name param
      * @return Object instance stored in database
      */
     protected Samples newSample(String name) {

@@ -206,7 +206,7 @@ public class ApiCommandFactoryTest extends BaseLocalServiceTestCase {
     @Test
     public void testAPIInfoExtraction() {
         ApiStrategy api = ApiUtils.extract(EmptyV1ApiCommand.class);
-        Assert.assertEquals("Empty", api.id());
-        Assert.assertEquals("v1", api.version());
+        Assertions.assertEquals("Empty", api.id());
+        Assertions.assertEquals("v1", api.version());
     }
 }
