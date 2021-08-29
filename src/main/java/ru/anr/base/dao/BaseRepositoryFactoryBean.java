@@ -64,35 +64,19 @@ public class BaseRepositoryFactoryBean<T extends BaseEntity>
     private static class InternalRepositoryFactory<T extends BaseEntity> extends JpaRepositoryFactory {
 
         /**
-         * Entity manager ref
-         */
-        private final EntityManager entityManager;
-
-        /**
          * Constructor
          *
          * @param entityManager {@link EntityManager} from config
          */
         InternalRepositoryFactory(EntityManager entityManager) {
-
             super(entityManager);
-
-            this.entityManager = entityManager;
         }
 
-        /*@Override
-        protected Object getTargetRepository(RepositoryInformation information) {
-
-            @SuppressWarnings("unchecked")
-            Class<T> clazz = (Class<T>) information.getDomainType();
-
-            return new BaseRepositoryImpl<T>(clazz, entityManager);
-        }*/
         protected JpaRepositoryImplementation<?, ?> getTargetRepository(RepositoryInformation information,
                                                                         EntityManager entityManager) {
             @SuppressWarnings("unchecked")
             Class<T> clazz = (Class<T>) information.getDomainType();
-            return new BaseRepositoryImpl<T>(clazz, entityManager);
+            return new BaseRepositoryImpl<>(clazz, entityManager);
         }
 
         /**

@@ -1,12 +1,11 @@
 /**
- * 
+ *
  */
 package ru.anr.base.dao;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-
 import ru.anr.base.dao.repository.BaseRepository;
 import ru.anr.base.domain.BaseEntity;
 
@@ -31,7 +30,7 @@ public class SecuredPageImpl<T extends BaseEntity> extends PageImpl<T> {
 
     /**
      * Default constructor with filtration of the data
-     * 
+     *
      * @param repository
      *            Some repository bean
      * @param pager
@@ -40,7 +39,6 @@ public class SecuredPageImpl<T extends BaseEntity> extends PageImpl<T> {
      *            The page object of the result set to secure
      */
     public SecuredPageImpl(BaseRepository<?> repository, Pageable pager, Page<T> page) {
-
         super(repository.filter(page), pager, page.getTotalElements());
     }
 }

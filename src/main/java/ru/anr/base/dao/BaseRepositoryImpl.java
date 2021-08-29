@@ -15,7 +15,6 @@
  */
 package ru.anr.base.dao;
 
-import org.hibernate.proxy.HibernateProxy;
 import org.hibernate.transform.AliasToEntityMapResultTransformer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,20 +44,14 @@ import java.util.Set;
 public class BaseRepositoryImpl<T extends BaseEntity> extends SimpleJpaRepository<T, Long>
         implements BaseRepository<T> {
 
-    /**
-     * {@link EntityManager}
-     */
     private final EntityManager entityManager;
 
-    /**
-     * The logger
-     */
     private static final Logger logger = LoggerFactory.getLogger(BaseRepositoryImpl.class);
 
     /**
-     * Constructor of repository instance
+     * The constructor of repository instances
      *
-     * @param domainClass   Entity class
+     * @param domainClass   The entity class
      * @param entityManager {@link EntityManager}
      */
     public BaseRepositoryImpl(Class<T> domainClass, EntityManager entityManager) {
@@ -112,63 +105,19 @@ public class BaseRepositoryImpl<T extends BaseEntity> extends SimpleJpaRepositor
     }
 
     /**
-     * Extracts the entity's class for the specified entity which can be a
-     * proxied hibernate entity. The implementation is Hibernate specific.
-     *
-     * @param entity Entity
-     * @return Entity's class
-     */
-    public static Class<?> entityClass(BaseEntity entity) {
-
-        Object r = entity(entity);
-        return r.getClass();
-    }
-
-    /**
-     * Extracts a pure entity for the given hibernate entity which can be a
-     * proxied. The implementation is Hibernate specific.
-     *
-     * @param entity The entity
-     * @param <S>    Object type
-     * @return Pure entity
-     */
-    @SuppressWarnings("unchecked")
-    public static <S extends BaseEntity> S entity(S entity) {
-
-        S r = entity;
-
-        if (entity instanceof HibernateProxy) {
-            HibernateProxy proxy = (HibernateProxy) entity;
-            r = (S) proxy.getHibernateLazyInitializer().getImplementation();
-        }
-        return r;
-    }
-
-    /**
      * {@inheritDoc}
      */
     @Override
     public <S extends BaseEntity> List<S> filter(Page<S> page) {
-
         return BaseParent.list(page.getContent());
     }
 
     /**
      * {@inheritDoc}
      */
-    @Override
-    public void executeSQL(String sql) {
-
-        Query query = entityManager.createNativeQuery(sql);
-        query.executeUpdate();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     @SuppressWarnings("unchecked")
     @Override
-    public List<Object> executeSQLQuery(String sql, Pageable page, Map<String, Object> params) {
+    public List<Map<String, Object>> executeSQLQuery(String sql, Pageable page, Map<String, Object> params) {
 
         if (logger.isDebugEnabled()) {
             logger.debug("SQL: {}, params: {}", sql, params);
@@ -193,13 +142,12 @@ public class BaseRepositoryImpl<T extends BaseEntity> extends SimpleJpaRepositor
         }
         /*
          * Convert the results to a map.
-         * TODO: It seems to be removed in Hibernate 6.0
          */
-        org.hibernate.Query hibernateQuery = ((org.hibernate.jpa.HibernateQuery) query).getHibernateQuery();
-        hibernateQuery.setResultTransformer(AliasToEntityMapResultTransformer.INSTANCE);
-        hibernateQuery.setReadOnly(true);
+        org.hibernate.query.Query<?> q = query.unwrap(org.hibernate.query.Query.class);
+        q.setResultTransformer(AliasToEntityMapResultTransformer.INSTANCE);
+        q.setReadOnly(true);
 
-        return query.getResultList();
+        return (List<Map<String, Object>>) query.getResultList();
     }
 
     @Override

@@ -24,7 +24,7 @@ import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import ru.anr.base.BaseParent;
-import ru.anr.base.dao.BaseRepositoryImpl;
+import ru.anr.base.dao.EntityUtils;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -364,7 +364,7 @@ public class BaseEntity extends BaseParent implements Serializable, Accessible {
         if (obj == this) {
             return true;
         }
-        if (getClass() != (obj instanceof BaseEntity ? BaseRepositoryImpl.entityClass((BaseEntity) obj)
+        if (getClass() != (obj instanceof BaseEntity ? EntityUtils.entityClass((BaseEntity) obj)
                 : obj.getClass())) {
             return false;
         }

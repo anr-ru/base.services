@@ -98,19 +98,12 @@ public interface BaseRepository<T extends BaseEntity> extends JpaRepository<T, L
     <S extends BaseEntity> List<S> filter(Page<S> page);
 
     /**
-     * Executes an SQL query (update or delete)
+     * Executes an native SQL query. This function can be useful for doing some reports directly based on SQL tables.
      *
-     * @param sql An SQL query
+     * @param sql    The SQL query to execute
+     * @param page   The pager
+     * @param params the query parameters
+     * @return The resulted list
      */
-    void executeSQL(String sql);
-
-    /**
-     * Executes an SQL query
-     *
-     * @param sql    An SQL query
-     * @param page   A page parameter (can be null)
-     * @param params Parameters
-     * @return A resulted list
-     */
-    List<Object> executeSQLQuery(String sql, Pageable page, Map<String, Object> params);
+    List<Map<String, Object>> executeSQLQuery(String sql, Pageable page, Map<String, Object> params);
 }

@@ -117,16 +117,6 @@ public class MultiUnitRepositoryFactoryBean<T extends BaseEntity>
             this.entityManager = entityManager;
         }
 
-        /*
-        @Override
-        protected Object getTargetRepository(RepositoryInformation information, entityManager) {
-
-            @SuppressWarnings("unchecked")
-            Class<T> clazz = (Class<T>) information.getDomainType();
-
-            return new BaseRepositoryImpl<T>(clazz, entityManager);
-        }*/
-
         protected JpaRepositoryImplementation<?, ?> getTargetRepository(RepositoryInformation information,
                                                                         EntityManager entityManager) {
             @SuppressWarnings("unchecked")

@@ -224,6 +224,8 @@ public class ACLSecurityTest extends BaseLocalServiceTestCase {
 
         Samples s = create(Samples.class, "name", "none");
 
+        dao.find(Samples.class, s.getId()); // No security required
+
         try {
             dao.findSecured(Samples.class, s.getId());
             Assertions.fail();
@@ -235,6 +237,9 @@ public class ACLSecurityTest extends BaseLocalServiceTestCase {
 
         Samples sx = dao.findSecured(Samples.class, s.getId());
         Assertions.assertEquals(s, sx);
+
+        Samples sxx = dao.find(Samples.class, s.getId());
+        Assertions.assertEquals(sx, sxx);
     }
 
 }

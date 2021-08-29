@@ -25,7 +25,7 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.util.MultiValueMap;
 import ru.anr.base.ApplicationException;
 import ru.anr.base.BaseSpringParent;
-import ru.anr.base.dao.BaseRepositoryImpl;
+import ru.anr.base.dao.EntityUtils;
 import ru.anr.base.domain.BaseEntity;
 import ru.anr.base.domain.api.APIException;
 import ru.anr.base.services.pattern.Strategy;
@@ -290,7 +290,7 @@ public class BaseServiceImpl extends BaseSpringParent implements BaseService {
 
         rejectIfNeed(new HashSet<>(validator().validate(o)));
 
-        Class<?> clazz = (o instanceof BaseEntity) ? BaseRepositoryImpl.entityClass((BaseEntity) o) : o.getClass();
+        Class<?> clazz = (o instanceof BaseEntity) ? EntityUtils.entityClass((BaseEntity) o) : o.getClass();
 
         if (!validators.containsKey(clazz)) {
 
