@@ -105,6 +105,12 @@ public class BaseRepositoryImpl<T extends BaseEntity> extends SimpleJpaRepositor
         return (S) entityManager.find(entityClass, id);
     }
 
+    @Override
+    @SuppressWarnings("unchecked")
+    public <S extends BaseEntity> S findSecured(Class<?> entityClass, Long id) {
+        return (S) entityManager.find(entityClass, id);
+    }
+
     /**
      * Extracts the entity's class for the specified entity which can be a
      * proxied hibernate entity. The implementation is Hibernate specific.

@@ -1,19 +1,19 @@
 /**
- * 
+ *
  */
 package ru.anr.base.samples.domain;
 
-import java.math.BigDecimal;
-import java.time.ZonedDateTime;
-import java.util.List;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
-
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
+import java.math.BigDecimal;
+import java.time.ZonedDateTime;
+import java.util.Calendar;
+import java.util.List;
 
 /**
  * Description ...
@@ -37,6 +37,8 @@ public class Model {
      */
     private ZonedDateTime time;
 
+    private Calendar calendar;
+
     /**
      * Submodels
      */
@@ -58,6 +60,15 @@ public class Model {
     public ZonedDateTime getTime() {
 
         return time;
+    }
+
+    @XmlAttribute(name = "calendar")
+    public Calendar getCalendar() {
+        return calendar;
+    }
+
+    public void setCalendar(Calendar calendar) {
+        this.calendar = calendar;
     }
 
     /**

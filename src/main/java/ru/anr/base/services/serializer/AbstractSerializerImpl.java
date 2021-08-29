@@ -16,12 +16,15 @@
 package ru.anr.base.services.serializer;
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.AnnotationIntrospector;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.jsr310.JSR310Module;
+import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.fasterxml.jackson.databind.util.StdDateFormat;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.module.jaxb.JaxbAnnotationIntrospector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,8 +32,9 @@ import ru.anr.base.ApplicationException;
 import ru.anr.base.BaseParent;
 
 import java.io.IOException;
-import java.text.SimpleDateFormat;
+import java.math.BigDecimal;
 import java.util.Locale;
+import java.util.TimeZone;
 
 /**
  * Abstract jackson-based serialer implementation.
@@ -61,22 +65,26 @@ public abstract class AbstractSerializerImpl extends BaseParent implements Seria
 
         super();
         this.objectMapper = origin;
-        objectMapper.registerModule(new JSR310Module());
+        objectMapper.registerModule(new JavaTimeModule());
 
-        // ISO for date/time
-        objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
-        objectMapper.configure(SerializationFeature.WRITE_DATES_WITH_ZONE_ID, false);
-        objectMapper.configure(DeserializationFeature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE, false);
+        objectMapper.disable(DeserializationFeature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE);
 
         objectMapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
+        objectMapper.configure(JsonGenerator.Feature.WRITE_BIGDECIMAL_AS_PLAIN, true);
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
         objectMapper.setSerializationInclusion(Include.NON_NULL);
 
-        objectMapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ", Locale.US));
+        objectMapper.setDateFormat(new StdDateFormat(TimeZone.getTimeZone(DEFAULT_TIMEZONE), Locale.getDefault()));
+        objectMapper.setTimeZone(TimeZone.getTimeZone(DEFAULT_TIMEZONE));
+        objectMapper.setLocale(Locale.getDefault());
 
         AnnotationIntrospector introspector = new JaxbAnnotationIntrospector(objectMapper.getTypeFactory());
         objectMapper.setAnnotationIntrospector(introspector);
+
+        SimpleModule module = new SimpleModule();
+        module.addSerializer(BigDecimal.class, new BigDecimalSerializer());
+        objectMapper.registerModule(module);
     }
 
     /**

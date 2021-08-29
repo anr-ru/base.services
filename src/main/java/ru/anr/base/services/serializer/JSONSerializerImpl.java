@@ -20,10 +20,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.introspect.AnnotationIntrospectorPair;
 import com.fasterxml.jackson.databind.introspect.JacksonAnnotationIntrospector;
-import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.module.jaxb.JaxbAnnotationIntrospector;
-
-import java.math.BigDecimal;
 
 /**
  * JSON Serializer implementation.
@@ -49,13 +46,7 @@ public class JSONSerializerImpl extends AbstractSerializerImpl {
 
         mapper().setAnnotationIntrospector(new AnnotationIntrospectorPair(introspector, secondary));
     }
-
-    public void useStripTrainlingZeroSerializer() {
-        SimpleModule module = new SimpleModule();
-        module.addSerializer(BigDecimal.class, new BigDecimalSerializer());
-        mapper().registerModule(module);
-    }
-
+    
     /**
      * A constructor with the flag of formatted output which is convenient for
      * debugging.

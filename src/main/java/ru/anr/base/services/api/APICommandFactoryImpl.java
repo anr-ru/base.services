@@ -343,20 +343,22 @@ public class APICommandFactoryImpl extends BaseServiceImpl implements APICommand
 
                 logger.trace("Raw request data: {}", cmd.getRawModel());
 
-                RequestModel m = s.fromStr(cmd.getRawModel(), a.model());
-                if (cmd.getRequest() != null && (m != null)) {
-                    /*
-                     * This means - we have parsed previously some query params
-                     */
-                    m.setFields(cmd.getRequest().getFields());
-                    m.setPage(cmd.getRequest().getPage());
-                    m.setPerPage(cmd.getRequest().getPerPage());
-                    m.setSearch(cmd.getRequest().getSearch());
-                    m.setSorted(cmd.getRequest().getSorted());
-                } else {
-                    logger.debug("No RequestModel was detected for {}", cmd);
+                if (s != null) {
+                    RequestModel m = s.fromStr(cmd.getRawModel(), a.model());
+                    if (cmd.getRequest() != null && (m != null)) {
+                        /*
+                         * This means - we have parsed previously some query params
+                         */
+                        m.setFields(cmd.getRequest().getFields());
+                        m.setPage(cmd.getRequest().getPage());
+                        m.setPerPage(cmd.getRequest().getPerPage());
+                        m.setSearch(cmd.getRequest().getSearch());
+                        m.setSorted(cmd.getRequest().getSorted());
+                    } else {
+                        logger.debug("No RequestModel was detected for {}", cmd);
+                    }
+                    cmd.setRequest(m);
                 }
-                cmd.setRequest(m);
 
             } catch (Exception ex) {
 
@@ -397,7 +399,11 @@ public class APICommandFactoryImpl extends BaseServiceImpl implements APICommand
 
         Serializer s = getSerializer(cmd.getResponseFormat());
 
-        cmd.setRawModel(s.toStr(m));
+        if (s == null) {
+            cmd.setRawModel(nullSafe(m)); // RAW
+        } else {
+            cmd.setRawModel(s.toStr(m));
+        }
         logger.debug("raw api response: {}", cmd.getRawModel());
     }
 
@@ -417,6 +423,8 @@ public class APICommandFactoryImpl extends BaseServiceImpl implements APICommand
                 break;
             case XML:
                 s = xml;
+                break;
+            case RAW:
                 break;
             default:
                 throw new UnsupportedOperationException("Unsupported format : " + format);

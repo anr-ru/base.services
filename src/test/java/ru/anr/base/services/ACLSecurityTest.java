@@ -216,4 +216,25 @@ public class ACLSecurityTest extends BaseLocalServiceTestCase {
         Assertions.assertEquals(2, rs.size());
         Assertions.assertTrue(rs.containsAll(list(s1, s2)));
     }
+
+    @Test
+    public void testAccessToEntity() {
+
+        authenticate("user");
+
+        Samples s = create(Samples.class, "name", "none");
+
+        try {
+            dao.findSecured(Samples.class, s.getId());
+            Assert.fail();
+        } catch (AccessDeniedException ex) {
+            Assert.assertEquals("Access is denied", ex.getMessage());
+        }
+
+        s.setName("read");
+
+        Samples sx = dao.findSecured(Samples.class, s.getId());
+        Assert.assertEquals(s, sx);
+    }
+
 }
