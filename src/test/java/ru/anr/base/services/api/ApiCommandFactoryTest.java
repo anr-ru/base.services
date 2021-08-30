@@ -49,8 +49,8 @@ public class ApiCommandFactoryTest extends BaseLocalServiceTestCase {
         APICommand rs = factory.process(ping);
         ResponseModel m = rs.getResponse();
 
-        Assertions.assertEquals(Integer.valueOf(0), m.getCode());
-        Assertions.assertEquals("hello 1 GET", m.getMessage());
+        Assertions.assertEquals(Integer.valueOf(0), m.code);
+        Assertions.assertEquals("hello 1 GET", m.message);
 
         // Ping version 2
         ping = new APICommand(PING, "v2");
@@ -59,8 +59,8 @@ public class ApiCommandFactoryTest extends BaseLocalServiceTestCase {
         rs = factory.process(ping);
         m = rs.getResponse();
 
-        Assertions.assertEquals(Integer.valueOf(-1), m.getCode()); // Yes!
-        Assertions.assertEquals("hello 2 Get", m.getMessage());
+        Assertions.assertEquals(-1, m.code); // Yes!
+        Assertions.assertEquals("hello 2 Get", m.message);
 
         // Ping version 3 (does not exists)
         ping = new APICommand(PING, "v3");
@@ -96,8 +96,8 @@ public class ApiCommandFactoryTest extends BaseLocalServiceTestCase {
         APICommand rs = factory.process(ping);
         ResponseModel m = rs.getResponse();
 
-        Assertions.assertEquals(Integer.valueOf(0), m.getCode());
-        Assertions.assertEquals("hello x GET", m.getMessage());
+        Assertions.assertEquals(0, m.code);
+        Assertions.assertEquals("hello x GET", m.message);
     }
 
     /**
@@ -139,7 +139,7 @@ public class ApiCommandFactoryTest extends BaseLocalServiceTestCase {
         APICommand rs = factory.process(ping);
         ResponseModel m = rs.getResponse();
 
-        Assertions.assertEquals(Integer.valueOf(0), m.getCode());
+        Assertions.assertEquals(0, m.code);
     }
 
     /**
@@ -154,7 +154,7 @@ public class ApiCommandFactoryTest extends BaseLocalServiceTestCase {
 
         APICommand rs = factory.process(ping);
         ResponseModel m = rs.getResponse();
-        Assertions.assertEquals("hello GET", m.getMessage());
+        Assertions.assertEquals("hello GET", m.message);
 
         // PUT
         ping = new APICommand(PING, "v1");
@@ -162,7 +162,7 @@ public class ApiCommandFactoryTest extends BaseLocalServiceTestCase {
 
         rs = factory.process(ping);
         m = rs.getResponse();
-        Assertions.assertEquals("hello PUT", m.getMessage());
+        Assertions.assertEquals("hello PUT", m.message);
 
         // POST
         ping = new APICommand(PING, "v1");
@@ -170,7 +170,7 @@ public class ApiCommandFactoryTest extends BaseLocalServiceTestCase {
 
         rs = factory.process(ping);
         m = rs.getResponse();
-        Assertions.assertEquals("hello POST", m.getMessage());
+        Assertions.assertEquals("hello POST", m.message);
 
         // DELETE
         ping = new APICommand(PING, "v1");
@@ -178,7 +178,7 @@ public class ApiCommandFactoryTest extends BaseLocalServiceTestCase {
 
         rs = factory.process(ping);
         m = rs.getResponse();
-        Assertions.assertEquals("hello DELETE", m.getMessage());
+        Assertions.assertEquals("hello DELETE", m.message);
     }
 
     /**

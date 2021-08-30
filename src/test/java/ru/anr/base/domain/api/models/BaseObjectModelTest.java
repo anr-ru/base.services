@@ -32,20 +32,19 @@ public class BaseObjectModelTest extends BaseTestCase {
 
         BaseObjectModel m = new BaseObjectModel(o);
 
-        Assertions.assertEquals(o.getId(), m.getId());
-        Assertions.assertEquals(o.getState(), m.getState());
-        Assertions.assertEquals(o.getCreated(), m.getCreated());
-        Assertions.assertEquals(o.getModified(), m.getModified());
-        Assertions.assertEquals(o.getStateChanged(), m.getStateChanged());
+        Assertions.assertEquals(o.getId(), m.id);
+        Assertions.assertEquals(o.getState(), m.state);
+        Assertions.assertEquals(o.getCreated(), m.created);
+        Assertions.assertEquals(o.getModified(), m.modified);
+        Assertions.assertEquals(o.getStateChanged(), m.stateChanged);
 
         BaseObjectModel mx = new BaseObjectModel(m);
 
-        Assertions.assertEquals(m.getId(), mx.getId());
-        Assertions.assertEquals(m.getState(), mx.getState());
-        Assertions.assertEquals(m.getCreated(), mx.getCreated());
-        Assertions.assertEquals(m.getModified(), mx.getModified());
-        Assertions.assertEquals(m.getStateChanged(), mx.getStateChanged());
-
+        Assertions.assertEquals(m.id, mx.id);
+        Assertions.assertEquals(m.state, mx.state);
+        Assertions.assertEquals(m.created, mx.created);
+        Assertions.assertEquals(m.modified, mx.modified);
+        Assertions.assertEquals(m.stateChanged, mx.stateChanged);
     }
 
     /**
@@ -56,20 +55,18 @@ public class BaseObjectModelTest extends BaseTestCase {
 
         BaseObjectModel m = new BaseObjectModel((BaseEntity) null);
 
-        Assertions.assertNull(m.getId());
-        Assertions.assertNull(m.getState());
-        Assertions.assertNull(m.getCreated());
-        Assertions.assertNull(m.getModified());
-        Assertions.assertNull(m.getStateChanged());
+        Assertions.assertNull(m.id);
+        Assertions.assertNull(m.state);
+        Assertions.assertNull(m.created);
+        Assertions.assertNull(m.modified);
+        Assertions.assertNull(m.stateChanged);
 
         m = new BaseObjectModel((BaseObjectModel) null);
 
-        Assertions.assertNull(m.getId());
-        Assertions.assertNull(m.getState());
-        Assertions.assertNull(m.getCreated());
-        Assertions.assertNull(m.getModified());
-        Assertions.assertNull(m.getStateChanged());
-
+        Assertions.assertNull(m.id);
+        Assertions.assertNull(m.state);
+        Assertions.assertNull(m.created);
+        Assertions.assertNull(m.modified);
+        Assertions.assertNull(m.stateChanged);
     }
-
 }

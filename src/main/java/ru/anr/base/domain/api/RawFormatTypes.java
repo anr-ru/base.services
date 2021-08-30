@@ -25,7 +25,7 @@ package ru.anr.base.domain.api;
 public enum RawFormatTypes {
 
     /**
-     * Json representation (default)
+     * JSON representation (default)
      */
     JSON,
     /**
@@ -33,7 +33,7 @@ public enum RawFormatTypes {
      */
     XML,
     /**
-     * Means we should not serializer the result and process it like a string
+     * RAW means we should not serialize the result and process it like a string
      */
     RAW;
 }

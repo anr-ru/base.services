@@ -15,7 +15,6 @@
  */
 package ru.anr.base.domain.api;
 
-import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.slf4j.Logger;
@@ -34,8 +33,10 @@ import java.util.Map;
 import java.util.Objects;
 
 /**
- * A representation of a general API command (based on the RESTful API
- * approach).
+ * A general API command (based on the RESTful API approach).
+ * It supports several types of action: GET, PUT, PATCH, DELETE, POST and can parse
+ * arguments given as list, sorted fields and may recognize specific fields like page/per_page,
+ * query (q) or a fixed list of fields to be returned.
  *
  * @author Alexey Romanchuk
  * @created Nov 10, 2014
@@ -59,17 +60,17 @@ public class APICommand extends BaseParent implements Serializable {
     private MethodTypes type = MethodTypes.Get;
 
     /**
-     * API version marker ('v1' for example)
+     * the API version marker ('v1' for example)
      */
     private String version;
 
     /**
-     * Unique identifier for API Command
+     * The unique identifier for API Command
      */
     private String commandId;
 
     /**
-     * Command parameters in the key/value format
+     * Command parameters (including internally created) in the key/value format.
      */
     private Map<String, Object> contexts = toMap();
 
@@ -139,7 +140,7 @@ public class APICommand extends BaseParent implements Serializable {
     }
 
     /**
-     * Adds raw request data (not parsed)
+     * Adds raw request data (not parsed yet)
      *
      * @param raw A raw string with the request model
      * @return This object
@@ -151,15 +152,15 @@ public class APICommand extends BaseParent implements Serializable {
     }
 
     /**
-     * Sets the type of operation according to the specified http method
+     * Recognized the type of operation according to the specified http method
      *
-     * @param method Method
+     * @param method the http method as a string
      * @return This
      */
     public APICommand method(String method) {
 
-        Objects.requireNonNull(method, "Method is null");
-        MethodTypes t = MethodTypes.Get;
+        Objects.requireNonNull(method, "API Method is null");
+        MethodTypes t;
 
         switch (method) {
             case "POST":
@@ -167,6 +168,9 @@ public class APICommand extends BaseParent implements Serializable {
                 break;
             case "PUT":
                 t = MethodTypes.Put;
+                break;
+            case "PATCH":
+                t = MethodTypes.Patch;
                 break;
             case "GET":
                 t = MethodTypes.Get;
@@ -177,7 +181,6 @@ public class APICommand extends BaseParent implements Serializable {
             default:
                 throw new UnsupportedOperationException(method);
         }
-
         setType(t);
         return this;
     }
@@ -195,10 +198,10 @@ public class APICommand extends BaseParent implements Serializable {
     }
 
     /**
-     * Parses predefined query parameters to set additional properties of the
+     * Parses url query parameters to set additional properties of the
      * command.
      *
-     * @param params A map of request parameters.
+     * @param params The map of request parameters.
      * @return This object
      */
     public APICommand params(Map<String, ?> params) {
@@ -211,37 +214,37 @@ public class APICommand extends BaseParent implements Serializable {
         // The number of the current page in multi-paged results
         Object v = copy.get("page");
         if (v != null) {
-            request.setPage(parse(v.toString(), Integer.class));
+            request.page = parse(v.toString(), Integer.class);
             copy.remove("page");
         }
 
         // The number of items per page
         v = copy.get("per_page");
         if (v != null) {
-            request.setPerPage(parse(v.toString(), Integer.class));
+            request.perPage = parse(v.toString(), Integer.class);
             copy.remove("per_page");
         }
 
         // A list of queried fields
         v = copy.get("fields");
         if (v != null) {
-            request.setFields(parseList(v.toString()));
+            request.fields = parseList(v.toString());
             copy.remove("fields");
         }
 
-        // the query field
+        // the query parameter
         v = copy.get("q");
         if (v != null) {
-            request.setSearch(v.toString());
+            request.search = v.toString();
             copy.remove("q");
         }
 
         // the sort field
         v = copy.get("sort");
         if (v != null) {
-            request.setSorted(parseSort(parseList(v.toString())));
+            request.sorted = parseSort(parseList(v.toString()));
             copy.remove("sort");
-            logger.trace("Parsed sorting: {}", request.getSorted());
+            logger.trace("Parsed sorting: {}", request.sorted);
         }
         /*
          * The rest of parameters is used depending on the context
@@ -251,16 +254,16 @@ public class APICommand extends BaseParent implements Serializable {
     }
 
     /**
-     * Parsing string fields with +/- markers to {@link SortModel}.
+     * Parses the sort fields with +/- markers to corresponding {@link SortModel}.
      *
-     * @param values A list of fields with expected prefixed
-     * @return A list of {@link SortModel} objects
+     * @param values The list of fields with expected prefixed +/-
+     * @return The resulted list of {@link SortModel} objects
      */
     private List<SortModel> parseSort(List<String> values) {
 
         List<SortModel> list = list();
         for (String v : values) {
-            // '+' is ignored
+            // '+' is ignored or can be absent
             if (v.charAt(0) == '+' || v.charAt(0) == ' ') {
                 list.add(new SortModel(v.substring(1), SortDirection.ASC));
             } else if (v.charAt(0) == '-') {
@@ -271,26 +274,29 @@ public class APICommand extends BaseParent implements Serializable {
     }
 
     /**
-     * Parsing values separated by comma (',').
+     * Parses values separated by comma (','). We recognize list fields by the ',' command
+     * inside. If just only one value of list is provided it must always have the comma in the end.
+     *
+     * <pre>
+     *     Examples:
+     *     states=New,Pending,Processed
+     *
+     *     // One value of list
+     *     states=New,
+     * </pre>
      *
      * @param s A string with values
      * @return Parsed values
      */
     private List<String> parseList(String s) {
-
-        List<String> list = null;
         String[] array = StringUtils.split(s, ",");
-
-        if (!ArrayUtils.isEmpty(array)) {
-            list = list(array);
-        }
-        return list;
+        return nullSafe(array, BaseParent::list).orElse(list());
     }
 
     /**
      * Parses the given parameter as the local date value
      *
-     * @param name The name of the parameyet
+     * @param name The name of the parameter.
      * @param def  The default date value if nothing parsed
      * @return The date
      */
@@ -314,10 +320,10 @@ public class APICommand extends BaseParent implements Serializable {
         RequestModel rq = this.getRequest();
         Map<String, SortModel.SortDirection> results = toMap();
 
-        if (rq.getSorted() != null) {
+        if (rq.sorted != null) {
             list(fields).forEach(field -> {
 
-                SortModel sm = first(filter(rq.getSorted(), f -> field.equals(f.getField())));
+                SortModel sm = first(filter(rq.sorted, f -> field.equals(f.getField())));
                 SortDirection direction = def;
 
                 if (sm != null) {
@@ -347,7 +353,10 @@ public class APICommand extends BaseParent implements Serializable {
     @Override
     public String toString() {
 
-        return new ToStringBuilder(this).append("id", commandId).append("v", version).append("t", type).toString();
+        return new ToStringBuilder(this)
+                .append("id", commandId)
+                .append("v", version)
+                .append("t", type).toString();
     }
 
     /**

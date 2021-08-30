@@ -1,10 +1,9 @@
 /**
- * 
+ *
  */
 package ru.anr.base.samples.services.api;
 
 import org.springframework.stereotype.Component;
-
 import ru.anr.base.domain.api.APICommand;
 import ru.anr.base.domain.api.models.PingModel;
 import ru.anr.base.domain.api.models.ResponseModel;
@@ -30,8 +29,8 @@ public class PingV2ApiCommand extends PingV1ApiCommand {
     public ResponseModel get(APICommand cmd) {
 
         ResponseModel r = new ResponseModel();
-        r.setCode(-1);
-        r.setMessage(((PingModel) cmd.getRequest()).getValue() + " " + cmd.getType());
+        r.code = -1;
+        r.message = ((PingModel) cmd.getRequest()).value + " " + cmd.getType();
 
         return r;
     }

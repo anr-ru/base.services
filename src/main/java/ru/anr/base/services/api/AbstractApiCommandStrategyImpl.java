@@ -104,10 +104,10 @@ public class AbstractApiCommandStrategyImpl extends BaseDataAwareServiceImpl imp
      */
     protected Pageable safePageable(APICommand cmd, Direction direction, String... properties) {
 
-        logger.trace("Page parameters: {}:{}", cmd.getRequest().getPage(), cmd.getRequest().getPerPage());
+        logger.trace("Page parameters: {}:{}", cmd.getRequest().page, cmd.getRequest().perPage);
 
-        int page = Optional.ofNullable(cmd.getRequest().getPage()).orElse(0);
-        int perPage = Optional.ofNullable(cmd.getRequest().getPerPage()).orElse(10);
+        int page = Optional.ofNullable(cmd.getRequest().page).orElse(0);
+        int perPage = Optional.ofNullable(cmd.getRequest().perPage).orElse(10);
         if (page < 0) {
             page = 0;
         }

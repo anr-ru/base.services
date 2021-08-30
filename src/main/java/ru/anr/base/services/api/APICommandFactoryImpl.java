@@ -232,7 +232,7 @@ public class APICommandFactoryImpl extends BaseServiceImpl implements APICommand
 
         } else if (reason instanceof ConstraintViolationException) {
 
-            code = APIException.ERROR_VALIDATION;
+            code = APIException.ERROR_CLIENT;
         }
 
         return code;
@@ -247,33 +247,33 @@ public class APICommandFactoryImpl extends BaseServiceImpl implements APICommand
         Throwable reason = new ApplicationException(ex).getMostSpecificCause();
 
         int code = resolveErrorCode(reason);
-        m.setCode(code);
+        m.code = code;
 
         if (reason instanceof ApplicationException) {
 
             ApplicationException e = (ApplicationException) reason;
             if (e.getErrorId() != null) {
-                m.setErrorId(e.getErrorId());
+                m.errorId = e.getErrorId();
             }
         }
 
         if (reason instanceof APIException) {
 
             // May be the integer code defined
-            String msg = (code != APIException.ERROR_VALIDATION) ? text(errorCodePrefix + code) : null;
+            String msg = (code != APIException.ERROR_CLIENT) ? text(errorCodePrefix + code) : null;
             if (msg == null || msg.startsWith("[xxx")) {
                 String reasonMsg = reason.getMessage();
-                if (notEmpty(m.getErrorId()) && m.getErrorId().startsWith("files")) {
+                if (notEmpty(m.errorId) && m.errorId.startsWith("files")) {
                     reasonMsg = encodeToUTF8(reasonMsg);
                 }
-                m.setMessage(reasonMsg);
+                m.message = reasonMsg;
             } else {
-                m.setMessage(msg);
+                m.message = msg;
             }
         } else if (reason instanceof ConstraintViolationException) {
-            m.setMessage(getExceptionMessage(reason));
+            m.message = getExceptionMessage(reason);
         } else {
-            m.setMessage(reason.getMessage());
+            m.message = reason.getMessage();
         }
 
         cmd.setResponse(m);
@@ -349,11 +349,11 @@ public class APICommandFactoryImpl extends BaseServiceImpl implements APICommand
                         /*
                          * This means - we have parsed previously some query params
                          */
-                        m.setFields(cmd.getRequest().getFields());
-                        m.setPage(cmd.getRequest().getPage());
-                        m.setPerPage(cmd.getRequest().getPerPage());
-                        m.setSearch(cmd.getRequest().getSearch());
-                        m.setSorted(cmd.getRequest().getSorted());
+                        m.fields = cmd.getRequest().fields;
+                        m.page = cmd.getRequest().page;
+                        m.perPage = cmd.getRequest().perPage;
+                        m.search = cmd.getRequest().search;
+                        m.sorted = cmd.getRequest().sorted;
                     } else {
                         logger.debug("No RequestModel was detected for {}", cmd);
                     }
@@ -393,8 +393,8 @@ public class APICommandFactoryImpl extends BaseServiceImpl implements APICommand
             cmd.setResponseFormat(RawFormatTypes.JSON); // default
         }
 
-        if (m instanceof ResponseModel && ((ResponseModel) m).getCode() == null) {
-            ((ResponseModel) m).setCode(0);
+        if (m instanceof ResponseModel && ((ResponseModel) m).code == null) {
+            ((ResponseModel) m).code = 0;
         }
 
         Serializer s = getSerializer(cmd.getResponseFormat());

@@ -44,11 +44,11 @@ public class ApiSerializationTest extends BaseLocalServiceTestCase {
     public void testRequest() {
 
         RequestModel m = new RequestModel();
-        m.setPage(5);
-        m.setFields(list("id,name"));
-        m.setPerPage(3);
-        m.setSearch("query");
-        m.setSorted(list(new SortModel("name", SortDirection.ASC)));
+        m.page = 5;
+        m.fields = list("id,name");
+        m.perPage = 3;
+        m.search = "query";
+        m.sorted = list(new SortModel("name", SortDirection.ASC));
 
         String value = json.toStr(m);
         logger.info("JSON: {}", value);
@@ -59,9 +59,9 @@ public class ApiSerializationTest extends BaseLocalServiceTestCase {
         Assertions.assertEquals(m, mx);
 
         // These fields are transient
-        Assertions.assertNull(mx.getFields());
-        Assertions.assertNull(mx.getSorted());
-        Assertions.assertNull(mx.getSearch());
+        Assertions.assertNull(mx.fields);
+        Assertions.assertNull(mx.sorted);
+        Assertions.assertNull(mx.search);
 
         value = xml.toStr(m);
         logger.info("XML: {}", value);
@@ -79,9 +79,9 @@ public class ApiSerializationTest extends BaseLocalServiceTestCase {
     public void testResponse() {
 
         ResponseModel m = new ResponseModel();
-        m.setCode(5);
-        m.setPage(2);
-        m.setPerPage(1);
+        m.code = 5;
+        m.page = 2;
+        m.perPage = 1;
 
         String value = json.toStr(m);
         logger.info("JSON: {}", value);
@@ -112,22 +112,22 @@ public class ApiSerializationTest extends BaseLocalServiceTestCase {
     public void testListSerialization() {
 
         ResponseModel e1 = new ResponseModel();
-        e1.setCode(1);
+        e1.code = 1;
 
         ResponseModel e2 = new ResponseModel();
-        e2.setCode(2);
+        e2.code = 2;
 
         List<ResponseModel> errors = list(e1, e2);
         Assertions.assertEquals("[{\"code\":1},{\"code\":2}]", json.toStr(errors));
 
-        TypeReference<List<ResponseModel>> ref = new TypeReference<List<ResponseModel>>() {
+        TypeReference<List<ResponseModel>> ref = new TypeReference<>() {
         };
 
         String js = "[{\"code\":1},{\"code\":2}]";
 
         errors = json.fromStr(js, ref);
-        Assertions.assertEquals(Integer.valueOf(1), errors.get(0).getCode());
-        Assertions.assertEquals(Integer.valueOf(2), errors.get(1).getCode());
+        Assertions.assertEquals(1, errors.get(0).code);
+        Assertions.assertEquals(2, errors.get(1).code);
     }
 
     /**
@@ -137,10 +137,10 @@ public class ApiSerializationTest extends BaseLocalServiceTestCase {
     public void testErrorModel() {
 
         ResponseModel m = new ResponseModel();
-        m.setCode(64);
+        m.code = 64;
 
-        m.setMessage("Ошибка");
-        m.setDescription("Description of Ошибка");
+        m.message = "Ошибка";
+        m.description = "Description of Ошибка";
 
         String value = json.toStr(m);
         logger.info("JSON: {}", value);
