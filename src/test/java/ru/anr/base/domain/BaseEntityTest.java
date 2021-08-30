@@ -2,8 +2,8 @@ package ru.anr.base.domain;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.springframework.test.context.ContextConfiguration;
-import ru.anr.base.tests.BaseTestCase;
+import ru.anr.base.dao.AbstractDaoTestCase;
+import ru.anr.base.samples.domain.Samples;
 
 import java.util.Set;
 
@@ -13,8 +13,7 @@ import java.util.Set;
  * @author Alexey Romanchuk
  * @created Nov 5, 2014
  */
-@ContextConfiguration(classes = BaseEntityTest.class)
-public class BaseEntityTest extends BaseTestCase {
+public class BaseEntityTest extends AbstractDaoTestCase {
 
     /**
      * Equals tests: equals uses guid until id is not set
@@ -45,6 +44,18 @@ public class BaseEntityTest extends BaseTestCase {
 
         b.setId(1L);
         Assertions.assertEquals(a, b);
+    }
+
+    @Test
+    public void saveEntities() {
+        Samples e = dao.save(new Samples());
+        Assertions.assertNotNull(e.getId());
+        Assertions.assertNotNull(e.getCreated());
+        Assertions.assertNull(e.getModified());
+
+        e.setName("XXX");
+        e = dao.saveAndFlush(e);
+        Assertions.assertNotNull(e.getModified());
     }
 
     /**
@@ -109,8 +120,13 @@ public class BaseEntityTest extends BaseTestCase {
         Assertions.assertTrue(e.hasState(BasicStates.Active));
         Assertions.assertTrue(e.hasState(BasicStates.Active, BasicStates.Inactive, BasicStates.New));
         Assertions.assertTrue(e.hasState(BasicStates.Active, BasicStates.New));
+        // String version
+        Assertions.assertTrue(e.hasState(BasicStates.Active.name(), BasicStates.New.name()));
 
         Assertions.assertFalse(e.hasState(BasicStates.Inactive, BasicStates.New));
         Assertions.assertFalse(e.hasState(BasicStates.New));
+
+        e.setStateInfo(guid());
+        Assertions.assertNotNull(e.getStateInfo());
     }
 }

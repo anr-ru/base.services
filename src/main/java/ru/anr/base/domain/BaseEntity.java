@@ -33,12 +33,9 @@ import java.util.GregorianCalendar;
 import java.util.UUID;
 
 /**
- * A parent for all entities. It include a definition of the ID column,
- * {@link #equals(Object)} and {@link #hashCode()} operations.
- * <p>
- * <p>
- * Added some basic database columns to avoid choosing and changing valid parent
- * entity.
+ * A parent for all entities. It includes a definition of the ID column, an optimistic version column
+ * {@link #equals(Object)} and {@link #hashCode()} operations and some useful fields that can
+ * by applicable for almost all entities.
  *
  * @author Alexey Romanchuk
  * @created Nov 5, 2014
@@ -97,9 +94,7 @@ public class BaseEntity extends BaseParent implements Serializable, Accessible {
      */
     @PrePersist
     public void prePersist() {
-
         setCreated(GregorianCalendar.from(now()));
-
     }
 
     /**
@@ -107,7 +102,6 @@ public class BaseEntity extends BaseParent implements Serializable, Accessible {
      */
     @PreUpdate
     public void preUpdate() {
-
         setModified(GregorianCalendar.from(now()));
     }
 
@@ -118,15 +112,15 @@ public class BaseEntity extends BaseParent implements Serializable, Accessible {
      * @return true if states are equals
      */
     public boolean hasState(String s) {
-
         return safeEquals(s, getState());
     }
 
     /**
-     * Changing the state of this object
+     * Changes the state of this object. If the object already has this state,
+     * the state is not changed more.
      *
-     * @param newState A new state
-     * @return Old state (being changed)
+     * @param newState The new state to set
+     * @return The previous state
      */
     public String changeState(String newState) {
 
@@ -140,24 +134,26 @@ public class BaseEntity extends BaseParent implements Serializable, Accessible {
     }
 
     /**
-     * A state diagram of the object
+     * The state diagram of the object. It defined the transition directions between different
+     * states allowing to control the state flow.
      */
     private final MultiValueMap<String, String> transitions = new LinkedMultiValueMap<>();
 
     /**
      * Puts a state transition to the map. Just a convenient short-cut method.
      *
-     * @param key    A key
-     * @param states A list of target states
+     * @param key    The 'from' state code
+     * @param states The list of possible target states.
      * @param <S>    Type of the states enumeration
      */
-    protected <S extends Enum<S>> void putStates(S key, @SuppressWarnings("unchecked") S... states) {
+    @SafeVarargs
+    protected final <S extends Enum<S>> void putStates(S key, S... states) {
+        transitions.put(key.name(), list(list(states).stream().map(Enum::name)));
 
-        transitions.put(key.name(), list(list(states).stream().map(s -> s.name())));
     }
 
     /**
-     * Changing the state of the object. Enumeration-based version
+     * Changes the state of the object. A enumeration-based version
      *
      * @param newState A new state
      * @param <S>      A type of state enumeration
@@ -181,8 +177,8 @@ public class BaseEntity extends BaseParent implements Serializable, Accessible {
      * @param <S>    Type of the state enumeration
      * @return true, if one of the states is the current state
      */
-    public <S extends Enum<S>> boolean hasState(@SuppressWarnings("unchecked") S... states) {
-
+    @SafeVarargs
+    public final <S extends Enum<S>> boolean hasState(S... states) {
         return list(states).stream().anyMatch(s -> safeEquals(getState(), s.name()));
     }
 
@@ -193,18 +189,16 @@ public class BaseEntity extends BaseParent implements Serializable, Accessible {
      * @return true, if one of the states is the current state
      */
     public boolean hasState(String... states) {
-
         return list(states).stream().anyMatch(s -> safeEquals(getState(), s));
     }
 
     /**
-     * Returns a map with available transitions
+     * Returns the map with all available transitions
      *
      * @return The map
      */
     @Transient
     public MultiValueMap<String, String> getTransitionsMap() {
-
         return transitions; // Empty by default
     }
 
@@ -333,12 +327,12 @@ public class BaseEntity extends BaseParent implements Serializable, Accessible {
     // /////////////////////////////////////////////////////////////////////////
 
     /**
-     * Getting an effective identifier
+     * Returns the effective ID. We use some random GUID before the object stored. This allows to distinct
+     * new unsaved objects.
      *
      * @return ID or GUID if ID is null
      */
     protected final Object internalId() {
-
         return (getId() == null) ? guid : getId();
     }
 
@@ -378,7 +372,8 @@ public class BaseEntity extends BaseParent implements Serializable, Accessible {
     @Override
     public String toString() {
 
-        ToStringBuilder b = new ToStringBuilder(this, ToStringStyle.DEFAULT_STYLE).append("id", internalId());
+        ToStringBuilder b = new ToStringBuilder(this, ToStringStyle.DEFAULT_STYLE)
+                .append("id", internalId());
 
         if (getVersion() != null) {
             b.append("v", getVersion());
