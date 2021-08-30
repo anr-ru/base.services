@@ -1,6 +1,3 @@
-/**
- *
- */
 package ru.anr.base.dao;
 
 import org.junit.jupiter.api.Assertions;
@@ -19,10 +16,8 @@ import java.util.List;
 /**
  * Some simple tests
  *
- *
  * @author Alexey Romanchuk
  * @created Oct 29, 2014
- *
  */
 public class DaoTest extends AbstractDaoTestCase {
 
@@ -205,7 +200,7 @@ public class DaoTest extends AbstractDaoTestCase {
         s.setParent(p);
         s = mydao.save(s);
 
-        Samples x = mydao.getOne(s.getId());
+        Samples x = mydao.getById(s.getId());
         // TODO: can't create a HibernateProxy
         Assertions.assertEquals(Samples.class, entityClass(x.getParent()));
     }
@@ -222,10 +217,9 @@ public class DaoTest extends AbstractDaoTestCase {
         // Update it
         Assertions.assertEquals(1, mydao.execute("update Samples set name = ?1", "zzz"));
 
-        Samples x = mydao.getOne(s.getId());
+        Samples x = mydao.getById(s.getId());
         mydao.refresh(x);
 
         Assertions.assertEquals("zzz", x.getName());
     }
-
 }

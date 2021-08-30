@@ -1,9 +1,10 @@
-package ru.anr.base.dao;
+package ru.anr.base.dao.config.repository;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import ru.anr.base.dao.AbstractDaoTestCase;
 import ru.anr.base.samples.domain.Samples;
 
 import java.util.List;

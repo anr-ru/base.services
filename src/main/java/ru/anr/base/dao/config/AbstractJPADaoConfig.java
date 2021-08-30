@@ -88,6 +88,7 @@ public abstract class AbstractJPADaoConfig extends AbstractDaoConfig {
 
         LocalContainerEntityManagerFactoryBean factory = new LocalContainerEntityManagerFactoryBean();
         factory.setJpaVendorAdapter(vendorAdapter);
+        // See comments in AbstractDaoConfig#annotationDrivenTransactionManager
         factory.setDataSource(dataSource());
         factory.setPersistenceXmlLocation(persistenceFileLocation);
         factory.afterPropertiesSet();
@@ -104,6 +105,7 @@ public abstract class AbstractJPADaoConfig extends AbstractDaoConfig {
     public PlatformTransactionManager transactionManager() {
 
         JpaTransactionManager txManager = new JpaTransactionManager();
+        // See comments in AbstractDaoConfig#annotationDrivenTransactionManager
         txManager.setEntityManagerFactory(entityManagerFactory());
         txManager.setDataSource(dataSource());
         return txManager;

@@ -10,8 +10,8 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 import ru.anr.base.ApplicationException;
-import ru.anr.base.dao.BaseRepositoryImpl;
 import ru.anr.base.dao.EntityUtils;
+import ru.anr.base.dao.config.repository.BaseRepositoryImpl;
 import ru.anr.base.dao.repository.BaseRepository;
 import ru.anr.base.domain.BaseEntity;
 

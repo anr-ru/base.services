@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package ru.anr.base.dao;
+package ru.anr.base.dao.config.repository;
 
 import org.hibernate.transform.AliasToEntityMapResultTransformer;
 import org.slf4j.Logger;
@@ -68,7 +68,6 @@ public class BaseRepositoryImpl<T extends BaseEntity> extends SimpleJpaRepositor
      */
     @Override
     public void refresh(T object) {
-
         entityManager.refresh(object);
     }
 
@@ -94,7 +93,6 @@ public class BaseRepositoryImpl<T extends BaseEntity> extends SimpleJpaRepositor
     @Override
     @SuppressWarnings("unchecked")
     public <S extends BaseEntity> S find(Class<?> entityClass, Long id) {
-
         return (S) entityManager.find(entityClass, id);
     }
 
@@ -109,6 +107,7 @@ public class BaseRepositoryImpl<T extends BaseEntity> extends SimpleJpaRepositor
      */
     @Override
     public <S extends BaseEntity> List<S> filter(Page<S> page) {
+        // Disclaimer: the original list does not allow any modifications
         return BaseParent.list(page.getContent());
     }
 

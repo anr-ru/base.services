@@ -13,13 +13,9 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package ru.anr.base.dao;
+package ru.anr.base.dao.config.repository;
 
-import org.springframework.data.jpa.repository.support.JpaRepositoryFactory;
 import org.springframework.data.jpa.repository.support.JpaRepositoryFactoryBean;
-import org.springframework.data.jpa.repository.support.JpaRepositoryImplementation;
-import org.springframework.data.repository.core.RepositoryInformation;
-import org.springframework.data.repository.core.RepositoryMetadata;
 import org.springframework.data.repository.core.support.RepositoryFactorySupport;
 import ru.anr.base.dao.repository.BaseRepository;
 import ru.anr.base.domain.BaseEntity;
@@ -45,7 +41,6 @@ public class BaseRepositoryFactoryBean<T extends BaseEntity>
      * @param repositoryInterface must not be {@literal null}.
      */
     public BaseRepositoryFactoryBean(Class<? extends BaseRepository<T>> repositoryInterface) {
-
         super(repositoryInterface);
     }
 
@@ -54,41 +49,6 @@ public class BaseRepositoryFactoryBean<T extends BaseEntity>
      */
     @Override
     protected RepositoryFactorySupport createRepositoryFactory(EntityManager entityManager) {
-
         return new InternalRepositoryFactory<T>(entityManager);
-    }
-
-    /**
-     * Repository factory
-     */
-    private static class InternalRepositoryFactory<T extends BaseEntity> extends JpaRepositoryFactory {
-
-        /**
-         * Constructor
-         *
-         * @param entityManager {@link EntityManager} from config
-         */
-        InternalRepositoryFactory(EntityManager entityManager) {
-            super(entityManager);
-        }
-
-        protected JpaRepositoryImplementation<?, ?> getTargetRepository(RepositoryInformation information,
-                                                                        EntityManager entityManager) {
-            @SuppressWarnings("unchecked")
-            Class<T> clazz = (Class<T>) information.getDomainType();
-            return new BaseRepositoryImpl<>(clazz, entityManager);
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        protected Class<?> getRepositoryBaseClass(RepositoryMetadata metadata) {
-
-            // The RepositoryMetadata can be safely ignored, it is used by the
-            // JpaRepositoryFactory
-            // to check for QueryDslJpaRepository's which is out of scope.
-            return BaseRepository.class;
-        }
     }
 }

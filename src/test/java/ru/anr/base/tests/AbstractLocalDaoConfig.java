@@ -6,8 +6,8 @@ package ru.anr.base.tests;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import ru.anr.base.ApplicationException;
-import ru.anr.base.dao.BaseRepositoryFactoryBean;
 import ru.anr.base.dao.config.AbstractJPADaoConfig;
+import ru.anr.base.dao.config.repository.BaseRepositoryFactoryBean;
 
 import javax.sql.DataSource;
 import java.beans.PropertyVetoException;

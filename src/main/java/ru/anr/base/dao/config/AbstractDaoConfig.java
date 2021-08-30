@@ -54,6 +54,8 @@ public abstract class AbstractDaoConfig extends BaseSpringParent implements Tran
     @DependsOn({"transactionManager"})
     public PlatformTransactionManager annotationDrivenTransactionManager() {
 
+        // Can't use the injection here as we are unable to break the original interface.
+        // Also, @Bean(...) by default, returns a bean proxy, not the real instance.
         return transactionManager();
     }
 

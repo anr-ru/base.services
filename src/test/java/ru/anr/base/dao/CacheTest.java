@@ -76,7 +76,7 @@ public class CacheTest extends AbstractDaoTestCase {
 
         Samples s = new Samples();
         s.setName("yyy");
-        s = mydao.saveAndFlush(s);
+        mydao.saveAndFlush(s);
 
         List<Samples> rs = mydao.findSamples("xxx");
         Assertions.assertNotNull(rs);
