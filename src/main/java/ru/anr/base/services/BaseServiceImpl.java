@@ -1,12 +1,12 @@
 /*
  * Copyright 2014 the original author or authors.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -41,6 +41,7 @@ import ru.anr.base.BaseSpringParent;
 import ru.anr.base.dao.BaseRepositoryImpl;
 import ru.anr.base.domain.BaseEntity;
 import ru.anr.base.domain.api.APIException;
+import ru.anr.base.domain.api.models.BaseObjectModel;
 import ru.anr.base.services.pattern.Strategy;
 import ru.anr.base.services.pattern.StrategyFactory;
 import ru.anr.base.services.pattern.StrategyFactoryImpl;
@@ -50,11 +51,9 @@ import ru.anr.base.services.validation.ValidationUtils;
 
 /**
  * Implementation of Base Service.
- * 
- * 
+ *
  * @author Alexey Romanchuk
  * @created Oct 29, 2014
- * 
  */
 public class BaseServiceImpl extends BaseSpringParent implements BaseService {
 
@@ -145,13 +144,11 @@ public class BaseServiceImpl extends BaseSpringParent implements BaseService {
      * A point of extension of the current service with sort of plug-ins.
      * Delegates an additional processing to some strategies defined for the
      * service with the 'extensions' properties.
-     * 
-     * @param object
-     *            An object to process
-     * @param params
-     *            Additional parameters
+     *
+     * @param object An object to process
+     * @param params Additional parameters
      * @return A list including resulted objects if they were during the
-     *         processing.
+     * processing.
      */
     protected List<Object> processExtentions(Object object, Object... params) {
 
@@ -166,7 +163,7 @@ public class BaseServiceImpl extends BaseSpringParent implements BaseService {
     /**
      * Getting the validator instance if configured (requires
      * {@link ru.anr.base.services.validation.ValidationConfig} to be loaded)
-     * 
+     *
      * @return {@link Validator}
      */
     protected Validator validator() {
@@ -181,11 +178,9 @@ public class BaseServiceImpl extends BaseSpringParent implements BaseService {
 
     /**
      * Throws an exception with specified message taken from resources
-     * 
-     * @param msgCode
-     *            A code
-     * @param args
-     *            Message arguments
+     *
+     * @param msgCode A code
+     * @param args    Message arguments
      */
     protected void reject(String msgCode, Object... args) {
 
@@ -196,12 +191,9 @@ public class BaseServiceImpl extends BaseSpringParent implements BaseService {
     /**
      * Throws an exception if specified validator contains some violations,
      * joining all error messages
-     * 
-     * @param violations
-     *            A collection with violations
-     * 
-     * @param <S>
-     *            Type of the object to validate
+     *
+     * @param violations A collection with violations
+     * @param <S>        Type of the object to validate
      */
     protected <S> void rejectIfNeed(Set<ConstraintViolation<? extends S>> violations) {
 
@@ -212,11 +204,9 @@ public class BaseServiceImpl extends BaseSpringParent implements BaseService {
 
     /**
      * Generates {@link APIException}
-     * 
-     * @param id
-     *            The identifier to use
-     * @param params
-     *            The message parameters
+     *
+     * @param id     The identifier to use
+     * @param params The message parameters
      */
     protected void rejectAPI(String id, Object... params) {
 
@@ -225,13 +215,10 @@ public class BaseServiceImpl extends BaseSpringParent implements BaseService {
 
     /**
      * Checks the given value is not null
-     * 
-     * @param value
-     *            A value to check
-     * @param errorId
-     *            A message for an exception to throw
-     * @param params
-     *            Parameters of the error message
+     *
+     * @param value   A value to check
+     * @param errorId A message for an exception to throw
+     * @param params  Parameters of the error message
      */
     protected void checkNotNull(Object value, String errorId, Object... params) {
 
@@ -243,11 +230,9 @@ public class BaseServiceImpl extends BaseSpringParent implements BaseService {
     /**
      * Checks the given value is not null and throws an exception with the given
      * code.
-     * 
-     * @param value
-     *            The value to check
-     * @param paramId
-     *            The name of the parameter that represents the value
+     *
+     * @param value   The value to check
+     * @param paramId The name of the parameter that represents the value
      */
     protected void checkParamNotNull(Object value, String paramId) {
 
@@ -257,13 +242,10 @@ public class BaseServiceImpl extends BaseSpringParent implements BaseService {
     /**
      * Checks whether the parameter is wrong. It supposed to use some standard
      * message ID to avoid to much parameters message writing.
-     * 
-     * @param condition
-     *            The condition to check
-     * @param paramId
-     *            The parameter ID
-     * @param value
-     *            The value of the parameter which is wrong
+     *
+     * @param condition The condition to check
+     * @param paramId   The parameter ID
+     * @param value     The value of the parameter which is wrong
      */
     protected void checkParamWrong(boolean condition, String paramId, Object value) {
 
@@ -272,15 +254,11 @@ public class BaseServiceImpl extends BaseSpringParent implements BaseService {
 
     /**
      * Checks the given value is not null
-     * 
-     * @param value
-     *            A value to check
-     * @param pattern
-     *            pattern to check
-     * @param errorId
-     *            A message for an exception to throw
-     * @param params
-     *            Parameters of the error message
+     *
+     * @param value   A value to check
+     * @param pattern pattern to check
+     * @param errorId A message for an exception to throw
+     * @param params  Parameters of the error message
      */
     protected void checkPattern(String value, String pattern, String errorId, Object... params) {
 
@@ -292,13 +270,10 @@ public class BaseServiceImpl extends BaseSpringParent implements BaseService {
     /**
      * Checks the given condition is true and throws an exception if it is
      * false.
-     * 
-     * @param condition
-     *            A condition to check
-     * @param errorId
-     *            A message identifier for an exception to throw
-     * @param params
-     *            Parameters of the error message
+     *
+     * @param condition A condition to check
+     * @param errorId   A message identifier for an exception to throw
+     * @param params    Parameters of the error message
      */
     protected void checkIsTrue(boolean condition, String errorId, Object... params) {
 
@@ -307,6 +282,11 @@ public class BaseServiceImpl extends BaseSpringParent implements BaseService {
         }
     }
 
+    protected boolean isDefined(BaseObjectModel object) {
+        return object != null && object.getId() != null;
+    }
+
+
     /**
      * Cached validators
      */
@@ -314,11 +294,9 @@ public class BaseServiceImpl extends BaseSpringParent implements BaseService {
 
     /**
      * Validates an object
-     * 
-     * @param o
-     *            The object to be validated
-     * @param <S>
-     *            The type of the object
+     *
+     * @param o   The object to be validated
+     * @param <S> The type of the object
      */
     protected <S extends Object> void validate(S o) {
 
@@ -339,12 +317,10 @@ public class BaseServiceImpl extends BaseSpringParent implements BaseService {
     /**
      * Extract all error message from {@link ConstraintViolation} as a single
      * string
-     * 
-     * @param violations
-     *            collection of violations
+     *
+     * @param violations collection of violations
+     * @param <S>        The class of the object
      * @return All errors as a comma-separated string
-     * @param <S>
-     *            The class of the object
      */
     protected <S> String getAllErrorsAsString(Set<ConstraintViolation<? extends S>> violations) {
 
@@ -392,9 +368,8 @@ public class BaseServiceImpl extends BaseSpringParent implements BaseService {
 
     /**
      * Loads extensions marked with the given annotation type
-     * 
-     * @param marker
-     *            The marker annotation
+     *
+     * @param marker The marker annotation
      * @return A list of extensions
      */
     protected List<Strategy<Object>> loadExtentions(Class<? extends Annotation> marker) {
@@ -424,8 +399,7 @@ public class BaseServiceImpl extends BaseSpringParent implements BaseService {
     // /////////////////////////////////////////////////////////////////////////
 
     /**
-     * @param extensions
-     *            the extensions to set
+     * @param extensions the extensions to set
      */
     public void setExtensions(List<Strategy<Object>> extensions) {
 
