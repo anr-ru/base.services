@@ -15,18 +15,6 @@
  */
 package ru.anr.base.services;
 
-import java.lang.annotation.Annotation;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
-import java.util.regex.Pattern;
-
-import javax.annotation.PostConstruct;
-import javax.validation.ConstraintViolation;
-import javax.validation.Validator;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +23,6 @@ import org.springframework.context.NoSuchMessageException;
 import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.util.MultiValueMap;
-
 import ru.anr.base.ApplicationException;
 import ru.anr.base.BaseSpringParent;
 import ru.anr.base.dao.BaseRepositoryImpl;
@@ -48,6 +35,13 @@ import ru.anr.base.services.pattern.StrategyFactoryImpl;
 import ru.anr.base.services.pattern.StrategyStatistic;
 import ru.anr.base.services.validation.ValidationFactory;
 import ru.anr.base.services.validation.ValidationUtils;
+
+import javax.annotation.PostConstruct;
+import javax.validation.ConstraintViolation;
+import javax.validation.Validator;
+import java.lang.annotation.Annotation;
+import java.util.*;
+import java.util.regex.Pattern;
 
 /**
  * Implementation of Base Service.
@@ -138,6 +132,9 @@ public class BaseServiceImpl extends BaseSpringParent implements BaseService {
     public void init() {
 
         extensionFactory = new StrategyFactoryImpl(extensions);
+        if (notEmpty(extensions)) {
+            logger.info("Initializing {} extensions for {}", extensions.size(), target(this));
+        }
     }
 
     /**
