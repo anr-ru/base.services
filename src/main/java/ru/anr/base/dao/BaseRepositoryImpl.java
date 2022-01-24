@@ -74,8 +74,7 @@ public class BaseRepositoryImpl<T extends BaseEntity> extends SimpleJpaRepositor
      * {@inheritDoc}
      */
     @Override
-    public void refresh(T object) {
-
+    public <S extends T> void refresh(S object) {
         entityManager.refresh(object);
     }
 
@@ -99,16 +98,23 @@ public class BaseRepositoryImpl<T extends BaseEntity> extends SimpleJpaRepositor
      * {@inheritDoc}
      */
     @Override
-    @SuppressWarnings("unchecked")
-    public <S extends BaseEntity> S find(Class<?> entityClass, Long id) {
-
-        return (S) entityManager.find(entityClass, id);
+    public <S extends T> S find(Class<S> entityClass, Long id) {
+        return entityManager.find(entityClass, id);
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public <S extends BaseEntity> S findSecured(Class<?> entityClass, Long id) {
-        return (S) entityManager.find(entityClass, id);
+    public <S extends T> S findSecured(Class<S> entityClass, Long id) {
+        return entityManager.find(entityClass, id);
+    }
+
+    @Override
+    public <S extends T> S saveSecured(S entity) {
+        return super.save(entity);
+    }
+
+    @Override
+    public <S extends T> void deleteSecured(S entity) {
+        super.delete(entity);
     }
 
     /**
@@ -118,10 +124,11 @@ public class BaseRepositoryImpl<T extends BaseEntity> extends SimpleJpaRepositor
      * @param entity Entity
      * @return Entity's class
      */
-    public static Class<?> entityClass(BaseEntity entity) {
+    @SuppressWarnings("unchecked")
+    public static <S> Class<S> entityClass(S entity) {
 
-        Object r = entity(entity);
-        return r.getClass();
+        S r = entity(entity);
+        return (Class<S>) r.getClass();
     }
 
     /**
@@ -133,7 +140,7 @@ public class BaseRepositoryImpl<T extends BaseEntity> extends SimpleJpaRepositor
      * @return Pure entity
      */
     @SuppressWarnings("unchecked")
-    public static <S extends BaseEntity> S entity(S entity) {
+    public static <S> S entity(S entity) {
 
         S r = entity;
 
