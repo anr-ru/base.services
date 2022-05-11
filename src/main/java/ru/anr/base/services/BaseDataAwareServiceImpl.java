@@ -15,6 +15,8 @@
  */
 package ru.anr.base.services;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
@@ -37,6 +39,8 @@ import java.util.List;
  */
 @Transactional(propagation = Propagation.REQUIRED, noRollbackFor = {NotFoundException.class})
 public class BaseDataAwareServiceImpl extends BaseServiceImpl implements BaseDataAwareService {
+
+    private static final Logger logger = LoggerFactory.getLogger(BaseDataAwareServiceImpl.class);
 
     /**
      * Base repository
@@ -82,6 +86,24 @@ public class BaseDataAwareServiceImpl extends BaseServiceImpl implements BaseDat
         Assert.notNull(dao, "BaseRepository DAO is not configured");
 
         return dao.filter(page);
+    }
+
+    /**
+     * This method reload the given entity to guarantee that we are under the current transaction. We need to use this method
+     * when we work under a new transaction (REQURIES_NEW).
+     *
+     * @param entity The entity to reload
+     * @param <T>    The type of the entity
+     * @return The reloaded object
+     */
+    public <T extends BaseEntity> T reload(T entity) {
+        T o = dao().find(EntityUtils.entityClass(entity), entity.getId());
+        if (o == null) {
+            logger.error("The object {} not found, probably, it was deleted", entity);
+            //throw new ApplicationException("Deleted object");
+            o = entity; // try to use the same object
+        }
+        return o;
     }
 
     // /////////////////////////////////////////////////////////////////////////

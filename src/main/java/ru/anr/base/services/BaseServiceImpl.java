@@ -22,12 +22,25 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.NoSuchMessageException;
 import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 import org.springframework.util.MultiValueMap;
 import ru.anr.base.ApplicationException;
 import ru.anr.base.BaseSpringParent;
 import ru.anr.base.dao.EntityUtils;
 import ru.anr.base.domain.BaseEntity;
+import ru.anr.base.domain.api.APICommand;
 import ru.anr.base.domain.api.APIException;
+import ru.anr.base.domain.api.MethodTypes;
+import ru.anr.base.domain.api.models.BaseObjectModel;
+import ru.anr.base.domain.api.models.RequestModel;
+import ru.anr.base.services.api.APICommandFactory;
+import ru.anr.base.services.api.ApiCommandStrategy;
+import ru.anr.base.services.api.ApiStrategy;
+import ru.anr.base.services.api.ApiUtils;
 import ru.anr.base.services.pattern.Strategy;
 import ru.anr.base.services.pattern.StrategyFactory;
 import ru.anr.base.services.pattern.StrategyFactoryImpl;
@@ -35,11 +48,13 @@ import ru.anr.base.services.pattern.StrategyStatistic;
 import ru.anr.base.services.validation.ValidationFactory;
 import ru.anr.base.services.validation.ValidationUtils;
 
-import javax.annotation.PostConstruct;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 import java.lang.annotation.Annotation;
+import java.math.BigDecimal;
 import java.util.*;
+import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.regex.Pattern;
 
 /**
@@ -115,43 +130,51 @@ public class BaseServiceImpl extends BaseSpringParent implements BaseService {
     }
 
     /**
-     * List of additional extensions of the service
+     * Factories that include some extensions.
      */
-    private List<Strategy<Object>> extensions = list();
+    private final Map<String, StrategyFactory> extensionFactories = toMap();
 
-    /**
-     * A factory which manages by extensions execution
-     */
-    private StrategyFactory extensionFactory;
 
-    /**
-     * Initialization
-     */
-    @PostConstruct
-    public void init() {
-
-        extensionFactory = new StrategyFactoryImpl(extensions);
+    protected void registerExtensions(String extId, List<Strategy<Object>> extensions) {
+        extensionFactories.put(extId, new StrategyFactoryImpl(extensions));
     }
 
     /**
-     * A point of extension of the current service with sort of plug-ins.
-     * Delegates an additional processing to some strategies defined for the
-     * service with the 'extensions' properties.
+     * A variant of the processExtensions(...) function for the 'default' extension.
+     * This function is for the compatibility.
      *
-     * @param object An object to process
+     * @param object The object to process
      * @param params Additional parameters
      * @return A list including resulted objects if they were during the
      * processing.
      */
-    protected List<Object> processExtentions(Object object, Object... params) {
-
-        StrategyStatistic stat = extensionFactory.process(object, params);
-
-        if (logger.isDebugEnabled()) {
-            logger.debug("List of applied strategies: {}", stat.getAppliedStrategies());
-        }
-        return stat.getResults();
+    protected List<Object> processExtensions(Object object, Object... params) {
+        return processExtensions("default", object, params);
     }
+
+    /**
+     * A point of extension of the current service with sort of plug-ins.
+     * Delegates additional processing to some strategies defined for the
+     * service. We support multiple of extensions.
+     *
+     * @param extId  The extension ID
+     * @param object The object to process
+     * @param params Additional parameters
+     * @return The list including resulted objects if they were during the
+     * processing.
+     */
+    protected List<Object> processExtensions(String extId, Object object, Object... params) {
+        StrategyStatistic stat = extensionFactories.containsKey(extId) ? extensionFactories.get(extId).process(object, params) : null;
+        if (stat == null) {
+            logger.warn("No extensions defined for '{}'" + extId);
+        } else {
+            if (logger.isDebugEnabled()) {
+                logger.debug("List of applied strategies: {}", stat.getAppliedStrategies());
+            }
+        }
+        return stat == null ? null : stat.getResults();
+    }
+
 
     /**
      * Getting the validator instance if configured (requires
@@ -278,7 +301,7 @@ public class BaseServiceImpl extends BaseSpringParent implements BaseService {
     /**
      * Cached validators
      */
-    private Map<Class<?>, StrategyFactory> validators = toMap();
+    private final Map<Class<?>, StrategyFactory> validators = toMap();
 
     /**
      * Validates an object
@@ -382,16 +405,118 @@ public class BaseServiceImpl extends BaseSpringParent implements BaseService {
         return TargetEnvironments.search(getProfiles());
     }
 
+    /**
+     * Executes the given callback with the use of the given temporal authentication token and restores the
+     * previous token after the completion of the execution.
+     *
+     * @param token    The token to apply
+     * @param callback The callback to use
+     * @param args     The arguments
+     * @param <S>      The type of the result
+     * @return The callback's result
+     */
+    protected <S> S runAs(Authentication token, Function<Object[], S> callback, Object... args) {
+        S result;
+        Authentication previousToken = SecurityContextHolder.getContext().getAuthentication();
+        try {
+            SecurityContextHolder.getContext().setAuthentication(token);
+            result = callback.apply(args);
+        } finally {
+            SecurityContextHolder.getContext().setAuthentication(previousToken);
+        }
+        return result;
+    }
+
+    /**
+     * The same as {@link #runAs(Authentication, Function, Object...)} but for the void return type.
+     *
+     * @param token    The token to apply
+     * @param callback The non-return callback
+     * @param args     The arguments to pass
+     */
+    protected void runAs(Authentication token, Consumer<Object[]> callback, Object... args) {
+        runAs(token, (Function<Object[], Void>) arguments -> {
+            callback.accept(arguments);
+            return null;
+        }, args);
+    }
+
+    protected APICommand api(Class<? extends ApiCommandStrategy> clazz, MethodTypes method, RequestModel request,
+                             Object... contexts) {
+
+        ApiStrategy a = ApiUtils.extract(clazz);
+        APICommandFactory factory = bean(APICommandFactory.class);
+
+        APICommand cmd = new APICommand(a.id(), a.version()).context(contexts);
+        RequestModel rq = nullSafeOp(request).orElse(new RequestModel());
+
+        cmd.setType(method);
+        cmd.setRequest(rq);
+
+        return factory.process(cmd);
+    }
+
+    protected void checkPositiveNumber(BigDecimal value) {
+        checkIsTrue(value.signum() > 0, "number.positive", value.toString());
+    }
+
+    protected void checkPositiveNumberOrZero(BigDecimal value) {
+        checkIsTrue(value.signum() >= 0, "number.positive", value.toString());
+    }
+
+    protected void checkPercentNumber(BigDecimal value) {
+        checkIsTrue(value.compareTo(d("1")) <= 0, "number.percent", value.toString());
+    }
+
+    public void checkLessThanScale(int scale, BigDecimal value) {
+        checkIsTrue(verifyLessThanScale(scale, value), "number.scale", value.toString(), scale);
+    }
+
+    /**
+     * 1. Checks whether the given value has precision less than is allowed by the
+     * given scale. For example, if a currency allows the minimum value to be
+     * 0.00001, then this function return true for all values which are less
+     * than 0.00001 (like 0.000005, 0.00000001, etc.).
+     *
+     * 2. Also, we check that after rounding the value is not changed, i.e. to avoid $0.023 or so.
+     */
+    public boolean verifyLessThanScale(int scale, BigDecimal value) {
+        if (value.signum() == 0) return true; // zero also works here
+
+        BigDecimal min = scale(BigDecimal.ONE.movePointLeft(scale), scale);
+        return min.compareTo(value) <= 0 && value.compareTo(scale(value, scale)) == 0;
+    }
+
+    /**
+     * A short-cut for a frequently used verification pattern.
+     *
+     * @param object The object to check
+     * @return true, if the object is not null and its ID is defined
+     */
+    protected boolean isDefined(BaseObjectModel object) {
+        return object != null && object.id != null;
+    }
+
+
+    @Override
+    public void markAsRollback() {
+        if (TransactionSynchronizationManager.isActualTransactionActive()) {
+            TransactionStatus status = TransactionAspectSupport.currentTransactionStatus();
+            status.setRollbackOnly();
+        }
+    }
+
     // /////////////////////////////////////////////////////////////////////////
     // /// getters/setters
     // /////////////////////////////////////////////////////////////////////////
 
     /**
+     * Set the default extensions
+     *
      * @param extensions the extensions to set
      */
     public void setExtensions(List<Strategy<Object>> extensions) {
-
-        this.extensions = extensions;
+        registerExtensions("default", extensions);
     }
 
 }
