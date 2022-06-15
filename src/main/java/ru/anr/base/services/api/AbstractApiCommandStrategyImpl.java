@@ -21,13 +21,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import ru.anr.base.domain.api.APICommand;
+import ru.anr.base.domain.api.models.RequestModel;
+import ru.anr.base.domain.api.models.SortModel;
 import ru.anr.base.services.BaseDataAwareServiceImpl;
 
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Function;
 
 /**
  * An implementation of the base API strategy.
@@ -76,8 +80,12 @@ public class AbstractApiCommandStrategyImpl extends BaseDataAwareServiceImpl imp
 
     @Override
     public Object put(APICommand cmd) {
-
         throw new NotImplementedException("Method 'Put' not implemented");
+    }
+
+    @Override
+    public Object patch(APICommand cmd) {
+        throw new NotImplementedException("Method 'Patch' not implemented");
     }
 
     /**
@@ -118,54 +126,8 @@ public class AbstractApiCommandStrategyImpl extends BaseDataAwareServiceImpl imp
     }
 
     /**
-     * A simple callback for customization of searching an object by its
-     * identifier.
-     */
-    @FunctionalInterface
-    protected interface ObjectFindCallback<S> {
-
-        /**
-         * Finds an object by the given identifier
-         *
-         * @param id The identifier
-         * @return A found object or null if nothing found.
-         */
-        S find(Long id);
-    }
-
-    /**
-     * Searches and returns id parameters from the specified context of the api
-     * command
-     *
-     * @param cmd the API Command
-     * @return Long value of identifier or raises an exception if it is absent
-     * or unparsible
-     */
-    protected Long extractId(APICommand cmd) {
-
-        Map<String, ?> map = extract(cmd, "id");
-        return parse(map.get("id").toString(), Long.class);
-    }
-
-    /**
-     * Returns an identifier from the request parameters and check whether it
-     * has been correctly parsed or not.
-     *
-     * @param cmd An original API command
-     * @return Parsed not null identifier
-     */
-    protected Long extractIdStrict(APICommand cmd) {
-
-        Long id = extractId(cmd);
-        if (id == null) {
-            Map<String, ?> map = extract(cmd, "id");
-            rejectAPI("api.param.is.wrong", "id", map.get("id").toString());
-        }
-        return id;
-    }
-
-    /**
-     * Extracts request parameters from the command
+     * Extracts request parameters from the command. Throws an exception if some keys
+     * were not found.
      *
      * @param cmd  The API command
      * @param keys A set of key to find in the request parameters
@@ -192,8 +154,28 @@ public class AbstractApiCommandStrategyImpl extends BaseDataAwareServiceImpl imp
      * @param <S>      A class of the object
      * @return A found object (cab be null).
      */
-    protected <S> S findObjectByID(APICommand cmd, ObjectFindCallback<S> callback) {
+    protected <S> S findObjectByID(APICommand cmd, Function<Long, S> callback) {
+        return findObjectByID(cmd, "id", map -> {
+            Long id = parse(map.get("id").toString(), Long.class);
+            checkParamWrong(id != null, "id", map.get("id").toString());
+            return callback.apply(id);
+        });
+    }
 
-        return callback.find(extractIdStrict(cmd));
+    protected <S> S findObjectByID(APICommand cmd, String idParam, Function<Map<String, ?>, S> callback) {
+        return callback.apply(extract(cmd, idParam));
+    }
+
+    protected Pageable buildPager(APICommand cmd, String field, SortModel.SortDirection sortOrder) {
+
+        RequestModel rq = cmd.getRequest();
+        if (isEmpty(rq.sorted)) {
+            rq.sorted = list(new SortModel(field, sortOrder));
+        }
+
+        Map<String, SortModel.SortDirection> map = cmd.findSorting(SortModel.SortDirection.DESC, field);
+        Sort.Direction direction = map.get(field) == SortModel.SortDirection.DESC ? Sort.Direction.DESC : Sort.Direction.ASC;
+
+        return safePageable(cmd, direction, field);
     }
 }

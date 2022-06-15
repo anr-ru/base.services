@@ -19,8 +19,8 @@ public class TestDataServiceImpl extends BaseDataAwareServiceImpl implements Tes
 
     @PostConstruct
     public void init() {
-        registerExtensions("default", loadExtentions(ServiceExt1.class)); // 2 extensions
-        registerExtensions("test", loadExtentions(ServiceExt2.class)); // 1 extensions
+        registerExtensions("default", loadExtensions(ServiceExt1.class)); // 2 extensions
+        registerExtensions("test", loadExtensions(ServiceExt2.class)); // 1 extensions
     }
 
     @Override

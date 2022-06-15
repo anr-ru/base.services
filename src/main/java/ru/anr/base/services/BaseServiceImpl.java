@@ -23,7 +23,9 @@ import org.springframework.context.NoSuchMessageException;
 import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
@@ -309,7 +311,7 @@ public class BaseServiceImpl extends BaseSpringParent implements BaseService {
      * @param o   The object to be validated
      * @param <S> The type of the object
      */
-    protected <S extends Object> void validate(S o) {
+    protected <S> void validate(S o) {
 
         rejectIfNeed(new HashSet<>(validator().validate(o)));
 
@@ -383,17 +385,15 @@ public class BaseServiceImpl extends BaseSpringParent implements BaseService {
      * @param marker The marker annotation
      * @return A list of extensions
      */
-    protected List<Strategy<Object>> loadExtentions(Class<? extends Annotation> marker) {
+    protected List<Strategy<Object>> loadExtensions(Class<? extends Annotation> marker) {
 
         Map<String, Object> beans = ctx.getBeansWithAnnotation(marker);
 
         @SuppressWarnings("unchecked")
-        List<Strategy<Object>> extentions = list(beans.values().stream().map(a -> {
-            return (Strategy<Object>) a;
-        }));
+        List<Strategy<Object>> extensions = list(beans.values().stream().map(a -> (Strategy<Object>) a));
 
-        logger.info("Loaded: {} '{}' extensions for the: {}", extentions.size(), marker.getSimpleName(), target(this));
-        return extentions;
+        logger.info("Loaded: {} '{}' extensions for the: {}", extensions.size(), marker.getSimpleName(), target(this));
+        return extensions;
     }
 
     /**
@@ -404,6 +404,8 @@ public class BaseServiceImpl extends BaseSpringParent implements BaseService {
 
         return TargetEnvironments.search(getProfiles());
     }
+
+    /////// Security Functions
 
     /**
      * Executes the given callback with the use of the given temporal authentication token and restores the
@@ -439,6 +441,50 @@ public class BaseServiceImpl extends BaseSpringParent implements BaseService {
             callback.accept(arguments);
             return null;
         }, args);
+    }
+
+    @SuppressWarnings("unchecked")
+    protected <S extends User> S authorization() {
+        return nullSafe(token(), a -> (S) a.getDetails()).orElse(null);
+    }
+
+    /**
+     * @return true, if the security token is authenticated
+     */
+    protected boolean authorized() {
+        return nullSafe(token(), Authentication::isAuthenticated).orElse(false);
+    }
+
+    /**
+     * Verifies whether the current security roles contains the ROLE_ROOT
+     *
+     * @return true, if the authorization has the root
+     */
+    protected boolean hasRoot() {
+        return hasRole("ROLE_ROOT");
+    }
+
+    /**
+     * Checks whether the current authorized roles list includes the given role or not.
+     *
+     * @param role The role to check
+     * @return true, if the given role is presented in the security context
+     */
+    protected boolean hasRole(String role) {
+        return roles().contains(role);
+    }
+
+    /**
+     * Returns the set of current roles
+     *
+     * @return The roles as a set
+     */
+    protected Set<String> roles() {
+        return set(authorization().getAuthorities().stream().map(GrantedAuthority::getAuthority));
+    }
+
+    protected Authentication token() {
+        return SecurityContextHolder.getContext().getAuthentication();
     }
 
     protected APICommand api(Class<? extends ApiCommandStrategy> clazz, MethodTypes method, RequestModel request,
@@ -477,7 +523,7 @@ public class BaseServiceImpl extends BaseSpringParent implements BaseService {
      * given scale. For example, if a currency allows the minimum value to be
      * 0.00001, then this function return true for all values which are less
      * than 0.00001 (like 0.000005, 0.00000001, etc.).
-     *
+     * <p>
      * 2. Also, we check that after rounding the value is not changed, i.e. to avoid $0.023 or so.
      */
     public boolean verifyLessThanScale(int scale, BigDecimal value) {
@@ -504,6 +550,10 @@ public class BaseServiceImpl extends BaseSpringParent implements BaseService {
             TransactionStatus status = TransactionAspectSupport.currentTransactionStatus();
             status.setRollbackOnly();
         }
+    }
+
+    protected boolean isSupported(SupportableService service) {
+        return service != null && service.isSupported();
     }
 
     // /////////////////////////////////////////////////////////////////////////

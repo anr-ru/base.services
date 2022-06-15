@@ -51,6 +51,15 @@ public interface ApiCommandStrategy {
     Object put(APICommand cmd);
 
     /**
+     * PATCH method
+     *
+     * @param cmd Command
+     * @return Model of response
+     */
+    Object patch(APICommand cmd);
+
+
+    /**
      * DELETE method
      *
      * @param cmd Command

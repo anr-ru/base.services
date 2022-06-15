@@ -24,10 +24,12 @@ import org.springframework.security.acls.model.NotFoundException;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
+import ru.anr.base.ModelUtils;
 import ru.anr.base.dao.EntityUtils;
 import ru.anr.base.dao.repository.BaseRepository;
 import ru.anr.base.domain.BaseEntity;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -48,7 +50,7 @@ public class BaseDataAwareServiceImpl extends BaseServiceImpl implements BaseDat
     private BaseRepository<BaseEntity> repository;
 
     /**
-     * Returns an entity (may be proxied) class
+     * Returns an entity (maybe proxied) class
      *
      * @param e Entity
      * @return Class
@@ -77,7 +79,7 @@ public class BaseDataAwareServiceImpl extends BaseServiceImpl implements BaseDat
      * Applying security filter to the page
      *
      * @param page The page to be filtered
-     * @param <S>  Type of an item of the list
+     * @param <S>  Type of item of the list
      * @return Filtered list
      */
     protected <S extends BaseEntity> List<S> securedFilter(Page<S> page) {
@@ -89,8 +91,8 @@ public class BaseDataAwareServiceImpl extends BaseServiceImpl implements BaseDat
     }
 
     /**
-     * This method reload the given entity to guarantee that we are under the current transaction. We need to use this method
-     * when we work under a new transaction (REQURIES_NEW).
+     * This method reload the given entity to guarantee that we are under the current transaction.
+     * We need to use this method when we work under a new transaction (REQUIRES_NEW).
      *
      * @param entity The entity to reload
      * @param <T>    The type of the entity
@@ -106,9 +108,13 @@ public class BaseDataAwareServiceImpl extends BaseServiceImpl implements BaseDat
         return o;
     }
 
-    // /////////////////////////////////////////////////////////////////////////
-    // /// getters/setters
-    // /////////////////////////////////////////////////////////////////////////
+    protected <S extends Enum<S>> List<String> enumToStr(Collection<S> coll) {
+        return ModelUtils.enumToStr(coll);
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+    ///// getters/setters
+    ///////////////////////////////////////////////////////////////////////////
 
     /**
      * Injecting 'BaseRepository' bean if only it exists.
