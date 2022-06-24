@@ -30,7 +30,7 @@ public class ValidationTest extends BaseLocalServiceTestCase {
     private Validator validator;
 
     /**
-     * Validatino
+     * Validation
      */
     @Test
     public void testValidation() {
@@ -90,7 +90,7 @@ public class ValidationTest extends BaseLocalServiceTestCase {
             Assertions.assertEquals("The value is expected to be NOT NULL", ex.getConstraintViolations().iterator().next()
                     .getMessage());
 
-            service.method1("x");
+            Assertions.assertEquals("[xxxYxxx]", service.method1("Y"));
         }
 
         // 2. Constraint on a returned value
@@ -103,7 +103,7 @@ public class ValidationTest extends BaseLocalServiceTestCase {
             Assertions.assertEquals(1, ex.getConstraintViolations().size());
             Assertions.assertEquals("must not be null", ex.getConstraintViolations().iterator().next().getMessage());
 
-            service.method2("x");
+            Assertions.assertEquals("x", service.method2("x"));
         }
     }
 
@@ -142,14 +142,11 @@ public class ValidationTest extends BaseLocalServiceTestCase {
         v.setDigit(4);
 
         try {
-
             Set<ConstraintViolation<SomeValidated>> errors = validator.validate(v);
             service.method5(errors);
 
             Assertions.fail();
-
         } catch (ApplicationException ex) {
-
             String s = ex.getMessage();
             Assertions.assertTrue(s.contains("The value is expected to be NOT NULL"));
             Assertions.assertTrue(s.contains("The value 4 must be greater then 5"));

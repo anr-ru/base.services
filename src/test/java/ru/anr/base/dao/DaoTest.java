@@ -3,7 +3,6 @@ package ru.anr.base.dao;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -21,12 +20,8 @@ import java.util.List;
  */
 public class DaoTest extends AbstractDaoTestCase {
 
-    /**
-     * Dao ref
-     */
     @Autowired
-    @Qualifier("mydao")
-    protected MyDao<Samples> mydao;
+    protected MyDao mydao;
 
     /**
      * Query tests
@@ -39,7 +34,7 @@ public class DaoTest extends AbstractDaoTestCase {
         List<Samples> rs = mydao.findCachedSamples();
         Assertions.assertFalse(rs.isEmpty());
 
-        mydao.updateSamples(s.getId());
+        Assertions.assertNotNull(mydao.updateSamples(s.getId()));
 
         mydao.refresh(s);
         Assertions.assertEquals("xxx", s.getName());
@@ -200,9 +195,8 @@ public class DaoTest extends AbstractDaoTestCase {
         s.setParent(p);
         s = mydao.save(s);
 
-        Samples x = mydao.getById(s.getId());
-        // TODO: can't create a HibernateProxy
-        Assertions.assertEquals(Samples.class, entityClass(x.getParent()));
+        Samples x = mydao.getReferenceById(s.getId());
+        Assertions.assertEquals(Samples.class, EntityUtils.entityClass(x.getParent()));
     }
 
     /**
@@ -217,7 +211,7 @@ public class DaoTest extends AbstractDaoTestCase {
         // Update it
         Assertions.assertEquals(1, mydao.execute("update Samples set name = ?1", "zzz"));
 
-        Samples x = mydao.getById(s.getId());
+        Samples x = mydao.getReferenceById(s.getId());
         mydao.refresh(x);
 
         Assertions.assertEquals("zzz", x.getName());

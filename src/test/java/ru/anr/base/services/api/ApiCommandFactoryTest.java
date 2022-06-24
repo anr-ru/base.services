@@ -12,22 +12,15 @@ import ru.anr.base.samples.services.api.EmptyV1ApiCommand;
 import ru.anr.base.services.BaseLocalServiceTestCase;
 
 /**
- * Tests for api commmand
+ * Tests for API commands
  *
  * @author Alexey Romanchuk
  * @created Nov 10, 2014
  */
-
 public class ApiCommandFactoryTest extends BaseLocalServiceTestCase {
 
-    /**
-     * the PING costant
-     */
     private static final String PING = "Ping";
 
-    /**
-     * the GET constant
-     */
     private static final String GET = "GET";
 
     /**
@@ -111,10 +104,8 @@ public class ApiCommandFactoryTest extends BaseLocalServiceTestCase {
 
         APICommand rs;
         try {
-
             factory.process(e);
             Assertions.fail();
-
         } catch (APIException ex) {
 
             Assertions.assertEquals("Exception", ex.getMessage());
@@ -191,14 +182,12 @@ public class ApiCommandFactoryTest extends BaseLocalServiceTestCase {
         ping = ping.addRaw("{\"value\": \"hello\"}").method(GET).context("x", 25);
 
         try {
-
             factory.process(ping);
             Assertions.fail();
-
         } catch (Exception ex) {
 
             APICommand rs = factory.error(ex);
-            Assertions.assertEquals("{\"code\":-1,\"message\":\"[The value is expected to be NOT NULL]\"}",
+            Assertions.assertEquals("{\"code\":-1,\"message\":\"The value is expected to be NOT NULL\"}",
                     rs.getRawModel());
         }
     }

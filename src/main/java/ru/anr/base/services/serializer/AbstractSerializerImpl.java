@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 the original author or authors.
+ * Copyright 2014-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -18,7 +18,6 @@ package ru.anr.base.services.serializer;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.AnnotationIntrospector;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -37,17 +36,13 @@ import java.util.Locale;
 import java.util.TimeZone;
 
 /**
- * Abstract jackson-based serialer implementation.
+ * An abstract jackson-based serializer implementation.
  *
  * @author Alexey Romanchuk
  * @created Nov 8, 2014
  */
-
 public abstract class AbstractSerializerImpl extends BaseParent implements Serializer {
 
-    /**
-     * The logger
-     */
     private static final Logger logger = LoggerFactory.getLogger(AbstractSerializerImpl.class);
 
     /**
@@ -75,12 +70,13 @@ public abstract class AbstractSerializerImpl extends BaseParent implements Seria
 
         objectMapper.setSerializationInclusion(Include.NON_NULL);
 
-        objectMapper.setDateFormat(new StdDateFormat(TimeZone.getTimeZone(DEFAULT_TIMEZONE), Locale.getDefault()));
+        objectMapper.setDateFormat(new StdDateFormat()
+                .withTimeZone(TimeZone.getTimeZone(DEFAULT_TIMEZONE))
+                .withLocale(Locale.getDefault()));
         objectMapper.setTimeZone(TimeZone.getTimeZone(DEFAULT_TIMEZONE));
         objectMapper.setLocale(Locale.getDefault());
 
-        AnnotationIntrospector introspector = new JaxbAnnotationIntrospector(objectMapper.getTypeFactory());
-        objectMapper.setAnnotationIntrospector(introspector);
+        objectMapper.setAnnotationIntrospector(new JaxbAnnotationIntrospector(objectMapper.getTypeFactory()));
 
         SimpleModule module = new SimpleModule();
         module.addSerializer(BigDecimal.class, new BigDecimalSerializer());
@@ -92,7 +88,6 @@ public abstract class AbstractSerializerImpl extends BaseParent implements Seria
      */
     @Override
     public <S> S fromStr(String s, Class<S> clazz) {
-
         try {
             return objectMapper.readValue(s, clazz);
         } catch (IOException ex) {
@@ -106,7 +101,6 @@ public abstract class AbstractSerializerImpl extends BaseParent implements Seria
      */
     @Override
     public <S> S fromStr(String s, TypeReference<S> ref) {
-
         try {
             return objectMapper.readValue(s, ref);
         } catch (IOException ex) {
@@ -120,7 +114,6 @@ public abstract class AbstractSerializerImpl extends BaseParent implements Seria
      */
     @Override
     public String toStr(Object o) {
-
         try {
             return objectMapper.writeValueAsString(o);
         } catch (IOException ex) {
@@ -134,7 +127,6 @@ public abstract class AbstractSerializerImpl extends BaseParent implements Seria
      */
     @Override
     public ObjectMapper mapper() {
-
         return objectMapper;
     }
 }

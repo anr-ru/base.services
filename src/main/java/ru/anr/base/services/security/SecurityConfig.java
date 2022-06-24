@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 the original author or authors.
+ * Copyright 2014-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -30,10 +30,8 @@ import java.util.List;
  * Spring security configuration. This context config should be imported to add
  * base authentication/authorization settings.
  * <p>
- * See
- * {@link org.springframework.security.config.annotation.method.configuration.GlobalMethodSecurityConfiguration}
- * implementation to understand a default
- * {@link org.springframework.security.access.AccessDecisionManager}.
+ * See {@link org.springframework.security.config.annotation.method.configuration.GlobalMethodSecurityConfiguration}
+ * implementation to understand a default {@link org.springframework.security.access.AccessDecisionManager}.
  *
  * @author Alexey Romanchuk
  * @created Nov 7, 2014
@@ -64,15 +62,14 @@ public class SecurityConfig {
         return providerManager;
     }
 
-    // /////////////////////////////////////////////////////////////////////////
-    // /// getters/setters
-    // /////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////
+    ///// getters/setters
+    ///////////////////////////////////////////////////////////////////////////
 
     /**
      * @param providers the providers to set
      */
     public void setProviders(List<AuthenticationProvider> providers) {
-
         this.providers = providers;
     }
 }

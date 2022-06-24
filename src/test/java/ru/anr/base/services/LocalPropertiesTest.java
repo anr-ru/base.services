@@ -47,7 +47,6 @@ public class LocalPropertiesTest extends BaseTestCase {
      */
     @Test
     public void testPropertySubstitution() {
-
         Assertions.assertEquals("12345", value1);
         Assertions.assertEquals("12345", value2);
     }

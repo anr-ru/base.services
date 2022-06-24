@@ -1,15 +1,10 @@
-/**
- * 
- */
 package ru.anr.base.samples.domain;
 
 /**
  * Test states
  *
- *
  * @author Alexey Romanchuk
  * @created Jun 3, 2015
- *
  */
 
 public enum TestStates {
@@ -20,5 +15,5 @@ public enum TestStates {
     /**
      * B - state
      */
-    B;
+    B
 }

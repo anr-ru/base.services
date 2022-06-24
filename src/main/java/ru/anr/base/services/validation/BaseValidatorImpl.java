@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 the original author or authors.
+ * Copyright 2014-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -24,18 +24,14 @@ import ru.anr.base.services.pattern.StrategyConfig;
 import ru.anr.base.services.pattern.StrategyConfig.StrategyModes;
 
 /**
- * Implementation of Base Validator.
+ * The base implementation of a Validator.
  *
  * @param <T> The type of object
  * @author Aleksey Melkov
- * @created 09 нояб. 2015 г.
+ * @created Nov 9, 2015
  */
-
 public class BaseValidatorImpl<T extends BaseEntity> extends BaseServiceImpl implements BaseValidator<T> {
 
-    /**
-     * Logger
-     */
     private static final Logger logger = LoggerFactory.getLogger(BaseValidatorImpl.class);
 
     /**
@@ -51,7 +47,6 @@ public class BaseValidatorImpl<T extends BaseEntity> extends BaseServiceImpl imp
      */
     @Override
     public boolean supports(T object) {
-
         return true;
     }
 
@@ -60,7 +55,7 @@ public class BaseValidatorImpl<T extends BaseEntity> extends BaseServiceImpl imp
      *
      * @param o The object to validate
      */
-    protected void validate(T o) {
+    protected void validate(T o, Object... params) {
 
         // Empty
     }
@@ -73,7 +68,7 @@ public class BaseValidatorImpl<T extends BaseEntity> extends BaseServiceImpl imp
 
         logger.debug("Validating an object: {}", o);
 
-        validate(o);
+        validate(o, cfg.getParams());
         return o;
     }
 }

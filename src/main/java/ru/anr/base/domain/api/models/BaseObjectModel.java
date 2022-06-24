@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 the original author or authors.
+ * Copyright 2014-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -29,9 +29,6 @@ import java.util.Calendar;
  */
 public class BaseObjectModel extends RequestModel {
 
-    /**
-     * Serial ID
-     */
     private static final long serialVersionUID = -752471039342963751L;
 
     /**
@@ -53,7 +50,7 @@ public class BaseObjectModel extends RequestModel {
     public Calendar created;
 
     /**
-     * Time of latest modification
+     * Time of the latest modification
      */
     @XmlAttribute(name = "modified")
     public Calendar modified;

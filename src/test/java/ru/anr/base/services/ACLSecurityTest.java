@@ -1,6 +1,3 @@
-/**
- *
- */
 package ru.anr.base.services;
 
 import org.junit.jupiter.api.Assertions;
@@ -27,12 +24,9 @@ import java.util.List;
 /**
  * Tests for ACL Security.
  *
- *
  * @author Alexey Romanchuk
  * @created Dec 1, 2014
- *
  */
-
 public class ACLSecurityTest extends BaseLocalServiceTestCase {
 
     /**
@@ -58,16 +52,15 @@ public class ACLSecurityTest extends BaseLocalServiceTestCase {
     /**
      * Authentication
      *
-     * @param user
-     *            A user
+     * @param user A user
      * @return Authenticated token
      */
     private Authentication authenticate(String user) {
 
-        Authentication token =
-                authenticationManager.authenticate(new TestingAuthenticationToken(user, "password", "ROLE_USER"));
-        SecurityContextHolder.getContext().setAuthentication(token);
+        Authentication token = authenticationManager.authenticate(new TestingAuthenticationToken(user,
+                "password", "ROLE_USER"));
 
+        SecurityContextHolder.getContext().setAuthentication(token);
         return token;
     }
 
@@ -92,7 +85,7 @@ public class ACLSecurityTest extends BaseLocalServiceTestCase {
 
         acls.grant(s, new PrincipalSid("user"), BasePermission.READ);
 
-        service.getObject(s.getId());
+        Assertions.assertEquals(s, service.getObject(s.getId()));
     }
 
     /**
@@ -107,28 +100,21 @@ public class ACLSecurityTest extends BaseLocalServiceTestCase {
         Samples s = create(Samples.class, "name", "read"); // access_read
 
         try {
-
             service.apply(s);
-
             Assertions.fail();
-
         } catch (AccessDeniedException ex) {
-
             Assertions.assertEquals("Access is denied", ex.getMessage());
         }
 
         // Now adding just an ACL access
-
         acls.grant(s, new PrincipalSid("user"), BasePermission.WRITE);
-
         service.apply(s); // good !
 
+        // And set per object type access
         s = create(Samples.class, "name", "write"); // access_write
-
         service.apply(s); // Ok
 
         s.setName("read");
-
         try {
             service.apply(s);
             Assertions.fail();
@@ -139,7 +125,7 @@ public class ACLSecurityTest extends BaseLocalServiceTestCase {
     }
 
     /**
-     * Cheching how authorization works for Role ACL
+     * Checking how authorization works for Role ACL
      */
     @Test
     public void testACLforRole() {
@@ -177,7 +163,6 @@ public class ACLSecurityTest extends BaseLocalServiceTestCase {
         authenticate("user");
 
         service.getObject(900L);
-
         service.apply(null);
 
         Assertions.assertTrue(true);
@@ -187,7 +172,7 @@ public class ACLSecurityTest extends BaseLocalServiceTestCase {
      * The test DAO
      */
     @Autowired
-    private MyDao<Samples> myDao;
+    private MyDao myDao;
 
     /**
      * Filtering the pages
@@ -241,5 +226,4 @@ public class ACLSecurityTest extends BaseLocalServiceTestCase {
         Samples sxx = dao.find(Samples.class, s.getId());
         Assertions.assertEquals(sx, sxx);
     }
-
 }

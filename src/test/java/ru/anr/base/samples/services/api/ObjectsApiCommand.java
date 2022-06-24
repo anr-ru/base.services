@@ -1,10 +1,6 @@
-/**
- *
- */
 package ru.anr.base.samples.services.api;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import ru.anr.base.domain.api.APICommand;
 import ru.anr.base.domain.api.models.PingModel;
@@ -25,10 +21,8 @@ import ru.anr.base.services.api.ApiStrategy;
 @ApiStrategy(version = "v1", id = "Objects", model = PingModel.class)
 @Component
 public class ObjectsApiCommand extends AbstractApiCommandStrategyImpl {
-
     @Autowired
-    @Qualifier("mydao")
-    private MyDao<Samples> dao;
+    private MyDao dao;
 
     @Override
     public ResponseModel get(APICommand cmd) {

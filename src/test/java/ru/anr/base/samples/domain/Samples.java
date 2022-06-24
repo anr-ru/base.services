@@ -1,29 +1,17 @@
-/**
- * 
- */
 package ru.anr.base.samples.domain;
-
-import javax.persistence.Cacheable;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.springframework.security.core.Authentication;
-
 import ru.anr.base.domain.BaseEntity;
+
+import javax.persistence.*;
 
 /**
  * A sample entity.
- * 
- * 
+ *
  * @author Alexey Romanchuk
  * @created Oct 30, 2014
- * 
  */
 @Entity
 @Table(name = "samples")
@@ -51,13 +39,13 @@ public class Samples extends BaseEntity {
      */
     @Override
     public boolean accessible(Authentication token, Object permission) {
-
+        // A basic security schema for tests: set the name to be 'read' or 'write' to test the access
         return this.getName() == null || safeEquals(permission, this.getName());
     }
 
-    // /////////////////////////////////////////////////////////////////////////
-    // /// getters/setters
-    // /////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////
+    ///// getters/setters
+    ///////////////////////////////////////////////////////////////////////////
 
     /**
      * @return the name
@@ -79,8 +67,7 @@ public class Samples extends BaseEntity {
     }
 
     /**
-     * @param parent
-     *            the parent to set
+     * @param parent the parent to set
      */
     public void setParent(Samples parent) {
 
@@ -88,8 +75,7 @@ public class Samples extends BaseEntity {
     }
 
     /**
-     * @param name
-     *            the name to set
+     * @param name the name to set
      */
     public void setName(String name) {
 

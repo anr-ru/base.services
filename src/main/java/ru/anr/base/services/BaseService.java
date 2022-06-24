@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 the original author or authors.
+ * Copyright 2014-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -15,8 +15,8 @@
  */
 package ru.anr.base.services;
 
-import org.springframework.security.access.method.P;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.parameters.P;
 import ru.anr.base.domain.BaseEntity;
 
 import java.util.Locale;
@@ -83,10 +83,4 @@ public interface BaseService {
      * @return The bean instance
      */
     <S> S getBean(Class<S> clazz);
-
-    /**
-     * A way to roll back the current transaction if we are launching something in the 'dry-run' mode.
-     */
-    void markAsRollback();
-
 }

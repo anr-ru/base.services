@@ -1,6 +1,3 @@
-/**
- *
- */
 package ru.anr.base.dao;
 
 import org.hibernate.Session;
@@ -12,7 +9,6 @@ import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import ru.anr.base.samples.dao.MyDao;
 import ru.anr.base.samples.domain.Samples;
 
@@ -23,25 +19,16 @@ import java.util.Map;
 /**
  * Some simple tests
  *
- *
  * @author Alexey Romanchuk
  * @created Oct 29, 2014
- *
  */
 @Disabled
 public class CacheTest extends AbstractDaoTestCase {
 
-    /**
-     * Logger
-     */
     private static final Logger logger = LoggerFactory.getLogger(CacheTest.class);
 
-    /**
-     * Dao ref
-     */
     @Autowired
-    @Qualifier("mydao")
-    protected MyDao<Samples> mydao;
+    protected MyDao mydao;
 
     /**
      * Cached queries tests
@@ -60,8 +47,7 @@ public class CacheTest extends AbstractDaoTestCase {
 
         Map<String, QueryStatistics> map = getQueryStats();
         logger.debug("Query statistic: {}", map);
-
-        logger.info("RS: {}", rs);
+        logger.debug("RS: {}", rs);
 
         QueryStatistics s1 = map.get("From Samples");
         Assertions.assertTrue(s1.getExecutionCount() > 0); // It's executed

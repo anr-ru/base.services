@@ -9,6 +9,7 @@ import org.springframework.security.authentication.TestingAuthenticationToken;
 import ru.anr.base.dao.repository.BaseRepository;
 import ru.anr.base.domain.BaseEntity;
 import ru.anr.base.samples.domain.Samples;
+import ru.anr.base.samples.services.TestDataService;
 
 /**
  * Tests for {@link BaseDataAwareServiceImpl}.
@@ -47,13 +48,6 @@ public class BaseDataAwareServiceImplTest extends BaseLocalServiceTestCase {
         Samples e = d.find(Samples.class, s.getId());
         Assertions.assertEquals(s, e);
     }
-
-    /**
-     * The repo
-     */
-    @Autowired
-    @Qualifier("BaseRepository")
-    private BaseRepository<Samples> repo;
 
     /**
      * Testing injection for not existing bean
@@ -119,4 +113,30 @@ public class BaseDataAwareServiceImplTest extends BaseLocalServiceTestCase {
 
     }
 
+    @Autowired
+    @Qualifier("TestDataService")
+    private TestDataService testData;
+
+    /**
+     * Tests for reload
+     */
+    @Test
+    //@Rollback(false)
+    public void testReload() {
+
+        authenticate(new TestingAuthenticationToken("test", "password", "ROLE_USER"));
+
+        Samples e = dao.save(new Samples());
+        Assertions.assertEquals(e, testService.reload(e));
+
+        Samples e1 = testData.doInTransaction(e, false);
+        Assertions.assertNotEquals(e, e1);
+        Samples e2 = testData.doInTransaction(e, true);
+        Assertions.assertNotEquals(e, e2);
+
+        dao.delete(e);
+        // Have to do it in a new transaction as the objects are already in the database
+        testData.deleteInTransaction(e1);
+        testData.deleteInTransaction(e2);
+    }
 }

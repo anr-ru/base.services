@@ -1,12 +1,12 @@
 /*
- * Copyright 2014 the original author or authors.
- * 
+ * Copyright 2014-2022 the original author or authors.
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -15,22 +15,17 @@
  */
 package ru.anr.base.services.pattern;
 
-import java.util.List;
-
 import org.apache.commons.lang3.ArrayUtils;
-
 import ru.anr.base.BaseParent;
 
+import java.util.List;
+
 /**
- * A storage for the way how a strategy should be handled. It is used by the
- * {@link StrategyFactory} algorithm.
- *
+ * A structure for storing the invocation context in strategies.
  *
  * @author Alexey Romanchuk
  * @created Nov 10, 2014
- *
  */
-
 public class StrategyConfig {
 
     /**
@@ -56,22 +51,17 @@ public class StrategyConfig {
     /**
      * A collection of objects gathered during processing through all strategies
      */
-    private List<Object> collection = BaseParent.list();
+    private final List<Object> collection = BaseParent.list();
 
     /**
      * Constructor
-     * 
-     * @param applicable
-     *            true/false for strategy to be applied
-     * @param object
-     *            An object
-     * @param mode
-     *            {@link StrategyModes}
-     * @param params
-     *            Stored additional params
+     *
+     * @param applicable true/false for strategy to be applied
+     * @param object     An object
+     * @param mode       {@link StrategyModes}
+     * @param params     Stored additional params
      */
     public StrategyConfig(boolean applicable, Object object, StrategyModes mode, Object... params) {
-
         this.applicable = applicable;
         this.object = object;
         this.mode = mode;
@@ -96,9 +86,8 @@ public class StrategyConfig {
 
     /**
      * Adds an object to the resulted collection
-     * 
-     * @param o
-     *            Some object
+     *
+     * @param o Some object
      */
     public void add(Object o) {
 
@@ -142,6 +131,6 @@ public class StrategyConfig {
          * After this strategy further execution must be stopped (current
          * strategy is the last)
          */
-        TerminateAfter;
+        TerminateAfter
     }
 }

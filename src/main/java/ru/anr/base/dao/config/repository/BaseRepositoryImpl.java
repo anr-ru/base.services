@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 the original author or authors.
+ * Copyright 2014-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -30,7 +30,6 @@ import javax.persistence.Parameter;
 import javax.persistence.Query;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * A custom implementation for DAO Repositories. Added some useful functions
@@ -40,7 +39,6 @@ import java.util.Set;
  * @author Alexey Romanchuk
  * @created Nov 6, 2014
  */
-
 public class BaseRepositoryImpl<T extends BaseEntity> extends SimpleJpaRepository<T, Long>
         implements BaseRepository<T> {
 
@@ -125,10 +123,7 @@ public class BaseRepositoryImpl<T extends BaseEntity> extends SimpleJpaRepositor
         Query query = entityManager.createNativeQuery(sql);
 
         if (params != null) {
-
-            Set<Parameter<?>> qparams = query.getParameters();
-
-            for (Parameter<?> qp : qparams) {
+            for (Parameter<?> qp : query.getParameters()) {
                 if (params.containsKey(qp.getName())) {
                     query.setParameter(qp.getName(), params.get(qp.getName()));
                 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 the original author or authors.
+ * Copyright 2014-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -15,8 +15,8 @@
  */
 package ru.anr.base.services;
 
-import org.springframework.security.access.method.P;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.parameters.P;
 import ru.anr.base.domain.BaseEntity;
 
 /**
@@ -27,7 +27,6 @@ import ru.anr.base.domain.BaseEntity;
  */
 
 public interface BaseDataAwareService extends BaseService {
-
     /**
      * Saves a new entity to the database. If the entity has been already
      * stored, the DAO operation is not invoked.
@@ -50,4 +49,9 @@ public interface BaseDataAwareService extends BaseService {
      */
     <T extends BaseEntity> T reload(T entity);
 
+
+    /**
+     * A way to roll back the current transaction if we are launching something in the 'dry-run' mode.
+     */
+    void markAsRollback();
 }

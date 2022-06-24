@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 the original author or authors.
+ * Copyright 2014-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -29,13 +29,12 @@ import ru.anr.base.dao.EntityUtils;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.util.UUID;
 
 /**
  * A parent for all entities. It includes a definition of the ID column, an optimistic version column
  * {@link #equals(Object)} and {@link #hashCode()} operations and some useful fields that can
- * by applicable for almost all entities.
+ * be applicable for almost all entities.
  *
  * @author Alexey Romanchuk
  * @created Nov 5, 2014
@@ -44,18 +43,15 @@ import java.util.UUID;
 @DynamicUpdate
 public class BaseEntity extends BaseParent implements Serializable, Accessible {
 
-    /**
-     * Serial ID
-     */
     private static final long serialVersionUID = 6325902826050618344L;
 
     /**
-     * A GUID linked with each object. Before saving it works as a identifier
+     * A GUID linked with each object. Before saving, it works as the identifier
      */
     private final String guid = UUID.randomUUID().toString();
 
     /**
-     * Primary key
+     * The primary key
      */
     private Long id;
 
@@ -94,7 +90,7 @@ public class BaseEntity extends BaseParent implements Serializable, Accessible {
      */
     @PrePersist
     public void prePersist() {
-        setCreated(GregorianCalendar.from(now()));
+        setCreated(calendar(now()));
     }
 
     /**
@@ -102,7 +98,7 @@ public class BaseEntity extends BaseParent implements Serializable, Accessible {
      */
     @PreUpdate
     public void preUpdate() {
-        setModified(GregorianCalendar.from(now()));
+        setModified(calendar(now()));
     }
 
     /**
@@ -128,7 +124,7 @@ public class BaseEntity extends BaseParent implements Serializable, Accessible {
 
         if (!this.hasState(newState)) {
             setState(newState);
-            setStateChanged(GregorianCalendar.from(now()));
+            setStateChanged(calendar(now()));
         }
         return oldState;
     }
@@ -148,8 +144,7 @@ public class BaseEntity extends BaseParent implements Serializable, Accessible {
      */
     @SafeVarargs
     protected final <S extends Enum<S>> void putStates(S key, S... states) {
-        transitions.put(key.name(), list(list(states).stream().map(Enum::name)));
-
+        transitions.put(key.name(), toStr(list(states)));
     }
 
     /**
@@ -202,9 +197,9 @@ public class BaseEntity extends BaseParent implements Serializable, Accessible {
         return transitions; // Empty by default
     }
 
-    // /////////////////////////////////////////////////////////////////////////
-    // /// getters/setters
-    // /////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////
+    ///// getters/setters
+    ///////////////////////////////////////////////////////////////////////////
 
     /**
      * @return the id
@@ -214,7 +209,6 @@ public class BaseEntity extends BaseParent implements Serializable, Accessible {
     @SequenceGenerator(name = "hseq", allocationSize = 50)
     @Column(name = "id")
     public Long getId() {
-
         return id;
     }
 
@@ -222,7 +216,6 @@ public class BaseEntity extends BaseParent implements Serializable, Accessible {
      * @param id the id to set
      */
     public void setId(Long id) {
-
         this.id = id;
     }
 
@@ -232,7 +225,6 @@ public class BaseEntity extends BaseParent implements Serializable, Accessible {
     @Version
     @Column(name = "i_version")
     public Integer getVersion() {
-
         return version;
     }
 
@@ -240,7 +232,6 @@ public class BaseEntity extends BaseParent implements Serializable, Accessible {
      * @param version the version to set
      */
     public void setVersion(Integer version) {
-
         this.version = version;
     }
 
@@ -250,7 +241,6 @@ public class BaseEntity extends BaseParent implements Serializable, Accessible {
     @Column(name = "i_created")
     @Temporal(TemporalType.TIMESTAMP)
     public Calendar getCreated() {
-
         return cloneObject(created);
     }
 
@@ -258,7 +248,6 @@ public class BaseEntity extends BaseParent implements Serializable, Accessible {
      * @param created the created to set
      */
     public void setCreated(Calendar created) {
-
         this.created = cloneObject(created);
     }
 
@@ -267,7 +256,6 @@ public class BaseEntity extends BaseParent implements Serializable, Accessible {
      */
     @Column(name = "i_modified")
     public Calendar getModified() {
-
         return cloneObject(modified);
     }
 
@@ -276,7 +264,6 @@ public class BaseEntity extends BaseParent implements Serializable, Accessible {
      */
     @Column(name = "state", length = 32)
     public String getState() {
-
         return state;
     }
 
@@ -284,7 +271,6 @@ public class BaseEntity extends BaseParent implements Serializable, Accessible {
      * @param state the state to set
      */
     public void setState(String state) {
-
         this.state = state;
     }
 
@@ -293,7 +279,6 @@ public class BaseEntity extends BaseParent implements Serializable, Accessible {
      */
     @Column(name = "i_state_changed")
     public Calendar getStateChanged() {
-
         return cloneObject(stateChanged);
     }
 
@@ -301,7 +286,6 @@ public class BaseEntity extends BaseParent implements Serializable, Accessible {
      * @param stateChanged the stateChanged to set
      */
     public void setStateChanged(Calendar stateChanged) {
-
         this.stateChanged = cloneObject(stateChanged);
     }
 
@@ -309,7 +293,6 @@ public class BaseEntity extends BaseParent implements Serializable, Accessible {
      * @param modified the modified to set
      */
     public void setModified(Calendar modified) {
-
         this.modified = cloneObject(modified);
     }
 
@@ -341,7 +324,6 @@ public class BaseEntity extends BaseParent implements Serializable, Accessible {
      */
     @Override
     public int hashCode() {
-
         return new HashCodeBuilder().append(internalId()).hashCode();
     }
 

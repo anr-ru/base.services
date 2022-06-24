@@ -1,6 +1,3 @@
-/**
- *
- */
 package ru.anr.base.services;
 
 import org.junit.jupiter.api.Assertions;
@@ -12,10 +9,8 @@ import ru.anr.base.tests.BaseTestCase;
 /**
  * This test shows that environment variables are preferable by default.
  *
- *
  * @author Alexey Romanchuk
  * @created Jan 30, 2015
- *
  */
 @ContextConfiguration(locations = "classpath:/tests-properties-context.xml", inheritLocations = false)
 public class EnvironmentPropertiesTest extends BaseTestCase {

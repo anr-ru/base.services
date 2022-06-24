@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 the original author or authors.
+ * Copyright 2014-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -21,14 +21,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.NoSuchMessageException;
 import org.springframework.context.support.MessageSourceAccessor;
+import org.springframework.core.annotation.AnnotationUtils;
+import org.springframework.data.domain.Page;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.interceptor.TransactionAspectSupport;
-import org.springframework.transaction.support.TransactionSynchronizationManager;
 import org.springframework.util.MultiValueMap;
 import ru.anr.base.ApplicationException;
 import ru.anr.base.BaseSpringParent;
@@ -39,6 +38,7 @@ import ru.anr.base.domain.api.APIException;
 import ru.anr.base.domain.api.MethodTypes;
 import ru.anr.base.domain.api.models.BaseObjectModel;
 import ru.anr.base.domain.api.models.RequestModel;
+import ru.anr.base.domain.api.models.ResponseModel;
 import ru.anr.base.services.api.APICommandFactory;
 import ru.anr.base.services.api.ApiCommandStrategy;
 import ru.anr.base.services.api.ApiStrategy;
@@ -55,12 +55,14 @@ import javax.validation.Validator;
 import java.lang.annotation.Annotation;
 import java.math.BigDecimal;
 import java.util.*;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
- * Implementation of Base Service.
+ * An implementation of {@link BaseService}.
  *
  * @author Alexey Romanchuk
  * @created Oct 29, 2014
@@ -72,12 +74,11 @@ public class BaseServiceImpl extends BaseSpringParent implements BaseService {
      */
     @Override
     public <S> S getBean(Class<S> clazz) {
-
         return super.bean(clazz);
     }
 
     /**
-     * Logger
+     * The logger
      */
     private static final Logger logger = LoggerFactory.getLogger(BaseServiceImpl.class);
 
@@ -99,13 +100,11 @@ public class BaseServiceImpl extends BaseSpringParent implements BaseService {
     @Override
     public String text(String code, Object... args) {
 
-        String txt = null;
+        String txt;
 
         try {
             txt = messages.getMessage(code, args);
-
         } catch (NoSuchMessageException ex) {
-
             logger.error("Message resource error: {}", ex.getMessage());
             txt = String.format(MSG_ERROR_DECORATION, code);
         }
@@ -118,13 +117,10 @@ public class BaseServiceImpl extends BaseSpringParent implements BaseService {
     @Override
     public String textLocalized(String code, Locale l, Object... args) {
 
-        String txt = null;
-
+        String txt;
         try {
             txt = messages.getMessage(code, args, l);
-
         } catch (NoSuchMessageException ex) {
-
             logger.error("Message resource error: {}", ex.getMessage());
             txt = String.format(MSG_ERROR_DECORATION, code);
         }
@@ -134,10 +130,10 @@ public class BaseServiceImpl extends BaseSpringParent implements BaseService {
     /**
      * Factories that include some extensions.
      */
-    private final Map<String, StrategyFactory> extensionFactories = toMap();
+    private final Map<Object, StrategyFactory> extensionFactories = toMap();
 
 
-    protected void registerExtensions(String extId, List<Strategy<Object>> extensions) {
+    protected void registerExtensions(Object extId, List<Strategy<Object>> extensions) {
         extensionFactories.put(extId, new StrategyFactoryImpl(extensions));
     }
 
@@ -165,16 +161,16 @@ public class BaseServiceImpl extends BaseSpringParent implements BaseService {
      * @return The list including resulted objects if they were during the
      * processing.
      */
-    protected List<Object> processExtensions(String extId, Object object, Object... params) {
+    protected List<Object> processExtensions(Object extId, Object object, Object... params) {
         StrategyStatistic stat = extensionFactories.containsKey(extId) ? extensionFactories.get(extId).process(object, params) : null;
         if (stat == null) {
-            logger.warn("No extensions defined for '{}'" + extId);
+            logger.warn("No extensions defined for '{}'" + nullSafe(extId));
         } else {
             if (logger.isDebugEnabled()) {
                 logger.debug("List of applied strategies: {}", stat.getAppliedStrategies());
             }
         }
-        return stat == null ? null : stat.getResults();
+        return nullSafe(stat, StrategyStatistic::getResults).orElse(null);
     }
 
 
@@ -201,9 +197,7 @@ public class BaseServiceImpl extends BaseSpringParent implements BaseService {
      * @param args    Message arguments
      */
     protected void reject(String msgCode, Object... args) {
-
         throw new ApplicationException(text(msgCode, args));
-
     }
 
     /**
@@ -214,7 +208,6 @@ public class BaseServiceImpl extends BaseSpringParent implements BaseService {
      * @param <S>        Type of the object to validate
      */
     protected <S> void rejectIfNeed(Set<ConstraintViolation<? extends S>> violations) {
-
         if (notEmpty(violations)) {
             throw APIException.validation("validation", getAllErrorsAsString(violations));
         }
@@ -227,7 +220,6 @@ public class BaseServiceImpl extends BaseSpringParent implements BaseService {
      * @param params The message parameters
      */
     protected void rejectAPI(String id, Object... params) {
-
         throw APIException.validation(id, text(id, params));
     }
 
@@ -239,7 +231,6 @@ public class BaseServiceImpl extends BaseSpringParent implements BaseService {
      * @param params  Parameters of the error message
      */
     protected void checkNotNull(Object value, String errorId, Object... params) {
-
         if (value == null) {
             rejectAPI(errorId, params);
         }
@@ -253,20 +244,18 @@ public class BaseServiceImpl extends BaseSpringParent implements BaseService {
      * @param paramId The name of the parameter that represents the value
      */
     protected void checkParamNotNull(Object value, String paramId) {
-
         checkNotNull(value, "api.param.is.null", paramId);
     }
 
     /**
      * Checks whether the parameter is wrong. It supposed to use some standard
-     * message ID to avoid to much parameters message writing.
+     * message ID.
      *
      * @param condition The condition to check
      * @param paramId   The parameter ID
      * @param value     The value of the parameter which is wrong
      */
     protected void checkParamWrong(boolean condition, String paramId, Object value) {
-
         checkIsTrue(condition, "api.param.is.wrong", paramId, value);
     }
 
@@ -279,7 +268,6 @@ public class BaseServiceImpl extends BaseSpringParent implements BaseService {
      * @param params  Parameters of the error message
      */
     protected void checkPattern(String value, String pattern, String errorId, Object... params) {
-
         if (!Pattern.matches(pattern, value)) {
             rejectAPI(errorId, params);
         }
@@ -294,7 +282,6 @@ public class BaseServiceImpl extends BaseSpringParent implements BaseService {
      * @param params    Parameters of the error message
      */
     protected void checkIsTrue(boolean condition, String errorId, Object... params) {
-
         if (!condition) {
             rejectAPI(errorId, params);
         }
@@ -311,20 +298,20 @@ public class BaseServiceImpl extends BaseSpringParent implements BaseService {
      * @param o   The object to be validated
      * @param <S> The type of the object
      */
-    protected <S> void validate(S o) {
+    protected <S> void validate(S o, Object... params) {
 
+        // Field-based validators
         rejectIfNeed(new HashSet<>(validator().validate(o)));
-
         Class<?> clazz = (o instanceof BaseEntity) ? EntityUtils.entityClass((BaseEntity) o) : o.getClass();
 
+        // Complex validators
         if (!validators.containsKey(clazz)) {
-
             ValidationFactory factory = bean("ValidationFactory", ValidationFactory.class);
-
-            StrategyFactory sf = new StrategyFactoryImpl(factory.getValidators(clazz));
-            validators.put(clazz, sf);
+            //validators.put(clazz, new StrategyFactoryImpl(factory.getValidators(clazz)));
+            registerExtensions(clazz, factory.getValidators(clazz));
         }
-        validators.get(clazz).process(o);
+        //validators.get(clazz).process(o, params);
+        processExtensions(clazz, o, params);
     }
 
     /**
@@ -336,7 +323,6 @@ public class BaseServiceImpl extends BaseSpringParent implements BaseService {
      * @return All errors as a comma-separated string
      */
     protected <S> String getAllErrorsAsString(Set<ConstraintViolation<? extends S>> violations) {
-
         return ValidationUtils.getAllErrorsAsString(violations);
     }
 
@@ -383,17 +369,36 @@ public class BaseServiceImpl extends BaseSpringParent implements BaseService {
      * Loads extensions marked with the given annotation type
      *
      * @param marker The marker annotation
-     * @return A list of extensions
+     * @return The list of found extensions
      */
     protected List<Strategy<Object>> loadExtensions(Class<? extends Annotation> marker) {
+        logger.info("Loading: extensions by : {} of {}", marker.getSimpleName(), target(this));
+        return loadExtensions(s -> AnnotationUtils.isAnnotationDeclaredLocally(marker, target(s).getClass()));
+    }
 
-        Map<String, Object> beans = ctx.getBeansWithAnnotation(marker);
+    /**
+     * Loads extensions selecting them based on the given callback's result
+     *
+     * @param callback The callback to determine the condition of selection
+     * @return The list of found extensions
+     */
+    protected List<Strategy<Object>> loadExtensions(Function<Strategy<Object>, Boolean> callback) {
 
-        @SuppressWarnings("unchecked")
-        List<Strategy<Object>> extensions = list(beans.values().stream().map(a -> (Strategy<Object>) a));
+        Map<String, Strategy<Object>> beans = ctx.getBeansOfType(getClazz());
+        List<Strategy<Object>> extensions = list(beans.values().stream().filter(callback::apply));
 
-        logger.info("Loaded: {} '{}' extensions for the: {}", extensions.size(), marker.getSimpleName(), target(this));
+        logger.info("Loaded: {} extensions for the: {}", extensions.size(), target(this));
         return extensions;
+    }
+
+    @SuppressWarnings("unchecked")
+    private static Class<Strategy<Object>> getClazz() {
+        try {
+            // Yes, it's ugly. How to solve it better?
+            return (Class<Strategy<Object>>) Class.forName("ru.anr.base.services.pattern.Strategy");
+        } catch (ClassNotFoundException ex) {
+            throw new ApplicationException(ex);
+        }
     }
 
     /**
@@ -401,7 +406,6 @@ public class BaseServiceImpl extends BaseSpringParent implements BaseService {
      */
     @Override
     public TargetEnvironments getTargetEnv() {
-
         return TargetEnvironments.search(getProfiles());
     }
 
@@ -443,6 +447,12 @@ public class BaseServiceImpl extends BaseSpringParent implements BaseService {
         }, args);
     }
 
+    /**
+     * Retrieves the current authorization details if there is an authorization
+     *
+     * @param <S> The type of authorization details
+     * @return The resulted authorization details, or null if there is no authorization.
+     */
     @SuppressWarnings("unchecked")
     protected <S extends User> S authorization() {
         return nullSafe(token(), a -> (S) a.getDetails()).orElse(null);
@@ -487,8 +497,17 @@ public class BaseServiceImpl extends BaseSpringParent implements BaseService {
         return SecurityContextHolder.getContext().getAuthentication();
     }
 
-    protected APICommand api(Class<? extends ApiCommandStrategy> clazz, MethodTypes method, RequestModel request,
-                             Object... contexts) {
+    /**
+     * Executes an API strategy.
+     *
+     * @param clazz    The strategy command
+     * @param method   The method
+     * @param request  The request model
+     * @param contexts The command context and parameters
+     * @return The resulted command
+     */
+    protected APICommand apiCmd(Class<? extends ApiCommandStrategy> clazz, MethodTypes method, RequestModel request,
+                                Object... contexts) {
 
         ApiStrategy a = ApiUtils.extract(clazz);
         APICommandFactory factory = bean(APICommandFactory.class);
@@ -502,18 +521,52 @@ public class BaseServiceImpl extends BaseSpringParent implements BaseService {
         return factory.process(cmd);
     }
 
+    /**
+     * Executes an API strategy with returning the response value only.
+     *
+     * @param clazz    The strategy command
+     * @param method   The method
+     * @param request  The request model
+     * @param contexts The command context and parameters
+     * @return The resulted command
+     */
+    protected <S> S api(Class<? extends ApiCommandStrategy> clazz, MethodTypes method, RequestModel request,
+                        Object... contexts) {
+        return apiCmd(clazz, method, request, contexts).getResponse();
+    }
+
+    /**
+     * Checks the given value is a positive number.
+     *
+     * @param value The value
+     */
     protected void checkPositiveNumber(BigDecimal value) {
         checkIsTrue(value.signum() > 0, "number.positive", value.toString());
     }
 
+    /**
+     * Checks the given value is a positive number or zero.
+     *
+     * @param value The value
+     */
     protected void checkPositiveNumberOrZero(BigDecimal value) {
         checkIsTrue(value.signum() >= 0, "number.positive", value.toString());
     }
 
+    /**
+     * Checks the given value is a percent value
+     *
+     * @param value The value
+     */
     protected void checkPercentNumber(BigDecimal value) {
         checkIsTrue(value.compareTo(d("1")) <= 0, "number.percent", value.toString());
     }
 
+    /**
+     * Checks the given value satisfies the given scale value
+     *
+     * @param value The value
+     */
     public void checkLessThanScale(int scale, BigDecimal value) {
         checkIsTrue(verifyLessThanScale(scale, value), "number.scale", value.toString(), scale);
     }
@@ -525,8 +578,12 @@ public class BaseServiceImpl extends BaseSpringParent implements BaseService {
      * than 0.00001 (like 0.000005, 0.00000001, etc.).
      * <p>
      * 2. Also, we check that after rounding the value is not changed, i.e. to avoid $0.023 or so.
+     *
+     * @param scale The scale of decimal
+     * @param value The value to check
+     * @return true, if the scale of the value is less or equals to the min for the given scale
      */
-    public boolean verifyLessThanScale(int scale, BigDecimal value) {
+    public static boolean verifyLessThanScale(int scale, BigDecimal value) {
         if (value.signum() == 0) return true; // zero also works here
 
         BigDecimal min = scale(BigDecimal.ONE.movePointLeft(scale), scale);
@@ -539,26 +596,53 @@ public class BaseServiceImpl extends BaseSpringParent implements BaseService {
      * @param object The object to check
      * @return true, if the object is not null and its ID is defined
      */
-    protected boolean isDefined(BaseObjectModel object) {
+    protected static boolean isDefined(BaseObjectModel object) {
         return object != null && object.id != null;
     }
 
 
-    @Override
-    public void markAsRollback() {
-        if (TransactionSynchronizationManager.isActualTransactionActive()) {
-            TransactionStatus status = TransactionAspectSupport.currentTransactionStatus();
-            status.setRollbackOnly();
-        }
-    }
-
-    protected boolean isSupported(SupportableService service) {
+    /**
+     * Verifies the given service is available. This function maybe used for conditional injection and allows to minimize
+     * the code for doing this kind of checks.
+     *
+     * @param service The service to check.
+     */
+    protected static boolean isSupported(SupportableService service) {
         return service != null && service.isSupported();
     }
 
-    // /////////////////////////////////////////////////////////////////////////
-    // /// getters/setters
-    // /////////////////////////////////////////////////////////////////////////
+    protected static <S extends ResponseModel, T> List<S> toModel(Page<T> pages, Function<T, S> callback) {
+        return pages.getContent()
+                .stream()
+                .map(o -> {
+                    S model = callback.apply(o);
+                    model.total = pages.getTotalElements();
+                    model.page = pages.getNumber();
+                    model.perPage = pages.getSize();
+                    return model;
+                })
+                .collect(Collectors.toList());
+    }
+
+    protected static <S extends ResponseModel, T> List<S> toModel(Page<T> pages, Class<S> modelClass
+            , Class<T> objectClass, BiConsumer<S, T> callback) {
+        return toModel(pages, o -> {
+            S model = inst(modelClass, new Class<?>[]{objectClass}, o);
+            if (callback != null) {
+                callback.accept(model, o);
+            }
+            return model;
+        });
+    }
+
+    protected static <S extends ResponseModel, T> List<S> toModel(Page<T> pages, Class<S> modelClass
+            , Class<T> objectClass) {
+        return toModel(pages, modelClass, objectClass, null);
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+    ///// getters/setters
+    ///////////////////////////////////////////////////////////////////////////
 
     /**
      * Set the default extensions

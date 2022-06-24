@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
 <properties>
+
     <entry key="hello.world">Hello, world!</entry>
     <entry key="api.errorcode.1">A system error</entry>
     <entry key="api.errorcode.-1">A validation error</entry>
-    
-    
+
     <!-- Validation -->
-    <entry key="not.null.value">The value is expected to be NOT NULL</entry>    
+    <entry key="not.null.value">The value is expected to be NOT NULL</entry>
     <entry key="javax.validation.constraints.Min.message">The value ${validatedValue} must be greater then {value}</entry>
-    
+
 </properties>

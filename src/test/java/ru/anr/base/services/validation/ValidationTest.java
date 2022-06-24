@@ -9,14 +9,13 @@ import ru.anr.base.samples.services.validation.SampleService;
 import ru.anr.base.services.BaseLocalServiceTestCase;
 
 /**
- * Description ...
+ * Basic validation tests.
  *
  * @author Alexey Romanchuk
  * @created Jan 21, 2016
  */
 
 public class ValidationTest extends BaseLocalServiceTestCase {
-
     /**
      * A service
      */

@@ -1,3 +1,18 @@
+/*
+ * Copyright 2014-2022 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
+ */
 package ru.anr.base.services.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +46,7 @@ import ru.anr.base.BaseParent;
 import javax.sql.DataSource;
 
 /**
- * A common Authorization / ACL configurator.
+ * A common Authorization and ACL configurator.
  *
  * @author Alexey Romanchuk
  * @created Feb 14, 2015
@@ -46,20 +61,20 @@ public class ACLConfig extends GlobalMethodSecurityConfiguration {
     private final String aclManageRole;
 
     /**
-     * The name for cache. This name must be define in cache managent system
+     * The name for cache. This name must be defined in the cache management system
      */
     private final String aclCacheName;
 
     /**
-     * Class identity query - a way to get next identifier. By default used a
-     * HSQL "call identity()". Must be overriden in other databases.
+     * Class identity query - a way to get next identifier. By default, we use the
+     * HSQL "call identity()". Must be overridden in other databases.
      * <p>
      * For example, "SELECT HIBERNATE_SEQUENCE.CURRVAL FROM DUAL"
      */
     private final String classIdentityQuery;
 
     /**
-     * Sid identity query - a way to get next identifier. By default used a HSQL
+     * Sid identity query - a way to get next identifier. By default, we use the HSQL
      * "call identity()". Must be overriden in other databases.
      * <p>
      * For example, "SELECT HIBERNATE_SEQUENCE.CURRVAL FROM DUAL"
@@ -67,7 +82,7 @@ public class ACLConfig extends GlobalMethodSecurityConfiguration {
     private final String sidIdentityQuery;
 
     /**
-     * To use or not use the acls
+     * To use or not to use the ACLs
      */
     private final boolean useAcls;
 
@@ -115,9 +130,7 @@ public class ACLConfig extends GlobalMethodSecurityConfiguration {
         Assert.notNull(cache, "The name '" + aclCacheName + "' not found");
         AclCache aclCache = new SpringCacheBasedAclCache(cache, grantingStrategy, authorizationStrategy);
 
-        LookupStrategy lookupStrategy =
-                new BasicLookupStrategy(datasource, aclCache, authorizationStrategy, grantingStrategy);
-
+        LookupStrategy lookupStrategy = new BasicLookupStrategy(datasource, aclCache, authorizationStrategy, grantingStrategy);
         JdbcMutableAclService s = new JdbcMutableAclService(datasource, lookupStrategy, aclCache);
 
         if (BaseParent.notEmpty(classIdentityQuery)) {

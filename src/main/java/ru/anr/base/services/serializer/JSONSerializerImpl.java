@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 the original author or authors.
+ * Copyright 2014-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -15,7 +15,6 @@
  */
 package ru.anr.base.services.serializer;
 
-import com.fasterxml.jackson.databind.AnnotationIntrospector;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.introspect.AnnotationIntrospectorPair;
@@ -23,12 +22,11 @@ import com.fasterxml.jackson.databind.introspect.JacksonAnnotationIntrospector;
 import com.fasterxml.jackson.module.jaxb.JaxbAnnotationIntrospector;
 
 /**
- * JSON Serializer implementation.
+ * A JSON Serializer implementation.
  *
  * @author Alexey Romanchuk
  * @created Nov 8, 2014
  */
-
 public class JSONSerializerImpl extends AbstractSerializerImpl {
 
     /**
@@ -38,15 +36,13 @@ public class JSONSerializerImpl extends AbstractSerializerImpl {
 
         super(new ObjectMapper());
 
-        // mapper().configure(SerializationFeature.WRAP_ROOT_VALUE, true);
-        // mapper().configure(DeserializationFeature.UNWRAP_ROOT_VALUE, true);
-
-        AnnotationIntrospector introspector = new JaxbAnnotationIntrospector(mapper().getTypeFactory());
-        AnnotationIntrospector secondary = new JacksonAnnotationIntrospector();
-
-        mapper().setAnnotationIntrospector(new AnnotationIntrospectorPair(introspector, secondary));
+        mapper().setAnnotationIntrospector(
+                new AnnotationIntrospectorPair(
+                        new JaxbAnnotationIntrospector(mapper().getTypeFactory()),
+                        new JacksonAnnotationIntrospector())
+        );
     }
-    
+
     /**
      * A constructor with the flag of formatted output which is convenient for
      * debugging.

@@ -20,7 +20,6 @@ import java.util.List;
  * @author Alexey Romanchuk
  * @created Nov 7, 2014
  */
-
 public class ApiSerializationTest extends BaseLocalServiceTestCase {
 
     /**
@@ -105,7 +104,7 @@ public class ApiSerializationTest extends BaseLocalServiceTestCase {
     }
 
     /**
-     * Examples for serialization/deserializarion of complex types like String
+     * Examples for serialization/deserialization of complex types like String
      * of models
      */
     @Test

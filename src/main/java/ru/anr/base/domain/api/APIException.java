@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 the original author or authors.
+ * Copyright 2014-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -36,9 +36,6 @@ public final class APIException extends ApplicationException {
      */
     public static final int ERROR_CLIENT = -1;
 
-    /**
-     * Serial ID
-     */
     private static final long serialVersionUID = -1705171832150544996L;
 
     /**
@@ -53,7 +50,6 @@ public final class APIException extends ApplicationException {
      * @param errorCode An error code
      */
     private APIException(String msg, int errorCode) {
-
         super(msg);
         this.errorCode = errorCode;
     }
@@ -66,7 +62,6 @@ public final class APIException extends ApplicationException {
      * @return An exception object
      */
     public static APIException validation(String errorId, String msg) {
-
         APIException ex = new APIException(msg, ERROR_CLIENT);
         ex.setErrorId(errorId);
 
@@ -84,15 +79,14 @@ public final class APIException extends ApplicationException {
         return new APIException(msg, errorCode);
     }
 
-    // /////////////////////////////////////////////////////////////////////////
-    // /// getters/setters
-    // /////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////
+    ///// getters/setters
+    ///////////////////////////////////////////////////////////////////////////
 
     /**
      * @return the errorCode
      */
     public int getErrorCode() {
-
         return errorCode;
     }
 }

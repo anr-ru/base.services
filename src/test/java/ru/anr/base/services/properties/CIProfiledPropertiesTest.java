@@ -19,7 +19,6 @@ import ru.anr.base.tests.BaseTestCase;
 @ContextConfiguration(locations = "classpath:tests-properties-context.xml", inheritLocations = false)
 @ActiveProfiles(profiles = {"CI", "production"})
 public class CIProfiledPropertiesTest extends BaseTestCase {
-
     /**
      * The value to check
      */
@@ -37,7 +36,6 @@ public class CIProfiledPropertiesTest extends BaseTestCase {
      */
     @Test
     public void testCheckValue() {
-
         Assertions.assertEquals("ci-value", value);
         Assertions.assertSame(TargetEnvironments.CI, service.getTargetEnv());
     }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 the original author or authors.
+ * Copyright 2014-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -87,9 +87,15 @@ public class ResponseModel extends BaseParent implements Serializable {
     @XmlAttribute(name = "total")
     public Long total;
 
-    // /////////////////////////////////////////////////////////////////////////
-    // /// getters/setters
-    // /////////////////////////////////////////////////////////////////////////
+    /**
+     * The identifier of the request/response
+     */
+    @XmlAttribute(name = "query_id")
+    public String queryId;
+
+    ///////////////////////////////////////////////////////////////////////////
+    ///// getters/setters
+    ///////////////////////////////////////////////////////////////////////////
 
     @Override
     public boolean equals(Object obj) {

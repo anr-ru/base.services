@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 the original author or authors.
+ * Copyright 2014-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -37,7 +37,7 @@ import java.util.Map;
 public interface BaseRepository<T extends BaseEntity> extends JpaRepository<T, Long> {
 
     /**
-     * Refresh object from data base
+     * Refreshes (loads) object from the database
      *
      * @param object Object
      */
@@ -87,22 +87,22 @@ public interface BaseRepository<T extends BaseEntity> extends JpaRepository<T, L
     <S extends BaseEntity> S findSecured(Class<?> entityClass, Long id);
 
     /**
-     * Performs security-involved filtering of the page object
+     * Performs a security-involved filtration of the page object
      *
      * @param page The page which results need to be filtered
-     * @param <S>  Type of item in the list
-     * @return A resulted page list with applied security {@link PostFilter}.
+     * @param <S>  The type of item in the list
+     * @return The resulted list extracted from the pages with applied security {@link PostFilter}.
      */
     @PostFilter("hasPermission(filterObject,'read') or hasPermission(filterObject,'access_read') or "
             + "hasRole('ROLE_ROOT')")
     <S extends BaseEntity> List<S> filter(Page<S> page);
 
     /**
-     * Executes an native SQL query. This function can be useful for doing some reports directly based on SQL tables.
+     * Executes a native SQL query. This function can be useful for doing some reports directly based on SQL tables.
      *
      * @param sql    The SQL query to execute
      * @param page   The pager
-     * @param params the query parameters
+     * @param params Query parameters
      * @return The resulted list
      */
     List<Map<String, Object>> executeSQLQuery(String sql, Pageable page, Map<String, Object> params);

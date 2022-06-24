@@ -1,6 +1,3 @@
-/**
- *
- */
 package ru.anr.base.services;
 
 import org.junit.jupiter.api.Assertions;
@@ -16,10 +13,8 @@ import ru.anr.base.tests.BaseLocalDaoTestCase;
 /**
  * A parent class for all service layer tests.
  *
- *
  * @author Alexey Romanchuk
  * @created Nov 6, 2014
- *
  */
 @ContextConfiguration(value = "classpath:/tests-service-context.xml", inheritLocations = false)
 @Disabled
@@ -34,8 +29,7 @@ public class BaseLocalServiceTestCase extends BaseLocalDaoTestCase {
     /**
      * Performs authentication and when it's successfull - sets security context
      *
-     * @param token
-     *            A token for authentication
+     * @param token A token for authentication
      * @return Authrorised user
      */
     protected Authentication authenticate(Authentication token) {
@@ -54,7 +48,6 @@ public class BaseLocalServiceTestCase extends BaseLocalDaoTestCase {
     @BeforeEach
     @Override
     public void setUp() {
-
         super.setUp();
         SecurityContextHolder.clearContext();
     }

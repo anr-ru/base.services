@@ -160,7 +160,7 @@ public class APICommandTest extends BaseParent {
          * Sorting details
          */
         m = cmd.params(toMap("sort", "x,z")).getRequest();
-        Assertions.assertEquals(list(), m.sorted);
+        Assertions.assertEquals(list(new SortModel("x", SortDirection.ASC), new SortModel("z", SortDirection.ASC)), m.sorted);
 
         m = cmd.params(toMap("sort", "+x,-z")).getRequest();
         Assertions.assertEquals(list(new SortModel("x", SortDirection.ASC), new SortModel("z", SortDirection.DESC)),
@@ -185,5 +185,24 @@ public class APICommandTest extends BaseParent {
         m = cmd.params(toMap("sort", " x,-z")).getRequest();
         Assertions.assertEquals(list(new SortModel("x", SortDirection.ASC), new SortModel("z", SortDirection.DESC)),
                 m.sorted);
+    }
+
+    /**
+     * Use case: retrieve context parameters
+     */
+    @Test
+    public void testCommandParameters() {
+
+        APICommand cmd = new APICommand("main", "v5")
+                .context("id", 100L, "value", "xxx")
+                .params(toMap("value", "yyy", "field", "name"));
+
+        Assertions.assertTrue(cmd.hasParam("id"));
+        Assertions.assertTrue(cmd.hasParam("value"));
+        Assertions.assertTrue(cmd.hasParam("field"));
+
+        Assertions.assertEquals(100L, (Long) cmd.get("id"));
+        Assertions.assertEquals("yyy", cmd.get("value")); // overridden
+        Assertions.assertEquals("name", cmd.get("field"));
     }
 }

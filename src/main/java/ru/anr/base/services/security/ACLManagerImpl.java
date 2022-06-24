@@ -1,5 +1,17 @@
-/**
- * 
+/*
+ * Copyright 2014-2022 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  */
 package ru.anr.base.services.security;
 
@@ -7,34 +19,22 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.acls.domain.ObjectIdentityImpl;
-import org.springframework.security.acls.model.MutableAcl;
-import org.springframework.security.acls.model.MutableAclService;
-import org.springframework.security.acls.model.NotFoundException;
-import org.springframework.security.acls.model.ObjectIdentity;
-import org.springframework.security.acls.model.Permission;
-import org.springframework.security.acls.model.Sid;
-
+import org.springframework.security.acls.model.*;
 import ru.anr.base.domain.BaseEntity;
 import ru.anr.base.services.BaseDataAwareServiceImpl;
 
 /**
- * Implementation for {@link ACLManager}.
- *
+ * An implementation of {@link ACLManager}.
  *
  * @author Alexey Romanchuk
  * @created Feb 14, 2015
- *
  */
-
 public class ACLManagerImpl extends BaseDataAwareServiceImpl implements ACLManager {
 
-    /**
-     * Logger
-     */
     private static final Logger logger = LoggerFactory.getLogger(ACLManagerImpl.class);
 
     /**
-     * Standard {@link MutableAclService} implementation
+     * The standard {@link MutableAclService} implementation
      */
     @Autowired
     private MutableAclService acls;
@@ -52,9 +52,9 @@ public class ACLManagerImpl extends BaseDataAwareServiceImpl implements ACLManag
         try {
             acl = (MutableAcl) acls.readAclById(oi);
         } catch (NotFoundException ex) {
-
             acl = acls.createAcl(oi);
         }
+
         acl.insertAce(acl.getEntries().size(), permission, sid, true);
         acls.updateAcl(acl);
     }

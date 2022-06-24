@@ -1,11 +1,10 @@
 /**
- * 
+ *
  */
 package ru.anr.base.samples.services;
 
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
-
 import ru.anr.base.services.BaseDataAwareServiceImpl;
 
 /**
@@ -25,7 +24,6 @@ public class SuperSecuredImpl extends BaseDataAwareServiceImpl {
     @Override
     @PreAuthorize("isFullyAuthenticated()")
     public String text(String code, Object... args) {
-
         return super.text(code, args);
     }
 }

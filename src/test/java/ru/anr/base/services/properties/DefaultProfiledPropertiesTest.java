@@ -1,6 +1,3 @@
-/**
- *
- */
 package ru.anr.base.services.properties;
 
 import org.junit.jupiter.api.Assertions;
@@ -14,10 +11,8 @@ import ru.anr.base.tests.BaseTestCase;
 /**
  * QA Profiles
  *
- *
  * @author Alexey Romanchuk
  * @created Nov 3, 2016
- *
  */
 @ContextConfiguration(locations = "classpath:tests-properties-context.xml", inheritLocations = false)
 public class DefaultProfiledPropertiesTest extends BaseTestCase {

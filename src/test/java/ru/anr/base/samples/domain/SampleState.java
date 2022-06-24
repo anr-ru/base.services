@@ -1,22 +1,16 @@
-/**
- * 
- */
 package ru.anr.base.samples.domain;
+
+import org.springframework.security.core.Authentication;
+import ru.anr.base.domain.BaseEntity;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
-import org.springframework.security.core.Authentication;
-
-import ru.anr.base.domain.BaseEntity;
-
 /**
  * Test entity with states
  *
- *
  * @author Alexey Romanchuk
  * @created Jun 3, 2015
- *
  */
 @Entity
 @Table(name = "sample_state")
@@ -31,7 +25,6 @@ public class SampleState extends BaseEntity {
      * Default
      */
     public SampleState() {
-
         putStates(TestStates.A, TestStates.B); // this transition only
     }
 
@@ -40,7 +33,6 @@ public class SampleState extends BaseEntity {
      */
     @Override
     public boolean accessible(Authentication token, Object permission) {
-
         boolean access = true;
         if (safeEquals(permission, "state")) {
             access = !safeEquals(getState(), TestStates.B.name());

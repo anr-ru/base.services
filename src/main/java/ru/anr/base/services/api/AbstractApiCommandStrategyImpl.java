@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 the original author or authors.
+ * Copyright 2014-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -19,6 +19,7 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.NotImplementedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -42,47 +43,47 @@ import java.util.function.Function;
 
 public class AbstractApiCommandStrategyImpl extends BaseDataAwareServiceImpl implements ApiCommandStrategy {
 
-    /**
-     * The logger
-     */
     private static final Logger logger = LoggerFactory.getLogger(AbstractApiCommandStrategyImpl.class);
 
     /**
      * GET method
      *
-     * @param cmd API Command
-     * @return Response model
+     * @param cmd The API Command
+     * @return The response model
      */
     @Override
     public Object get(APICommand cmd) {
-
         throw new NotImplementedException("Method 'GET' not implemented");
     }
 
     /**
      * POST method
      *
-     * @param cmd API Command
-     * @return Response model
+     * @param cmd The API Command
+     * @return The response model
      */
     @Override
     public Object post(APICommand cmd) {
-
         throw new NotImplementedException("Method 'Post' not implemented");
     }
 
     /**
      * PUT method
      *
-     * @param cmd API Command
-     * @return Response model
+     * @param cmd The API Command
+     * @return The response model
      */
-
     @Override
     public Object put(APICommand cmd) {
         throw new NotImplementedException("Method 'Put' not implemented");
     }
 
+    /**
+     * PATCH method
+     *
+     * @param cmd The API Command
+     * @return The response model
+     */
     @Override
     public Object patch(APICommand cmd) {
         throw new NotImplementedException("Method 'Patch' not implemented");
@@ -91,26 +92,34 @@ public class AbstractApiCommandStrategyImpl extends BaseDataAwareServiceImpl imp
     /**
      * DELETE method
      *
-     * @param cmd API Command
-     * @return Response model
+     * @param cmd The API Command
+     * @return The response model
      */
-
     @Override
     public Object delete(APICommand cmd) {
-
         throw new NotImplementedException("Method 'Delete' not implemented");
+    }
+
+    private ApiStrategy config;
+
+    @Override
+    public ApiStrategy config() {
+        if (config == null) {
+            this.config = AnnotationUtils.findAnnotation(target(this).getClass(), ApiStrategy.class);
+        }
+        return config;
     }
 
     /**
      * Prepares a {@link Pageable} object based on provided data. Handles the
      * case when paging parameters are null.
      *
-     * @param cmd        An API Command
-     * @param direction  A direction of sorting
+     * @param cmd        The API Command
+     * @param direction  The direction of sorting
      * @param properties Names of properties used for sorting
-     * @return A new created {@link Pageable}
+     * @return The resulted new {@link Pageable}
      */
-    protected Pageable safePageable(APICommand cmd, Direction direction, String... properties) {
+    protected static Pageable safePageable(APICommand cmd, Direction direction, String... properties) {
 
         logger.trace("Page parameters: {}:{}", cmd.getRequest().page, cmd.getRequest().perPage);
 
@@ -123,6 +132,27 @@ public class AbstractApiCommandStrategyImpl extends BaseDataAwareServiceImpl imp
             perPage = 10;
         }
         return ArrayUtils.isEmpty(properties) ? PageRequest.of(page, perPage) : PageRequest.of(page, perPage, direction, properties);
+    }
+
+    /**
+     * Builds a {@link Pageable} object based on parameters of the command
+     *
+     * @param cmd       The API command
+     * @param field     The field to search (allowed field)
+     * @param sortOrder The default sort order if not field is provided
+     * @return The resulted {@link Pageable}
+     */
+    protected static Pageable buildPager(APICommand cmd, String field, SortModel.SortDirection sortOrder) {
+
+        RequestModel rq = cmd.getRequest();
+        if (isEmpty(rq.sorted)) {
+            rq.sorted = list(new SortModel(field, sortOrder));
+        }
+
+        Map<String, SortModel.SortDirection> map = cmd.findSorting(SortModel.SortDirection.DESC, field);
+        Sort.Direction direction = map.get(field) == SortModel.SortDirection.DESC ? Sort.Direction.DESC : Sort.Direction.ASC;
+
+        return safePageable(cmd, direction, field);
     }
 
     /**
@@ -145,14 +175,14 @@ public class AbstractApiCommandStrategyImpl extends BaseDataAwareServiceImpl imp
     }
 
     /**
-     * Performs a search of an object by its identifier located inside of a
+     * Performs a search of an object by its identifier located inside a
      * {@link APICommand}.
      *
      * @param cmd      A command to parse
      * @param callback A callback function used to delegate the search procedure to a
      *                 service
      * @param <S>      A class of the object
-     * @return A found object (cab be null).
+     * @return A found object (can be null).
      */
     protected <S> S findObjectByID(APICommand cmd, Function<Long, S> callback) {
         return findObjectByID(cmd, "id", map -> {
@@ -164,18 +194,5 @@ public class AbstractApiCommandStrategyImpl extends BaseDataAwareServiceImpl imp
 
     protected <S> S findObjectByID(APICommand cmd, String idParam, Function<Map<String, ?>, S> callback) {
         return callback.apply(extract(cmd, idParam));
-    }
-
-    protected Pageable buildPager(APICommand cmd, String field, SortModel.SortDirection sortOrder) {
-
-        RequestModel rq = cmd.getRequest();
-        if (isEmpty(rq.sorted)) {
-            rq.sorted = list(new SortModel(field, sortOrder));
-        }
-
-        Map<String, SortModel.SortDirection> map = cmd.findSorting(SortModel.SortDirection.DESC, field);
-        Sort.Direction direction = map.get(field) == SortModel.SortDirection.DESC ? Sort.Direction.DESC : Sort.Direction.ASC;
-
-        return safePageable(cmd, direction, field);
     }
 }

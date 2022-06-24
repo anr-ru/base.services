@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 the original author or authors.
+ * Copyright 2014-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -27,7 +27,7 @@ import javax.persistence.EntityManager;
 /**
  * A multiUnit version of the repository factory.
  *
- * @param <T> The type of an entity
+ * @param <T> The type of entity
  * @author Alexey Romanchuk
  * @created Aug 11, 2015
  */
@@ -42,7 +42,6 @@ public class MultiUnitRepositoryFactoryBean<T extends BaseEntity>
      * @param repositoryInterface must not be {@literal null}.
      */
     public MultiUnitRepositoryFactoryBean(Class<? extends BaseRepository<T>> repositoryInterface) {
-
         super(repositoryInterface);
     }
 
@@ -57,7 +56,6 @@ public class MultiUnitRepositoryFactoryBean<T extends BaseEntity>
      * @param entityManager the entityManager to set
      */
     public void setEntityManager(EntityManager entityManager) {
-
         this.entityManager = entityManager;
     }
 
@@ -66,7 +64,6 @@ public class MultiUnitRepositoryFactoryBean<T extends BaseEntity>
      */
     @Override
     public void setMappingContext(MappingContext<?, ?> mappingContext) {
-
         super.setMappingContext(mappingContext);
     }
 
@@ -75,7 +72,6 @@ public class MultiUnitRepositoryFactoryBean<T extends BaseEntity>
      */
     @Override
     protected RepositoryFactorySupport doCreateRepositoryFactory() {
-
         return new InternalRepositoryFactory<T>(entityManager);
     }
 
@@ -84,7 +80,6 @@ public class MultiUnitRepositoryFactoryBean<T extends BaseEntity>
      */
     @Override
     public void afterPropertiesSet() {
-
         Assert.notNull(entityManager, "EntityManager must not be null!");
         super.afterPropertiesSet();
     }

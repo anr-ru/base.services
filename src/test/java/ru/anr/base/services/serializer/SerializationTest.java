@@ -1,6 +1,5 @@
 package ru.anr.base.services.serializer;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.util.StdDateFormat;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -38,11 +37,11 @@ public class SerializationTest extends BaseLocalServiceTestCase {
     private Model newModel() {
 
         Model m = new Model();
-        m.setField("xxx");
-        m.setSum(new BigDecimal("322.0323293"));
-        m.setTime(ZonedDateTime.of(2014, 9, 11, 10, 30, 0, 0, DEFAULT_TIMEZONE));
-        m.setSubs(BaseParent.list(new SubModel(1), new SubModel(2)));
-        m.setCalendar(calendar(m.getTime()));
+        m.field = "xxx";
+        m.sum = new BigDecimal("322.0323293");
+        m.time = ZonedDateTime.of(2014, 9, 11, 10, 30, 0, 0, DEFAULT_TIMEZONE);
+        m.subs = BaseParent.list(new SubModel(1), new SubModel(2));
+        m.calendar = calendar(m.time);
 
         return m;
     }
@@ -75,12 +74,12 @@ public class SerializationTest extends BaseLocalServiceTestCase {
 
         Model mx = json.fromStr(value, Model.class);
 
-        Assertions.assertEquals(date(m.getCalendar()), date(mx.getCalendar()));
-        Assertions.assertEquals(m.getTime(), mx.getTime());
+        Assertions.assertEquals(date(m.calendar), date(mx.calendar));
+        Assertions.assertEquals(m.time, mx.time);
 
         // TODO: Two calendars differ by 'firstDayOfWeek' and 'minimalDaysInFirstWeek', WTF?
-        m.setCalendar(null);
-        mx.setCalendar(null);
+        m.calendar = null;
+        mx.calendar = null;
         Assertions.assertEquals(m, mx);
 
         Assertions.assertEquals(d("600").toPlainString(), d("600.00").stripTrailingZeros().toPlainString());
@@ -107,15 +106,15 @@ public class SerializationTest extends BaseLocalServiceTestCase {
 
         Model mx = impl.fromStr(value, Model.class);
 
-        Assertions.assertEquals(m.getTime(), mx.getTime());
+        Assertions.assertEquals(m.time, mx.time);
         //mx.setSum(mx.getSum().setScale(9, BigDecimal.ROUND_HALF_UP));
 
-        Assertions.assertEquals(date(m.getCalendar()), date(mx.getCalendar()));
+        Assertions.assertEquals(date(m.calendar), date(mx.calendar));
         // TODO: Two calendars differ by 'firstDayOfWeek' and 'minimalDaysInFirstWeek', WTF?
-        m.setCalendar(null);
-        mx.setCalendar(null);
+        m.calendar = null;
+        mx.calendar = null;
 
-        Assertions.assertEquals(m.getSum(), mx.getSum());
+        Assertions.assertEquals(m.sum, mx.sum);
         Assertions.assertEquals(m, mx);
 
         Assertions.assertEquals(d("600").toPlainString(), d("600.00").stripTrailingZeros().toPlainString());
@@ -143,15 +142,15 @@ public class SerializationTest extends BaseLocalServiceTestCase {
 
         Model mx = xml.fromStr(value, Model.class);
 
-        Assertions.assertEquals(date(m.getCalendar()), date(mx.getCalendar()));
+        Assertions.assertEquals(date(m.calendar), date(mx.calendar));
         // TODO: Two calendars differ by 'firstDayOfWeek' and 'minimalDaysInFirstWeek', WTF?
-        m.setCalendar(null);
-        mx.setCalendar(null);
+        m.calendar = null;
+        mx.calendar = null;
         Assertions.assertEquals(m, mx);
     }
 
     @Test
-    public void testJason() throws JsonProcessingException, java.io.IOException {
+    public void testJason() throws java.io.IOException {
 
         ObjectMapper m = new ObjectMapper();
         m.registerModule(new JavaTimeModule());
@@ -167,7 +166,7 @@ public class SerializationTest extends BaseLocalServiceTestCase {
     public void testExpNumbers() throws IOException {
 
         Model m = new Model();
-        m.setSum(new BigDecimal("10"));
+        m.sum = new BigDecimal("10");
 
 
         JSONSerializerImpl impl = new JSONSerializerImpl();

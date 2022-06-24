@@ -11,6 +11,9 @@ import org.springframework.util.Assert;
  */
 public class ApiUtils {
 
+    private ApiUtils() {
+    }
+
     /**
      * Extract API Strategy information from the given API strategy class.
      *

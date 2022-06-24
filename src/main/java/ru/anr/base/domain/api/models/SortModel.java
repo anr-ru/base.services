@@ -1,12 +1,12 @@
 /*
- * Copyright 2014 the original author or authors.
- * 
+ * Copyright 2014-2022 the original author or authors.
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -15,19 +15,17 @@
  */
 package ru.anr.base.domain.api.models;
 
-import java.io.Serializable;
-
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
+import java.io.Serializable;
+
 /**
  * Basic Sort operation model.
  *
- *
  * @author Alexey Romanchuk
  * @created Nov 10, 2014
- *
  */
 
 public class SortModel implements Serializable {
@@ -49,14 +47,11 @@ public class SortModel implements Serializable {
 
     /**
      * Constructor
-     * 
-     * @param field
-     *            Name of field
-     * @param direction
-     *            Sorting direction
+     *
+     * @param field     Name of field
+     * @param direction Sorting direction
      */
     public SortModel(String field, SortDirection direction) {
-
         this.field = field;
         this.direction = direction;
     }
@@ -66,7 +61,6 @@ public class SortModel implements Serializable {
      */
     @Override
     public int hashCode() {
-
         return HashCodeBuilder.reflectionHashCode(this);
     }
 
@@ -75,7 +69,6 @@ public class SortModel implements Serializable {
      */
     @Override
     public boolean equals(Object obj) {
-
         return EqualsBuilder.reflectionEquals(this, obj);
     }
 
@@ -84,7 +77,6 @@ public class SortModel implements Serializable {
      */
     @Override
     public String toString() {
-
         return ToStringBuilder.reflectionToString(this);
     }
 
@@ -99,23 +91,20 @@ public class SortModel implements Serializable {
         /**
          * DESC
          */
-        DESC;
+        DESC
     }
 
     /**
      * @return the field
      */
     public String getField() {
-
         return field;
     }
 
     /**
-     * @param field
-     *            the field to set
+     * @param field the field to set
      */
     public void setField(String field) {
-
         this.field = field;
     }
 
@@ -123,17 +112,13 @@ public class SortModel implements Serializable {
      * @return the direction
      */
     public SortDirection getDirection() {
-
         return direction;
     }
 
     /**
-     * @param direction
-     *            the direction to set
+     * @param direction the direction to set
      */
     public void setDirection(SortDirection direction) {
-
         this.direction = direction;
     }
-
 }

@@ -1,6 +1,3 @@
-/**
- *
- */
 package ru.anr.base.tests;
 
 import com.mchange.v2.c3p0.ComboPooledDataSource;
@@ -14,14 +11,12 @@ import java.beans.PropertyVetoException;
 
 /**
  * Test JPA configuration, which uses pooled data source.
- *
+ * <p></p>
  * Unfortunately, repositoryFactoryBeanClass should be repeated in all
  * descendants of this class.
  *
- *
  * @author Alexey Romanchuk
  * @created Nov 6, 2014
- *
  */
 @EnableJpaRepositories(repositoryFactoryBeanClass = BaseRepositoryFactoryBean.class)
 public abstract class AbstractLocalDaoConfig extends AbstractJPADaoConfig {

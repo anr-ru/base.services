@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 the original author or authors.
+ * Copyright 2014-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -18,20 +18,18 @@ package ru.anr.base.domain;
 import org.springframework.security.core.Authentication;
 
 /**
- * Accessible interface - a simple way to perform access check on the domain
+ * Accessible Interface - a simple way to perform access check on the domain
  * object level.
  *
  * @author Alexey Romanchuk
  * @created Feb 18, 2015
  */
-
 public interface Accessible {
-
     /**
-     * A customizable function for a domain object. Must be overridden on
+     * A customizable function for domain objects. Must be overridden on
      * concrete objects.
      *
-     * @param token      An authentication token
+     * @param token      The authentication token
      * @param permission The permission to check. (See
      *                   PermissionEvaluator#hasPermission() for argument details)
      * @return true, if the object can be accessed

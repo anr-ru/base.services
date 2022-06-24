@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 the original author or authors.
+ * Copyright 2014-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -20,7 +20,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Import;
-import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.util.Assert;
 import org.springframework.web.util.UriUtils;
 import ru.anr.base.ApplicationException;
@@ -44,7 +43,7 @@ import java.util.Set;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 /**
- * API command factory - performs marchalling and unmarchalling of any api
+ * API command factory - performs marshalling and unmarshalling of any api
  * commands.
  *
  * @author Alexey Romanchuk
@@ -53,14 +52,11 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 @Import(SerializationConfig.class)
 public class APICommandFactoryImpl extends BaseServiceImpl implements APICommandFactory {
 
-    /**
-     * Logger
-     */
     private static final Logger logger = LoggerFactory.getLogger(APICommandFactoryImpl.class);
 
     /**
-     * API Commands. Map's key is a command identifier, and the second key is
-     * 'version'
+     * The registry of API Commands. The map's keys are command identifiers, and the second key is
+     * a version of the command.
      */
     private final Map<String, Map<String, ApiCommandStrategy>> commands = new HashMap<>();
 
@@ -85,17 +81,16 @@ public class APICommandFactoryImpl extends BaseServiceImpl implements APICommand
     private String errorCodePrefix = "api.errorcode.";
 
     /**
-     * Registration of found in spring context API commands
+     * Registration of API commands found in the spring context
      *
-     * @param beans Beans
+     * @param beans API Strategies beans
      */
     public void registerApi(Map<String, ApiCommandStrategy> beans) {
 
         logger.info("Registering '{}' api command beans", beans.size());
 
         for (Entry<String, ApiCommandStrategy> e : beans.entrySet()) {
-
-            ApiStrategy a = getAnnotation(target(e.getValue()));
+            ApiStrategy a = e.getValue().config();
             if (a != null) {
                 register(a, e.getValue());
             }
@@ -104,33 +99,17 @@ public class APICommandFactoryImpl extends BaseServiceImpl implements APICommand
     }
 
     /**
-     * Find annotaion of API Strategy command class
+     * Registers a found api command strategy
      *
-     * @param s API Strategy command
-     * @return Annotation instance
-     */
-    private ApiStrategy getAnnotation(ApiCommandStrategy s) {
-
-        return AnnotationUtils.findAnnotation(s.getClass(), ApiStrategy.class);
-    }
-
-    /**
-     * Registration of found api command strategy
-     *
-     * @param a Strategy configuration
-     * @param s API strategy bean
+     * @param a The strategy configuration
+     * @param s The API strategy bean
      */
     private void register(ApiStrategy a, ApiCommandStrategy s) {
 
         String aId = a.id().toLowerCase();
         String aV = a.version().toLowerCase();
 
-        Map<String, ApiCommandStrategy> versions = commands.get(aId);
-
-        if (versions == null) {
-            versions = new HashMap<>();
-            commands.put(aId, versions);
-        }
+        Map<String, ApiCommandStrategy> versions = commands.computeIfAbsent(aId, k -> new HashMap<>());
 
         Assert.isTrue(!versions.containsKey(aV), "Duplicate version " + aV + " for " + aId);
         versions.put(aV, s);
@@ -143,11 +122,9 @@ public class APICommandFactoryImpl extends BaseServiceImpl implements APICommand
     public APICommand process(APICommand cmd) {
 
         ApiCommandStrategy s = findStrategy(cmd);
-        processRequestModel(cmd, getAnnotation(target(s)));
+        processRequestModel(cmd, s.config());
 
-        Object rs = doInvoke(s, cmd);
-        cmd.setResponse(rs);
-
+        cmd.setResponse(doInvoke(s, cmd));
         processResponseModel(cmd);
 
         return cmd;
@@ -162,7 +139,7 @@ public class APICommandFactoryImpl extends BaseServiceImpl implements APICommand
      */
     private Object doInvoke(ApiCommandStrategy s, APICommand cmd) {
 
-        Object rs = null;
+        Object rs;
         logger.trace("Invoking {} method for {}/{}", cmd.getType(), cmd.getCommandId(), cmd.getVersion());
 
         switch (cmd.getType()) {
@@ -178,11 +155,13 @@ public class APICommandFactoryImpl extends BaseServiceImpl implements APICommand
             case Put:
                 rs = s.put(cmd);
                 break;
+            case Patch:
+                rs = s.patch(cmd);
+                break;
             default:
-                throw new UnsupportedOperationException();
+                throw new UnsupportedOperationException(cmd.getType().name());
         }
         return rs;
-
     }
 
     /**
@@ -212,7 +191,6 @@ public class APICommandFactoryImpl extends BaseServiceImpl implements APICommand
      */
     @Override
     public APICommand error(Throwable ex) {
-
         return error(new APICommand("", ""), ex);
     }
 
@@ -227,14 +205,10 @@ public class APICommandFactoryImpl extends BaseServiceImpl implements APICommand
 
         int code = APIException.ERROR_SYSTEM;
         if (reason instanceof APIException) {
-
             code = ((APIException) reason).getErrorCode();
-
         } else if (reason instanceof ConstraintViolationException) {
-
             code = APIException.ERROR_CLIENT;
         }
-
         return code;
     }
 
@@ -259,12 +233,12 @@ public class APICommandFactoryImpl extends BaseServiceImpl implements APICommand
 
         if (reason instanceof APIException) {
 
-            // May be the integer code defined
+            // Maybe the integer code is defined
             String msg = (code != APIException.ERROR_CLIENT) ? text(errorCodePrefix + code) : null;
             if (msg == null || msg.startsWith("[xxx")) {
                 String reasonMsg = reason.getMessage();
                 if (notEmpty(m.errorId) && m.errorId.startsWith("files")) {
-                    reasonMsg = encodeToUTF8(reasonMsg);
+                    reasonMsg = UriUtils.encodePath(reasonMsg, UTF_8.toString());
                 }
                 m.message = reasonMsg;
             } else {
@@ -283,42 +257,28 @@ public class APICommandFactoryImpl extends BaseServiceImpl implements APICommand
     }
 
     /**
-     * Encode message to UTF-8
-     *
-     * @param message original message
-     * @return encoded message
-     */
-    private String encodeToUTF8(String message) {
-        return UriUtils.encodePath(message, UTF_8.toString());
-    }
-
-    /**
      * {@inheritDoc}
      */
     @Override
     public APICommand error(APICommand cmd, Throwable ex) {
-
         return error(cmd, ex, new ResponseModel());
     }
 
     /**
-     * A special processing for
-     * {@link org.hibernate.exception.ConstraintViolationException}, which
-     * occurs in validations.
+     * A special processing for {@link org.hibernate.exception.ConstraintViolationException},
+     * which occurs in validations.
      *
      * @param reason The reason exception
      * @return Exception message
      */
     private String getExceptionMessage(Throwable reason) {
 
-        String rs = null;
+        String rs;
         logger.trace("Processing an exception: {}", reason.getClass());
 
         if (reason instanceof ConstraintViolationException) {
-
             Set<ConstraintViolation<?>> violations = ((ConstraintViolationException) reason).getConstraintViolations();
             rs = getAllErrorsAsString(violations);
-
         } else {
             rs = reason.getMessage();
         }
@@ -340,9 +300,7 @@ public class APICommandFactoryImpl extends BaseServiceImpl implements APICommand
             Serializer s = getSerializer(cmd.getRequestFormat());
 
             try {
-
                 logger.trace("Raw request data: {}", cmd.getRawModel());
-
                 if (s != null) {
                     RequestModel m = s.fromStr(cmd.getRawModel(), a.model());
                     if (cmd.getRequest() != null && (m != null)) {
@@ -359,9 +317,7 @@ public class APICommandFactoryImpl extends BaseServiceImpl implements APICommand
                     }
                     cmd.setRequest(m);
                 }
-
             } catch (Exception ex) {
-
                 logger.error("Unable to parse: {}", cmd.getRawModel());
                 throw ex;
             }
@@ -371,7 +327,7 @@ public class APICommandFactoryImpl extends BaseServiceImpl implements APICommand
     }
 
     /**
-     * Serializing a buit response model to raw string. If model is null, the
+     * Serializing the built response model to a raw string. If model is null, the
      * function does nothing.
      *
      * @param cmd Command
@@ -408,7 +364,7 @@ public class APICommandFactoryImpl extends BaseServiceImpl implements APICommand
     }
 
     /**
-     * Returns a serializer instance depending on specified format
+     * Returns a serializer instance depending on the specified format
      *
      * @param format Format code
      * @return Serializer instance
@@ -416,7 +372,6 @@ public class APICommandFactoryImpl extends BaseServiceImpl implements APICommand
     private Serializer getSerializer(RawFormatTypes format) {
 
         Serializer s = null;
-
         switch (format) {
             case JSON:
                 s = json;
@@ -432,15 +387,14 @@ public class APICommandFactoryImpl extends BaseServiceImpl implements APICommand
         return s;
     }
 
-    // /////////////////////////////////////////////////////////////////////////
-    // ///
-    // /////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////
+    ///// getters/setters
+    ///////////////////////////////////////////////////////////////////////////
 
     /**
      * @param errorCodePrefix the errorCodePrefix to set
      */
     public void setErrorCodePrefix(String errorCodePrefix) {
-
         this.errorCodePrefix = errorCodePrefix;
     }
 }

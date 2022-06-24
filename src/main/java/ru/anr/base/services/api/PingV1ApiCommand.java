@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 the original author or authors.
+ * Copyright 2014-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -42,57 +42,41 @@ public class PingV1ApiCommand extends AbstractApiCommandStrategyImpl {
         ResponseModel m = new ResponseModel();
         m.code = 0;
 
-        if (rq != null && rq instanceof PingModel) {
+        if (rq instanceof PingModel) {
             m.message = (((PingModel) rq).value + " " + method);
         }
         return m;
     }
 
     /**
-     * Supporting POST method
-     *
-     * @param cmd Command
-     * @return Response
+     * {@inheritDoc}
      */
     @Override
     public ResponseModel post(APICommand cmd) {
-
         return build(cmd.getRequest(), "POST");
     }
 
     /**
-     * Supporting PUT method
-     *
-     * @param cmd Command
-     * @return Response
+     * {@inheritDoc}
      */
     @Override
     public ResponseModel put(APICommand cmd) {
-
         return build(cmd.getRequest(), "PUT");
     }
 
     /**
-     * Supporting GET method
-     *
-     * @param cmd Command
-     * @return Response
+     * {@inheritDoc}
      */
     @Override
     public ResponseModel get(APICommand cmd) {
-
         return build(cmd.getRequest(), "GET");
     }
 
     /**
-     * Supporing DELETE method
-     *
-     * @param cmd Command
-     * @return Response
+     * {@inheritDoc}
      */
     @Override
     public ResponseModel delete(APICommand cmd) {
-
         return build(cmd.getRequest(), "DELETE");
     }
 }

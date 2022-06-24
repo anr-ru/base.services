@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 the original author or authors.
+ * Copyright 2014-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -93,7 +93,6 @@ public class APICommand extends BaseParent implements Serializable {
      * Parsed request model
      */
     private RequestModel request = new RequestModel();
-    ;
 
     /**
      * Prepared response model
@@ -118,11 +117,10 @@ public class APICommand extends BaseParent implements Serializable {
     /**
      * Adds the response format
      *
-     * @param t A format of raw data for response
+     * @param t The format of raw data for response
      * @return This object
      */
     public APICommand responseFormat(RawFormatTypes t) {
-
         setResponseFormat(t);
         return this;
     }
@@ -130,11 +128,10 @@ public class APICommand extends BaseParent implements Serializable {
     /**
      * Adds the request format
      *
-     * @param t A format of raw data request
+     * @param t The format of raw data request
      * @return This object
      */
     public APICommand requestFormat(RawFormatTypes t) {
-
         setRequestFormat(t);
         return this;
     }
@@ -142,20 +139,19 @@ public class APICommand extends BaseParent implements Serializable {
     /**
      * Adds raw request data (not parsed yet)
      *
-     * @param raw A raw string with the request model
+     * @param raw The raw string with the request model
      * @return This object
      */
     public APICommand addRaw(String raw) {
-
         setRawModel(raw);
         return this;
     }
 
     /**
-     * Recognized the type of operation according to the specified http method
+     * Recognizes the type of operation according to the specified http method
      *
-     * @param method the http method as a string
-     * @return This
+     * @param method The http method as a string
+     * @return This object
      */
     public APICommand method(String method) {
 
@@ -188,17 +184,16 @@ public class APICommand extends BaseParent implements Serializable {
     /**
      * Adds pairs name/value to the request parameters.
      *
-     * @param array An array of pairs 'key/value'
+     * @param array The array of pairs 'key/value'
      * @return This object
      */
     public APICommand context(Object... array) {
-
         setContexts(toMap(array));
         return this;
     }
 
     /**
-     * Parses url query parameters to set additional properties of the
+     * Parses HTTP url query parameters to set additional properties of the
      * command.
      *
      * @param params The map of request parameters.
@@ -206,7 +201,7 @@ public class APICommand extends BaseParent implements Serializable {
      */
     public APICommand params(Map<String, ?> params) {
 
-        logger.debug("Original parameters: {}", params);
+        logger.trace("Original HTTP parameters: {}", params);
 
         request = new RequestModel();
         Map<String, ?> copy = new HashMap<>(params);
@@ -247,7 +242,7 @@ public class APICommand extends BaseParent implements Serializable {
             logger.trace("Parsed sorting: {}", request.sorted);
         }
         /*
-         * The rest of parameters is used depending on the context
+         * The rest of parameters is used depending on the command's context
          */
         this.contexts.putAll(copy);
         return this;
@@ -266,6 +261,8 @@ public class APICommand extends BaseParent implements Serializable {
             // '+' is ignored or can be absent
             if (v.charAt(0) == '+' || v.charAt(0) == ' ') {
                 list.add(new SortModel(v.substring(1), SortDirection.ASC));
+            } else if (Character.isLetter(v.charAt(0))) { // sort=created means sorting ASC (like omitted '+')
+                list.add(new SortModel(v, SortDirection.ASC));
             } else if (v.charAt(0) == '-') {
                 list.add(new SortModel(v.substring(1), SortDirection.DESC));
             }
@@ -335,15 +332,14 @@ public class APICommand extends BaseParent implements Serializable {
         return results;
     }
 
-    // /////////////////////////////////////////////////////////////////////////
-    // /// getters/setters
-    // /////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////
+    ///// getters/setters
+    ///////////////////////////////////////////////////////////////////////////
 
     /**
      * @return the type
      */
     public MethodTypes getType() {
-
         return type;
     }
 
@@ -352,7 +348,6 @@ public class APICommand extends BaseParent implements Serializable {
      */
     @Override
     public String toString() {
-
         return new ToStringBuilder(this)
                 .append("id", commandId)
                 .append("v", version)
@@ -363,7 +358,6 @@ public class APICommand extends BaseParent implements Serializable {
      * @param type the type to set
      */
     public void setType(MethodTypes type) {
-
         this.type = type;
     }
 
@@ -371,7 +365,6 @@ public class APICommand extends BaseParent implements Serializable {
      * @return the requestFormat
      */
     public RawFormatTypes getRequestFormat() {
-
         return requestFormat;
     }
 
@@ -379,7 +372,6 @@ public class APICommand extends BaseParent implements Serializable {
      * @param requestFormat the requestFormat to set
      */
     public void setRequestFormat(RawFormatTypes requestFormat) {
-
         this.requestFormat = requestFormat;
     }
 
@@ -387,7 +379,6 @@ public class APICommand extends BaseParent implements Serializable {
      * @return the responseFormat
      */
     public RawFormatTypes getResponseFormat() {
-
         return responseFormat;
     }
 
@@ -395,7 +386,6 @@ public class APICommand extends BaseParent implements Serializable {
      * @param responseFormat the responseFormat to set
      */
     public void setResponseFormat(RawFormatTypes responseFormat) {
-
         this.responseFormat = responseFormat;
     }
 
@@ -403,7 +393,6 @@ public class APICommand extends BaseParent implements Serializable {
      * @return the version
      */
     public String getVersion() {
-
         return version;
     }
 
@@ -411,7 +400,6 @@ public class APICommand extends BaseParent implements Serializable {
      * @param version the version to set
      */
     public void setVersion(String version) {
-
         this.version = version;
     }
 
@@ -419,7 +407,6 @@ public class APICommand extends BaseParent implements Serializable {
      * @return the commandId
      */
     public String getCommandId() {
-
         return commandId;
     }
 
@@ -427,7 +414,6 @@ public class APICommand extends BaseParent implements Serializable {
      * @param commandId the commandId to set
      */
     public void setCommandId(String commandId) {
-
         this.commandId = commandId;
     }
 
@@ -435,7 +421,6 @@ public class APICommand extends BaseParent implements Serializable {
      * @return the contexts
      */
     public Map<String, Object> getContexts() {
-
         return contexts;
     }
 
@@ -468,7 +453,6 @@ public class APICommand extends BaseParent implements Serializable {
      * @return The value of the parameter
      */
     public <S> S get(String name) {
-
         return get(name, null);
     }
 
@@ -480,7 +464,6 @@ public class APICommand extends BaseParent implements Serializable {
      * @return true, if it has
      */
     public boolean hasParam(String name) {
-
         return getContexts().containsKey(name);
     }
 
@@ -488,7 +471,6 @@ public class APICommand extends BaseParent implements Serializable {
      * @param contexts the contexts to set
      */
     public void setContexts(Map<String, Object> contexts) {
-
         this.contexts = contexts;
     }
 
@@ -496,7 +478,6 @@ public class APICommand extends BaseParent implements Serializable {
      * @return the rawModel
      */
     public String getRawModel() {
-
         return rawModel;
     }
 
@@ -504,7 +485,6 @@ public class APICommand extends BaseParent implements Serializable {
      * @param rawModel the rawModel to set
      */
     public void setRawModel(String rawModel) {
-
         this.rawModel = rawModel;
     }
 
@@ -514,7 +494,6 @@ public class APICommand extends BaseParent implements Serializable {
      */
     @SuppressWarnings("unchecked")
     public <S extends RequestModel> S getRequest() {
-
         return (S) request;
     }
 
@@ -522,7 +501,6 @@ public class APICommand extends BaseParent implements Serializable {
      * @param request the request to set
      */
     public void setRequest(RequestModel request) {
-
         this.request = request;
     }
 
@@ -532,7 +510,6 @@ public class APICommand extends BaseParent implements Serializable {
      */
     @SuppressWarnings("unchecked")
     public <S> S getResponse() {
-
         return (S) response;
     }
 
@@ -540,7 +517,6 @@ public class APICommand extends BaseParent implements Serializable {
      * @param response the response to set
      */
     public void setResponse(Object response) {
-
         this.response = response;
     }
 }

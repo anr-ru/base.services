@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 the original author or authors.
+ * Copyright 2014-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -15,19 +15,14 @@
  */
 package ru.anr.base.services.api;
 
-import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Import;
-import org.springframework.core.io.ClassPathResource;
-import ru.anr.base.ApplicationException;
 import ru.anr.base.BaseSpringParent;
 import ru.anr.base.domain.api.APICommand;
 import ru.anr.base.domain.api.models.ResponseModel;
 import ru.anr.base.services.serializer.SerializationConfig;
 import ru.anr.base.services.serializer.Serializer;
-
-import java.io.IOException;
 
 /**
  * A mock implementation for {@link APICommandFactory}. It can be used for
@@ -51,41 +46,20 @@ public class MockJSONAPICommandFactoryImpl extends BaseSpringParent implements A
      */
     @Override
     public APICommand process(APICommand cmd) {
-
         /*
-         * Default implementation return an empty response for all commands
+         * The default implementation return an empty response for all commands
          */
         return generateResponse("{}", cmd);
     }
 
     /**
-     * Loading a file from classpath
-     *
-     * @param filePath (relative from classpath)
-     * @return File content
-     */
-    protected String loadFromFile(String filePath) {
-
-        try {
-
-            ClassPathResource r = new ClassPathResource(filePath);
-            return IOUtils.toString(r.getInputStream(), "utf-8");
-
-        } catch (IOException ex) {
-            throw new ApplicationException(ex);
-        }
-    }
-
-    /**
-     * Generates JSON Error model for given parameters. <code>jsonStr</code> can
-     * be loaded from file with {@link #loadFromFile(String)}.
+     * Generates JSON Error model for given parameters.
      *
      * @param jsonStr         JSON string with response
      * @param originalCommand Original command
      * @return API Command
      */
     protected APICommand generateResponse(String jsonStr, APICommand originalCommand) {
-
         originalCommand.setRawModel(jsonStr);
         return originalCommand;
     }
@@ -103,9 +77,9 @@ public class MockJSONAPICommandFactoryImpl extends BaseSpringParent implements A
         APICommand cmd = new APICommand(null, null);
 
         ResponseModel m = new ResponseModel();
-        m.code = 64;
-        m.description = "A system error description";
-        m.message = "System error";
+        m.code = code;
+        m.description = description; // '"A system error description"'
+        m.message = msg;
 
         cmd.setRawModel(json.toStr(m));
         return cmd;
@@ -116,7 +90,6 @@ public class MockJSONAPICommandFactoryImpl extends BaseSpringParent implements A
      */
     @Override
     public APICommand error(APICommand cmd, Throwable ex) {
-
         return generateError(64, "System error", ex.getMessage());
     }
 
@@ -125,8 +98,7 @@ public class MockJSONAPICommandFactoryImpl extends BaseSpringParent implements A
      */
     @Override
     public APICommand error(Throwable ex) {
-
-        return generateError(64, "System error", ex.getMessage());
+        return generateError(32, "Serious System error", ex.getMessage());
     }
 
     /**
@@ -134,7 +106,6 @@ public class MockJSONAPICommandFactoryImpl extends BaseSpringParent implements A
      */
     @Override
     public APICommand error(APICommand cmd, Throwable ex, ResponseModel model) {
-
         return error(cmd, ex);
     }
 }

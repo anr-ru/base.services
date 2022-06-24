@@ -66,14 +66,10 @@ public class SecurityTest extends BaseLocalServiceTestCase {
          * authentication to be set in a security context
          */
         try {
-
             fully.text("hello.world");
             Assertions.fail();
-
         } catch (AuthenticationCredentialsNotFoundException ex) {
-
             Assertions.assertEquals("An Authentication object was not found in the SecurityContext", ex.getMessage());
-
         }
 
         /*
@@ -83,14 +79,10 @@ public class SecurityTest extends BaseLocalServiceTestCase {
         SecurityContextHolder.getContext().setAuthentication(token);
 
         fully.text("hello.world"); // this is already OK
-
         try {
-
             roled.text("hello.world"); // but this is not
             Assertions.fail();
-
         } catch (AccessDeniedException ex) {
-
             Assertions.assertEquals("Access is denied", ex.getMessage());
         }
 
@@ -104,13 +96,9 @@ public class SecurityTest extends BaseLocalServiceTestCase {
 
         fully.text("hello.world"); // this is OK
         try {
-
             roled.text("hello.world"); // But this is not
-
             Assertions.fail();
-
         } catch (AccessDeniedException ex) {
-
             Assertions.assertEquals("Access is denied", ex.getMessage());
         }
 

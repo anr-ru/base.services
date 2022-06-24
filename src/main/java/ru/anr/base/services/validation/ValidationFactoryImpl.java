@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 the original author or authors.
+ * Copyright 2014-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -28,16 +28,13 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * The implementation of the {@link ValidationFactory}.
+ * An implementation of the {@link ValidationFactory}.
  *
  * @author Alexey Romanchuk
  * @created Jan 21, 2016
  */
 public class ValidationFactoryImpl extends BaseSpringParent implements ValidationFactory {
 
-    /**
-     * The logger
-     */
     private static final Logger logger = LoggerFactory.getLogger(ValidationFactoryImpl.class);
 
     /**
@@ -50,37 +47,27 @@ public class ValidationFactoryImpl extends BaseSpringParent implements Validatio
      */
     private static final Comparator<Strategy<Object>> ORDER_SORTING = (left, right) -> {
 
-        /**
-         * Annotation 1
-         */
         Validator a1 = AnnotationUtils.findAnnotation(target(left).getClass(), Validator.class);
-        /**
-         * Annotation 2
-         */
         Validator a2 = AnnotationUtils.findAnnotation(target(right).getClass(), Validator.class);
 
         return a1.order() - a2.order();
     };
 
     /**
-     * Initialization
+     * The initialization procedure
      *
-     * @param beans All beans which are the validators
+     * @param beans All validators
      */
     @SuppressWarnings("unchecked")
     public void init(Map<String, Object> beans) {
 
-        beans.forEach((name, bean) -> {
-            validators.add(((BaseValidator<?>) bean).getSupported(), (Strategy<Object>) bean);
-        });
+        beans.forEach((name, bean) -> validators.add(((BaseValidator<?>) bean).getSupported(), (Strategy<Object>) bean));
 
         /*
          * Sorting the lists of validators according to their order
          */
-        validators.forEach((name, list) -> {
-            list.sort(ORDER_SORTING);
-        });
-        logger.info("Loaded validators for {} object types", validators.size());
+        validators.forEach((name, list) -> list.sort(ORDER_SORTING));
+        logger.info("Loaded {} validators", validators.size());
     }
 
     /**
@@ -88,7 +75,6 @@ public class ValidationFactoryImpl extends BaseSpringParent implements Validatio
      */
     @Override
     public List<Strategy<Object>> getValidators(Class<?> clazz) {
-
         return validators.get(clazz);
     }
 }

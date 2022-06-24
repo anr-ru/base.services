@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 the original author or authors.
+ * Copyright 2014-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -18,7 +18,6 @@ package ru.anr.base.domain.api.models;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
-import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 import java.io.Serializable;
@@ -55,12 +54,6 @@ public class RequestModel extends ResponseModel implements Serializable {
      */
     @XmlTransient
     public List<String> fields;
-
-    /**
-     * The identifier of a request
-     */
-    @XmlAttribute(name = "query_id")
-    public String queryId;
 
     // /////////////////////////////////////////////////////////////////////////
     // /// getters/setters

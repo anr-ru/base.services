@@ -1,6 +1,3 @@
-/**
- * 
- */
 package ru.anr.base.samples.domain;
 
 import javax.validation.constraints.Min;
@@ -9,10 +6,8 @@ import javax.validation.constraints.NotNull;
 /**
  * Description ...
  *
- *
  * @author Alexey Romanchuk
  * @created Jan 30, 2015
- *
  */
 
 public class SomeValidated {
@@ -38,8 +33,7 @@ public class SomeValidated {
     }
 
     /**
-     * @param value
-     *            the value to set
+     * @param value the value to set
      */
     public void setValue(String value) {
 
@@ -55,8 +49,7 @@ public class SomeValidated {
     }
 
     /**
-     * @param digit
-     *            the digit to set
+     * @param digit the digit to set
      */
     public void setDigit(int digit) {
 

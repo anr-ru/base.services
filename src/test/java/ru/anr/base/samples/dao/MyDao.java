@@ -20,8 +20,8 @@ import java.util.List;
  * @author Alexey Romanchuk
  * @created Oct 30, 2014
  */
-@Repository("mydao")
-public interface MyDao<T extends Samples> extends BaseRepository<T> {
+@Repository
+public interface MyDao extends BaseRepository<Samples> {
 
     /**
      * Test query for Cache
@@ -31,7 +31,7 @@ public interface MyDao<T extends Samples> extends BaseRepository<T> {
     @Query(value = "From Samples")
     @QueryHints({@QueryHint(name = "org.hibernate.cacheRegion", value = "samplequery"),
             @QueryHint(name = "org.hibernate.cacheable", value = "true")})
-    List<T> findCachedSamples();
+    List<Samples> findCachedSamples();
 
     /**
      * Test query for Query without cache
@@ -40,7 +40,7 @@ public interface MyDao<T extends Samples> extends BaseRepository<T> {
      * @return Some data
      */
     @Query(name = "SampleOne", value = "From Samples where name like :x")
-    List<T> findSamples(@Param("x") String name);
+    List<Samples> findSamples(@Param("x") String name);
 
     /**
      * An example of update query
@@ -60,5 +60,5 @@ public interface MyDao<T extends Samples> extends BaseRepository<T> {
      * @return Next page
      */
     @Query(countQuery = "select count(*) from Samples x where x.id >= 1", value = "From Samples x where x.id >= 1")
-    Page<T> pages(Pageable p);
+    Page<Samples> pages(Pageable p);
 }

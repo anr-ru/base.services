@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 the original author or authors.
+ * Copyright 2014-2022 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -34,15 +34,12 @@ import ru.anr.base.domain.Accessible;
  */
 public class BaseEntityPermissionEvaluator extends AclPermissionEvaluator {
 
-    /**
-     * Logger
-     */
     private static final Logger logger = LoggerFactory.getLogger(BaseEntityPermissionEvaluator.class);
 
     /**
      * A flag which indicates the ACL checking is required
      */
-    private boolean useAcls;
+    private final boolean useAcls;
 
     /**
      * Constructor for evaluator
@@ -71,7 +68,7 @@ public class BaseEntityPermissionEvaluator extends AclPermissionEvaluator {
         if (domainObject != null) {
             if (p != null && p.toString().startsWith("access") && (domainObject instanceof Accessible)) {
 
-                // We suppose such patterns: access_read, access_write, ...
+                // We suppose such patterns: 'access_read', 'access_write', ...
                 String[] splitted = p.toString().split("_");
                 accessible = ((Accessible) domainObject).accessible(auth, splitted[1]);
             } else if (useAcls) { // The standard ACL checking
@@ -95,7 +92,7 @@ public class BaseEntityPermissionEvaluator extends AclPermissionEvaluator {
      */
     private boolean checkNotNullId(Object domainObject) {
 
-        boolean rs = false;
+        boolean rs;
         try {
             new ObjectIdentityImpl(domainObject);
             rs = true;

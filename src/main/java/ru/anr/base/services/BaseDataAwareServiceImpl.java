@@ -19,18 +19,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.data.domain.Page;
 import org.springframework.security.acls.model.NotFoundException;
+import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 import org.springframework.util.Assert;
-import ru.anr.base.ModelUtils;
 import ru.anr.base.dao.EntityUtils;
 import ru.anr.base.dao.repository.BaseRepository;
 import ru.anr.base.domain.BaseEntity;
-
-import java.util.Collection;
-import java.util.List;
 
 /**
  * A parent class for all business logic services, which need a database access.
@@ -76,21 +74,6 @@ public class BaseDataAwareServiceImpl extends BaseServiceImpl implements BaseDat
     }
 
     /**
-     * Applying security filter to the page
-     *
-     * @param page The page to be filtered
-     * @param <S>  Type of item of the list
-     * @return Filtered list
-     */
-    protected <S extends BaseEntity> List<S> securedFilter(Page<S> page) {
-
-        BaseRepository<BaseEntity> dao = dao();
-        Assert.notNull(dao, "BaseRepository DAO is not configured");
-
-        return dao.filter(page);
-    }
-
-    /**
      * This method reload the given entity to guarantee that we are under the current transaction.
      * We need to use this method when we work under a new transaction (REQUIRES_NEW).
      *
@@ -108,8 +91,15 @@ public class BaseDataAwareServiceImpl extends BaseServiceImpl implements BaseDat
         return o;
     }
 
-    protected <S extends Enum<S>> List<String> enumToStr(Collection<S> coll) {
-        return ModelUtils.enumToStr(coll);
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void markAsRollback() {
+        if (TransactionSynchronizationManager.isActualTransactionActive()) {
+            TransactionStatus status = TransactionAspectSupport.currentTransactionStatus();
+            status.setRollbackOnly();
+        }
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -124,7 +114,6 @@ public class BaseDataAwareServiceImpl extends BaseServiceImpl implements BaseDat
     @Autowired(required = false)
     @Qualifier("BaseRepository")
     public void setDao(BaseRepository<BaseEntity> dao) {
-
         this.repository = dao;
     }
 
@@ -137,7 +126,6 @@ public class BaseDataAwareServiceImpl extends BaseServiceImpl implements BaseDat
      */
     @SuppressWarnings("unchecked")
     protected <T extends BaseEntity, S extends BaseRepository<T>> S dao() {
-
         return (S) repository;
     }
 }
