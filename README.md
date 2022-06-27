@@ -4,16 +4,24 @@
 
 # Base.Services
 
-Base prototypes for business logic implementations:
+**Base.Service** was created as a framework for fast creating business logic
+operations.
 
-1. BaseEntity (JPA), DAO configurations and repositories to work both local and JTA environments.
+It contains the following ready prototypes:
 
-2. Base classes and prototypes for business logic implementations which support text resources, a security layer
-   and xml/json serialization.
-   
-3. APICommandFactory pattern - a annotation-based way to implement REST API command processing in the business logic level.
+1. The base domain object - [BaseEntity](./src/main/java/ru/anr/base/domain/BaseEntity.java),
+   data access configurations and repositories to work both in local and JTA environments.
 
-4. A convenient way for extensions of services by adding different plug-ins. 
+2. Base classes and prototypes for business logic implementations ([BaseServiceImpl](./src/main/java/ru/anr/base/services/BaseServiceImpl.java),
+   [BaseDataAwareServiceImpl](./src/main/java/ru/anr/base/services/BaseDataAwareServiceImpl.java))
+   which support text resources, a security layer and xml/json serialization and lots
+   of other convenient functions for validation, verifications and transformations.
 
-5. A configuration for easy managing the DEV/QA/CI/PROD condiguration stages in the code.
- 
+3. APICommand/[ApiStrategy](./src/main/java/ru/anr/base/services/api/ApiCommandStrategy.java) framework/pattern -
+   an annotation-based way to implement REST API commands on the business logic level, e.g. in the EJB environment.
+
+4. A convenient way for extensions of services by adding different plug-ins.
+
+5. A configuration for easy managing the DEV/QA/CI/PROD configuration stages in the code.
+
+6. Authentication/Authorization prototypes with ACL and role-based authorization models.

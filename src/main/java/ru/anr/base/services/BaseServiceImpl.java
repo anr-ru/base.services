@@ -288,11 +288,6 @@ public class BaseServiceImpl extends BaseSpringParent implements BaseService {
     }
 
     /**
-     * Cached validators
-     */
-    private final Map<Class<?>, StrategyFactory> validators = toMap();
-
-    /**
      * Validates an object
      *
      * @param o   The object to be validated
@@ -305,12 +300,10 @@ public class BaseServiceImpl extends BaseSpringParent implements BaseService {
         Class<?> clazz = (o instanceof BaseEntity) ? EntityUtils.entityClass((BaseEntity) o) : o.getClass();
 
         // Complex validators
-        if (!validators.containsKey(clazz)) {
+        if (!extensionFactories.containsKey(clazz)) {
             ValidationFactory factory = bean("ValidationFactory", ValidationFactory.class);
-            //validators.put(clazz, new StrategyFactoryImpl(factory.getValidators(clazz)));
             registerExtensions(clazz, factory.getValidators(clazz));
         }
-        //validators.get(clazz).process(o, params);
         processExtensions(clazz, o, params);
     }
 
