@@ -65,7 +65,7 @@ public class BaseRepositoryImpl<T extends BaseEntity> extends SimpleJpaRepositor
      * {@inheritDoc}
      */
     @Override
-    public void refresh(T object) {
+    public <S extends T> void refresh(S object) {
         entityManager.refresh(object);
     }
 
@@ -89,15 +89,23 @@ public class BaseRepositoryImpl<T extends BaseEntity> extends SimpleJpaRepositor
      * {@inheritDoc}
      */
     @Override
-    @SuppressWarnings("unchecked")
-    public <S extends BaseEntity> S find(Class<?> entityClass, Long id) {
-        return (S) entityManager.find(entityClass, id);
+    public <S extends T> S find(Class<S> entityClass, Long id) {
+        return entityManager.find(entityClass, id);
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public <S extends BaseEntity> S findSecured(Class<?> entityClass, Long id) {
-        return (S) entityManager.find(entityClass, id);
+    public <S extends T> S findSecured(Class<S> entityClass, Long id) {
+        return entityManager.find(entityClass, id);
+    }
+
+    @Override
+    public <S extends T> S saveSecured(S entity) {
+        return super.save(entity);
+    }
+
+    @Override
+    public <S extends T> void deleteSecured(S entity) {
+        super.delete(entity);
     }
 
     /**

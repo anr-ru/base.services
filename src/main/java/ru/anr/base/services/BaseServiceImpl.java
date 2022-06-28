@@ -135,6 +135,9 @@ public class BaseServiceImpl extends BaseSpringParent implements BaseService {
 
     protected void registerExtensions(Object extId, List<Strategy<Object>> extensions) {
         extensionFactories.put(extId, new StrategyFactoryImpl(extensions));
+        if (notEmpty(extensions)) {
+            logger.info("Initializing {} extensions for {}", extensions.size(), target(this));
+        }
     }
 
     /**

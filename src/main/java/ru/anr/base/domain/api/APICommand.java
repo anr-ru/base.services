@@ -94,6 +94,7 @@ public class APICommand extends BaseParent implements Serializable {
      */
     private RequestModel request = new RequestModel();
 
+
     /**
      * Prepared response model
      */
@@ -188,7 +189,8 @@ public class APICommand extends BaseParent implements Serializable {
      * @return This object
      */
     public APICommand context(Object... array) {
-        setContexts(toMap(array));
+
+        contexts.putAll(toMap(array));
         return this;
     }
 
