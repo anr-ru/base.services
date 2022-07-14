@@ -38,9 +38,10 @@ public final class EntityUtils {
      * @param entity The entity
      * @return The entity's class
      */
-    public static Class<?> entityClass(BaseEntity entity) {
-        Object r = entity(entity);
-        return r.getClass();
+    @SuppressWarnings("unchecked")
+    public static <S extends BaseEntity> Class<S> entityClass(S entity) {
+        S r = entity(entity);
+        return (Class<S>) r.getClass();
     }
 
     /**
