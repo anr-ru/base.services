@@ -150,7 +150,7 @@ public class BaseServiceImpl extends BaseSpringParent implements BaseService {
      * processing.
      */
     protected List<Object> processExtensions(Object object, Object... params) {
-        return processExtensions("default", object, params);
+        return processParametrizedExtensions("default", object, params);
     }
 
     /**
@@ -164,7 +164,7 @@ public class BaseServiceImpl extends BaseSpringParent implements BaseService {
      * @return The list including resulted objects if they were during the
      * processing.
      */
-    protected List<Object> processExtensions(Object extId, Object object, Object... params) {
+    protected List<Object> processParametrizedExtensions(Object extId, Object object, Object... params) {
         StrategyStatistic stat = extensionFactories.containsKey(extId) ? extensionFactories.get(extId).process(object, params) : null;
         if (stat == null) {
             logger.warn("No extensions defined for '{}'" + nullSafe(extId));
@@ -307,7 +307,7 @@ public class BaseServiceImpl extends BaseSpringParent implements BaseService {
             ValidationFactory factory = bean("ValidationFactory", ValidationFactory.class);
             registerExtensions(clazz, factory.getValidators(clazz));
         }
-        processExtensions(clazz, o, params);
+        processParametrizedExtensions(clazz, o, params);
     }
 
     /**
@@ -417,7 +417,8 @@ public class BaseServiceImpl extends BaseSpringParent implements BaseService {
      * @param <S>      The type of the result
      * @return The callback's result
      */
-    protected <S> S runAs(Authentication token, Function<Object[], S> callback, Object... args) {
+    @SafeVarargs
+    protected final <S, O> S runAs(Authentication token, Function<O[], S> callback, O... args) {
         S result;
         Authentication previousToken = SecurityContextHolder.getContext().getAuthentication();
         try {
@@ -436,8 +437,9 @@ public class BaseServiceImpl extends BaseSpringParent implements BaseService {
      * @param callback The non-return callback
      * @param args     The arguments to pass
      */
-    protected void runAs(Authentication token, Consumer<Object[]> callback, Object... args) {
-        runAs(token, (Function<Object[], Void>) arguments -> {
+    @SafeVarargs
+    protected final <O> void runAs(Authentication token, Consumer<O[]> callback, O... args) {
+        runAs(token, (Function<O[], Void>) arguments -> {
             callback.accept(arguments);
             return null;
         }, args);

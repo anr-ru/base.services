@@ -28,7 +28,7 @@ public class TestDataServiceImpl extends BaseDataAwareServiceImpl implements Tes
 
     @Override
     public Object doExtension(String ext) {
-        return (ext == null) ? processExtensions(null) : processExtensions(ext, null, (Object[]) null);
+        return (ext == null) ? processExtensions(null) : processParametrizedExtensions(ext, null, (Object[]) null);
     }
 
     @Override
