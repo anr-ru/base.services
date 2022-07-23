@@ -15,7 +15,6 @@
  */
 package ru.anr.base.services.security;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
@@ -23,7 +22,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler;
-import org.springframework.security.access.expression.method.MethodSecurityExpressionHandler;
 import org.springframework.security.access.intercept.RunAsManager;
 import org.springframework.security.acls.domain.AclAuthorizationStrategy;
 import org.springframework.security.acls.domain.AclAuthorizationStrategyImpl;
@@ -143,19 +141,10 @@ public class ACLConfig extends GlobalMethodSecurityConfiguration {
         /*
          * Specifying a permission evaluator with our acl service
          */
-        //setPermissionEvaluator(BaseParent.list(new BaseEntityPermissionEvaluator(s, useAcls)));
+        DefaultMethodSecurityExpressionHandler handler = new DefaultMethodSecurityExpressionHandler();
+        handler.setPermissionEvaluator(new BaseEntityPermissionEvaluator(s, useAcls));
+        setMethodSecurityExpressionHandler(BaseParent.list(handler));
         return s;
-    }
-
-    @Autowired
-    private MutableAclService aclService;
-
-
-    @Override
-    protected MethodSecurityExpressionHandler createExpressionHandler() {
-        DefaultMethodSecurityExpressionHandler expressionHandler = new DefaultMethodSecurityExpressionHandler();
-        expressionHandler.setPermissionEvaluator(new BaseEntityPermissionEvaluator(aclService, useAcls));
-        return expressionHandler;
     }
 
     @Override

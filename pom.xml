@@ -87,6 +87,11 @@
             <artifactId>spring-security-acl</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-data</artifactId>
+            <version>${spring-security.version}</version>
+        </dependency>
+        <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-orm</artifactId>
         </dependency>
@@ -220,6 +225,8 @@
         <dbx.password/>
         <dbx.driverClass>org.hsqldb.jdbcDriver</dbx.driverClass>
         <dbx.hibernateDialect>org.hibernate.dialect.HSQLDialect</dbx.hibernateDialect>
+
+        <spring-security.version>5.7.2</spring-security.version>
 
     </properties>
 
