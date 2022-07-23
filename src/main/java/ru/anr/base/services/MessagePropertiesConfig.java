@@ -94,4 +94,8 @@ public class MessagePropertiesConfig {
     public void setCacheSeconds(Integer cacheSeconds) {
         this.cacheSeconds = cacheSeconds;
     }
+
+    public Integer getCacheSeconds() {
+        return cacheSeconds;
+    }
 }

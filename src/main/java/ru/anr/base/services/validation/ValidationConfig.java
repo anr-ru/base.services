@@ -21,11 +21,9 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
-import org.springframework.context.annotation.Import;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.validation.beanvalidation.MethodValidationPostProcessor;
 import ru.anr.base.BaseSpringParent;
-import ru.anr.base.services.MessagePropertiesConfig;
 
 import javax.validation.Validator;
 
@@ -36,7 +34,6 @@ import javax.validation.Validator;
  * @created Jan 30, 2015
  */
 @Configuration
-@Import(MessagePropertiesConfig.class)
 public class ValidationConfig extends BaseSpringParent {
 
     /**

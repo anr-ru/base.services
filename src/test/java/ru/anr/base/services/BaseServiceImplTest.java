@@ -51,15 +51,15 @@ public class BaseServiceImplTest extends BaseLocalServiceTestCase {
 
         LocaleContextHolder.setLocale(new Locale("ru", "RU")); // Russia
 
-        BaseServiceImpl impl = target(base);
-        Assertions.assertEquals("Привет, мир!", impl.text("hello.world"));
+        //BaseServiceImpl impl = target(base);
+        Assertions.assertEquals("Привет, мир!", base.text("hello.world"));
 
-        Assertions.assertEquals("Привет, добрый мир!", impl.text("hello.world.param", "добрый"));
+        Assertions.assertEquals("Привет, добрый мир!", base.text("hello.world.param", "добрый"));
 
         LocaleContextHolder.setLocale(new Locale("en", "US")); // USA
 
-        Assertions.assertEquals("Hello, world!", impl.text("hello.world"));
-        Assertions.assertEquals("[xxxhello.world.noxxx]", impl.text("hello.world.no", "xxx"));
+        Assertions.assertEquals("Hello, world!", base.text("hello.world"));
+        Assertions.assertEquals("[xxxhello.world.noxxx]", base.text("hello.world.no", "xxx"));
     }
 
     /**
