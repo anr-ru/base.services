@@ -117,7 +117,7 @@ public class BaseDataAwareServiceImpl extends BaseServiceImpl implements BaseDat
      * @param <S>   The type of the entity
      * @return The resulted pages
      */
-    protected <S extends BaseEntity> Page<S> filter(Page<S> pages) {
+    protected <S extends BaseEntity> Page<S> filterSecured(Page<S> pages) {
         return new SecuredPageImpl<>(securedDao(), pages);
     }
 
