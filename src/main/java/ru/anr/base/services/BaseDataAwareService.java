@@ -15,8 +15,6 @@
  */
 package ru.anr.base.services;
 
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.parameters.P;
 import ru.anr.base.domain.BaseEntity;
 
 /**
@@ -35,8 +33,7 @@ public interface BaseDataAwareService extends BaseService {
      * @param <S>    Type of the entity
      * @return The saved entity
      */
-    @PreAuthorize("hasPermission(#o,'write') or hasPermission(#o,'access_write')")
-    <S extends BaseEntity> S save(@P("o") S object);
+    <S extends BaseEntity> S save(S object);
 
     /**
      * This method reloads the given entity to guarantee that we are under the current transaction. We need to use this method
@@ -48,8 +45,7 @@ public interface BaseDataAwareService extends BaseService {
      * @return The reloaded object
      */
     <T extends BaseEntity> T reload(T entity);
-
-
+    
     /**
      * A way to roll back the current transaction if we are launching something in the 'dry-run' mode.
      */

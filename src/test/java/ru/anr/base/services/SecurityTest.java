@@ -83,7 +83,7 @@ public class SecurityTest extends BaseLocalServiceTestCase {
             roled.text("hello.world"); // but this is not
             Assertions.fail();
         } catch (AccessDeniedException ex) {
-            Assertions.assertEquals("Access is denied", ex.getMessage());
+            Assertions.assertEquals("Access Denied", ex.getMessage());
         }
 
         /*
@@ -99,7 +99,7 @@ public class SecurityTest extends BaseLocalServiceTestCase {
             roled.text("hello.world"); // But this is not
             Assertions.fail();
         } catch (AccessDeniedException ex) {
-            Assertions.assertEquals("Access is denied", ex.getMessage());
+            Assertions.assertEquals("Access Denied", ex.getMessage());
         }
 
         /*

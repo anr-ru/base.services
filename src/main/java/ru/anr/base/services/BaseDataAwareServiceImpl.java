@@ -19,7 +19,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.domain.Page;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.acls.model.NotFoundException;
+import org.springframework.security.core.parameters.P;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,7 +30,9 @@ import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 import org.springframework.util.Assert;
 import ru.anr.base.dao.EntityUtils;
+import ru.anr.base.dao.SecuredPageImpl;
 import ru.anr.base.dao.repository.BaseRepository;
+import ru.anr.base.dao.repository.SecuredRepository;
 import ru.anr.base.domain.BaseEntity;
 
 /**
@@ -46,6 +51,7 @@ public class BaseDataAwareServiceImpl extends BaseServiceImpl implements BaseDat
      * Base repository
      */
     private BaseRepository<BaseEntity> repository;
+    private SecuredRepository securedRepository;
 
     /**
      * Returns an entity (maybe proxied) class
@@ -60,8 +66,9 @@ public class BaseDataAwareServiceImpl extends BaseServiceImpl implements BaseDat
     /**
      * {@inheritDoc}
      */
+    @PreAuthorize("hasPermission(#o,'write') or hasPermission(#o,'access_write')")
     @Override
-    public <S extends BaseEntity> S save(S object) {
+    public <S extends BaseEntity> S save(@P("o") S object) {
 
         S e = object;
         BaseRepository<BaseEntity> dao = dao();
@@ -81,6 +88,7 @@ public class BaseDataAwareServiceImpl extends BaseServiceImpl implements BaseDat
      * @param <T>    The type of the entity
      * @return The reloaded object
      */
+    @Override
     public <T extends BaseEntity> T reload(T entity) {
         T o = dao().find(EntityUtils.entityClass(entity), entity.getId());
         if (o == null) {
@@ -102,6 +110,17 @@ public class BaseDataAwareServiceImpl extends BaseServiceImpl implements BaseDat
         }
     }
 
+    /**
+     * Quick filtration of DAO results according to security settings.
+     *
+     * @param pages The queried pages
+     * @param <S>   The type of the entity
+     * @return The resulted pages
+     */
+    protected <S extends BaseEntity> Page<S> filter(Page<S> pages) {
+        return new SecuredPageImpl<>(securedDao(), pages);
+    }
+
     ///////////////////////////////////////////////////////////////////////////
     ///// getters/setters
     ///////////////////////////////////////////////////////////////////////////
@@ -111,14 +130,20 @@ public class BaseDataAwareServiceImpl extends BaseServiceImpl implements BaseDat
      *
      * @param dao the dao to set
      */
-    @Autowired(required = false)
+    @Autowired
     @Qualifier("BaseRepository")
     public void setDao(BaseRepository<BaseEntity> dao) {
         this.repository = dao;
     }
 
+    @Autowired
+    @Qualifier("SecuredRepository")
+    public void setSecuredDao(SecuredRepository dao) {
+        this.securedRepository = dao;
+    }
+
     /**
-     * Trying to make it of 'R' type
+     * Trying to make it of 'S' type
      *
      * @param <T> Entity class
      * @param <S> Dao class
@@ -127,5 +152,14 @@ public class BaseDataAwareServiceImpl extends BaseServiceImpl implements BaseDat
     @SuppressWarnings("unchecked")
     protected <T extends BaseEntity, S extends BaseRepository<T>> S dao() {
         return (S) repository;
+    }
+
+    /**
+     * Returns the secured DAO instance
+     *
+     * @return The secured DAO repository
+     */
+    protected SecuredRepository securedDao() {
+        return securedRepository;
     }
 }

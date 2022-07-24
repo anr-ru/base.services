@@ -16,13 +16,14 @@
 package ru.anr.base.services.security;
 
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler;
-import org.springframework.security.access.intercept.RunAsManager;
+import org.springframework.security.access.expression.method.MethodSecurityExpressionHandler;
 import org.springframework.security.acls.domain.AclAuthorizationStrategy;
 import org.springframework.security.acls.domain.AclAuthorizationStrategyImpl;
 import org.springframework.security.acls.domain.DefaultPermissionGrantingStrategy;
@@ -31,11 +32,10 @@ import org.springframework.security.acls.jdbc.BasicLookupStrategy;
 import org.springframework.security.acls.jdbc.JdbcMutableAclService;
 import org.springframework.security.acls.jdbc.LookupStrategy;
 import org.springframework.security.acls.model.AclCache;
+import org.springframework.security.acls.model.AclService;
 import org.springframework.security.acls.model.MutableAclService;
 import org.springframework.security.acls.model.PermissionGrantingStrategy;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
-import org.springframework.security.config.annotation.method.configuration.GlobalMethodSecurityConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.util.Assert;
@@ -49,10 +49,9 @@ import javax.sql.DataSource;
  * @author Alexey Romanchuk
  * @created Feb 14, 2015
  */
-@EnableGlobalMethodSecurity(prePostEnabled = true)
+@EnableMethodSecurity
 @Configuration
-public class ACLConfig extends GlobalMethodSecurityConfiguration {
-
+public class ACLConfig {
     /**
      * An authority to manage acl (take ownership, modify, ...)
      */
@@ -64,7 +63,7 @@ public class ACLConfig extends GlobalMethodSecurityConfiguration {
     private final String aclCacheName;
 
     /**
-     * Class identity query - a way to get next identifier. By default, we use the
+     * Class Identity Query - a way to get next identifier. By default, we use the
      * HSQL "call identity()". Must be overridden in other databases.
      * <p>
      * For example, "SELECT HIBERNATE_SEQUENCE.CURRVAL FROM DUAL"
@@ -72,7 +71,7 @@ public class ACLConfig extends GlobalMethodSecurityConfiguration {
     private final String classIdentityQuery;
 
     /**
-     * Sid identity query - a way to get next identifier. By default, we use the HSQL
+     * Sid Identity Query - a way to get next identifier. By default, we use the HSQL
      * "call identity()". Must be overriden in other databases.
      * <p>
      * For example, "SELECT HIBERNATE_SEQUENCE.CURRVAL FROM DUAL"
@@ -80,29 +79,14 @@ public class ACLConfig extends GlobalMethodSecurityConfiguration {
     private final String sidIdentityQuery;
 
     /**
-     * To use or not to use the ACLs
-     */
-    private final boolean useAcls;
-
-    private final RunAsManager runAs;
-
-    private final AuthenticationManager authenticationManagerRef;
-
-
-    /**
      * Construction of the configuration
      */
     public ACLConfig(String aclManageRole, String aclCacheName,
-                     String classIdentityQuery, String sidIdentityQuery,
-                     boolean useAcls, RunAsManager runAs,
-                     AuthenticationManager authenticationManagerRef) {
+                     String classIdentityQuery, String sidIdentityQuery) {
         this.aclManageRole = aclManageRole;
         this.aclCacheName = aclCacheName;
         this.classIdentityQuery = classIdentityQuery;
         this.sidIdentityQuery = sidIdentityQuery;
-        this.useAcls = useAcls;
-        this.runAs = runAs;
-        this.authenticationManagerRef = authenticationManagerRef;
     }
 
 
@@ -137,23 +121,23 @@ public class ACLConfig extends GlobalMethodSecurityConfiguration {
         if (BaseParent.notEmpty(sidIdentityQuery)) {
             s.setSidIdentityQuery(sidIdentityQuery);
         }
-
-        /*
-         * Specifying a permission evaluator with our acl service
-         */
-        DefaultMethodSecurityExpressionHandler handler = new DefaultMethodSecurityExpressionHandler();
-        handler.setPermissionEvaluator(new BaseEntityPermissionEvaluator(s, useAcls));
-        setMethodSecurityExpressionHandler(BaseParent.list(handler));
         return s;
     }
 
-    @Override
-    protected AuthenticationManager authenticationManager() {
-        return this.authenticationManagerRef;
-    }
 
-    @Override
-    protected RunAsManager runAsManager() {
-        return runAs;
+    /**
+     * The main method security bean - defined our own rules checking on methods.
+     *
+     * @param aclService The ACL service to use
+     * @param useACL     true, if we need to use ACL on objects
+     * @return The bean instance
+     */
+    @Bean
+    @DependsOn({"aclService"})
+    static MethodSecurityExpressionHandler methodSecurityExpressionHandler(AclService aclService,
+                                                                           @Value("${security.use.acl:false}") boolean useACL) {
+        DefaultMethodSecurityExpressionHandler handler = new DefaultMethodSecurityExpressionHandler();
+        handler.setPermissionEvaluator(new BaseEntityPermissionEvaluator(aclService, useACL));
+        return handler;
     }
 }

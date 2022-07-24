@@ -16,6 +16,7 @@
 
 package ru.anr.base.dao.config;
 
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.ehcache.EhCacheCacheManager;
@@ -27,6 +28,10 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.annotation.TransactionManagementConfigurer;
 import ru.anr.base.BaseSpringParent;
+import ru.anr.base.dao.config.repository.SecuredRepositoryImpl;
+import ru.anr.base.dao.repository.BaseRepository;
+import ru.anr.base.dao.repository.SecuredRepository;
+import ru.anr.base.domain.BaseEntity;
 
 /**
  * An abstract configuration for data accessing. It contains a builder for
@@ -80,5 +85,20 @@ public abstract class AbstractDaoConfig extends BaseSpringParent implements Tran
         mgr.afterPropertiesSet();
 
         return mgr;
+    }
+
+    /**
+     * Creates a special bean that contains several operations that need to be
+     * executed with security settings, like read/write/delete with permissions checking.
+     *
+     * @param dao The dao repository
+     * @return The bean instance
+     */
+    @Bean(name = "SecuredRepository")
+    @DependsOn({"BaseRepository"})
+    public SecuredRepository securedDao(@Qualifier("BaseRepository") BaseRepository<BaseEntity> dao) {
+        SecuredRepositoryImpl bean = new SecuredRepositoryImpl();
+        bean.setDao(dao);
+        return bean;
     }
 }

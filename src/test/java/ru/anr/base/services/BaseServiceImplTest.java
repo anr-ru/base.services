@@ -12,6 +12,7 @@ import org.springframework.security.authentication.TestingAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import ru.anr.base.dao.SecuredPageImpl;
+import ru.anr.base.dao.repository.SecuredRepository;
 import ru.anr.base.domain.api.models.BaseObjectModel;
 import ru.anr.base.domain.api.models.SampleModel;
 import ru.anr.base.samples.dao.MyDao;
@@ -95,7 +96,7 @@ public class BaseServiceImplTest extends BaseLocalServiceTestCase {
             Assertions.fail();
         } catch (AccessDeniedException ex) {
             logger.info("Denied: {}", ex.getMessage());
-            Assertions.assertEquals("Access is denied", ex.getMessage());
+            Assertions.assertEquals("Access Denied", ex.getMessage());
         }
     }
 
@@ -133,14 +134,15 @@ public class BaseServiceImplTest extends BaseLocalServiceTestCase {
 
     @Test
     public void testExtensions() {
-
         Assertions.assertEquals("[1, 2]", nullSafe(service.doExtension(null)));
         Assertions.assertEquals("[2]", nullSafe(service.doExtension("test")));
-
     }
 
     @Autowired
     protected MyDao mydao;
+
+    @Autowired
+    protected SecuredRepository securedDao;
 
     /**
      * Use case: check the filtration of object when using the secured pages
@@ -160,7 +162,7 @@ public class BaseServiceImplTest extends BaseLocalServiceTestCase {
         Page<Samples> pages = mydao.pages(pager);
 
         Assertions.assertEquals(2, pages.getContent().size());
-        Assertions.assertEquals(1, new SecuredPageImpl<>(mydao, pager, pages).getContent().size());
+        Assertions.assertEquals(1, new SecuredPageImpl<>(securedDao, pages).getContent().size());
     }
 
     @Autowired

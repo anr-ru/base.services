@@ -17,7 +17,10 @@ package ru.anr.base.services.security;
 
 import org.springframework.security.acls.model.Permission;
 import org.springframework.security.acls.model.Sid;
+import org.springframework.util.MultiValueMap;
 import ru.anr.base.domain.BaseEntity;
+
+import java.util.List;
 
 /**
  * A wrapper for {@link org.springframework.security.acls.model.AclService} for
@@ -35,4 +38,38 @@ public interface ACLManager {
      * @param permission The permission
      */
     void grant(BaseEntity e, Sid sid, Permission permission);
+
+    /**
+     * Revokes all ACL permissions for the given object
+     *
+     * @param e The object
+     */
+    void revokeAll(BaseEntity e);
+
+    /**
+     * Revokes all ACL permissions for the given object
+     *
+     * @param e   The object
+     * @param sid The sid
+     */
+    void revoke(BaseEntity e, Sid sid);
+
+    /**
+     * Verifies the given permissions are granted to the given Sid for the given
+     * entity.
+     *
+     * @param entity      The entity
+     * @param sid         The sid
+     * @param permissions The permissions list
+     * @return true, if permissions are granted
+     */
+    boolean isGranted(BaseEntity entity, Sid sid, List<Permission> permissions);
+
+    /**
+     * Returns the map of ACLs.
+     *
+     * @param entity The entity
+     * @return The map with Sid's as keys and permissions as values
+     */
+    MultiValueMap<Sid, Permission> getPermissions(BaseEntity entity);
 }

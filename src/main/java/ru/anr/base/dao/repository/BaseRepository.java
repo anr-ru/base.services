@@ -15,13 +15,8 @@
  */
 package ru.anr.base.dao.repository;
 
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.repository.query.Param;
-import org.springframework.security.access.prepost.PostAuthorize;
-import org.springframework.security.access.prepost.PostFilter;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Repository;
 import ru.anr.base.domain.BaseEntity;
 
@@ -75,33 +70,6 @@ public interface BaseRepository<T extends BaseEntity> extends JpaRepository<T, L
      * @return Found object or null if nothing found
      */
     <S extends T> S find(Class<S> entityClass, Long id);
-
-    /**
-     * Searches an entity by its class and the ID and verifies read access to it.
-     *
-     * @param entityClass Entity class
-     * @param id          Identified of entity
-     * @param <S>         Object type
-     * @return Found object or null if nothing found
-     */
-    @PostAuthorize("hasPermission(returnObject,'read') or hasPermission(returnObject,'access_read') or hasRole('ROLE_ROOT')")
-    <S extends T> S findSecured(Class<S> entityClass, Long id);
-
-    @PreAuthorize("hasPermission(#o,'write') or hasPermission(#o,'access_write') or hasRole('ROLE_ROOT')")
-    <S extends T> S saveSecured(@Param("o") S entity);
-
-    @PreAuthorize("hasPermission(#o,'delete') or hasPermission(#o,'access_delete') or hasRole('ROLE_ROOT')")
-    <S extends T> void deleteSecured(@Param("o") S entity);
-
-    /**
-     * Performs a security-involved filtration of the page object
-     *
-     * @param page The page which results need to be filtered
-     * @param <S>  The type of item in the list
-     * @return The resulted list extracted from the pages with applied security {@link PostFilter}.
-     */
-    @PostFilter("hasPermission(filterObject,'read') or hasPermission(filterObject,'access_read') or hasRole('ROLE_ROOT')")
-    <S extends BaseEntity> List<S> filter(Page<S> page);
 
     /**
      * Executes a native SQL query. This function can be useful for doing some reports directly based on SQL tables.

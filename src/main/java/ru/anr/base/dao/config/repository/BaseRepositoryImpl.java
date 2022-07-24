@@ -18,10 +18,8 @@ package ru.anr.base.dao.config.repository;
 import org.hibernate.transform.AliasToEntityMapResultTransformer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
-import ru.anr.base.BaseParent;
 import ru.anr.base.dao.repository.BaseRepository;
 import ru.anr.base.domain.BaseEntity;
 
@@ -91,30 +89,6 @@ public class BaseRepositoryImpl<T extends BaseEntity> extends SimpleJpaRepositor
     @Override
     public <S extends T> S find(Class<S> entityClass, Long id) {
         return entityManager.find(entityClass, id);
-    }
-
-    @Override
-    public <S extends T> S findSecured(Class<S> entityClass, Long id) {
-        return entityManager.find(entityClass, id);
-    }
-
-    @Override
-    public <S extends T> S saveSecured(S entity) {
-        return super.save(entity);
-    }
-
-    @Override
-    public <S extends T> void deleteSecured(S entity) {
-        super.delete(entity);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public <S extends BaseEntity> List<S> filter(Page<S> page) {
-        // Disclaimer: the original list does not allow any modifications
-        return BaseParent.list(page.getContent());
     }
 
     /**

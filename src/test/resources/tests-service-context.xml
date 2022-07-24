@@ -21,11 +21,6 @@
         <constructor-arg index="1" value="samples"/>
         <constructor-arg index="2" value=""/>
         <constructor-arg index="3" value=""/>
-        <constructor-arg index="4" value="true"/>
-        <constructor-arg index="5">
-            <null/>
-        </constructor-arg>
-        <constructor-arg index="6" ref="authenticationManager"/>
     </bean>
 
 

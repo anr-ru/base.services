@@ -10,10 +10,14 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.acls.domain.BasePermission;
 import org.springframework.security.acls.domain.GrantedAuthoritySid;
 import org.springframework.security.acls.domain.PrincipalSid;
+import org.springframework.security.acls.model.Permission;
+import org.springframework.security.acls.model.Sid;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.TestingAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.util.MultiValueMap;
+import ru.anr.base.dao.repository.SecuredRepository;
 import ru.anr.base.samples.dao.MyDao;
 import ru.anr.base.samples.domain.Samples;
 import ru.anr.base.samples.services.ACLSecured;
@@ -72,20 +76,51 @@ public class ACLSecurityTest extends BaseLocalServiceTestCase {
     @Test
     public void testACLAndAccess() {
 
-        authenticate("user");
+        Sid user = new PrincipalSid("user");
+        Sid test = new PrincipalSid("test");
 
+        authenticate("user");
         Samples s = create(Samples.class, "name", "read");
 
-        try {
-            service.getObject(s.getId());
-            Assertions.fail();
-        } catch (AccessDeniedException ex) {
-            Assertions.assertEquals("Access is denied", ex.getMessage());
-        }
+        assertException(args -> service.getObject(s.getId()), "Access Denied");
 
-        acls.grant(s, new PrincipalSid("user"), BasePermission.READ);
+        acls.grant(s, user, BasePermission.READ);
+        Assertions.assertTrue(acls.isGranted(s, user, list(BasePermission.READ)));
+        Assertions.assertEquals(s, service.getObject(s.getId()));
+
+        acls.grant(s, test, BasePermission.READ);
+        Assertions.assertTrue(acls.isGranted(s, test, list(BasePermission.READ)));
+        authenticate("test");
 
         Assertions.assertEquals(s, service.getObject(s.getId()));
+        assertException(args -> acls.revoke(s, test), "No permissions to delete ACLs");
+
+        MultiValueMap<Sid, Permission> map = acls.getPermissions(s);
+        Assertions.assertEquals(2, map.size());
+        Assertions.assertEquals(list(BasePermission.READ), map.get(user));
+        Assertions.assertEquals(list(BasePermission.READ), map.get(test));
+
+        authenticate("user");
+        acls.revoke(s, test);
+        Assertions.assertFalse(acls.isGranted(s, test, list(BasePermission.READ)));
+
+        authenticate("test");
+        assertException(args -> service.getObject(s.getId()), "Access Denied");
+
+        authenticate("user");
+        Assertions.assertEquals(s, service.getObject(s.getId()));
+
+        map = acls.getPermissions(s);
+        Assertions.assertEquals(1, map.size());
+        Assertions.assertEquals(list(BasePermission.READ), map.get(user));
+
+        acls.revoke(s, user);
+        assertException(args -> service.getObject(s.getId()), "Access Denied");
+
+        Assertions.assertFalse(acls.isGranted(s, test, list(BasePermission.READ)));
+
+        map = acls.getPermissions(s);
+        Assertions.assertEquals(0, map.size());
     }
 
     /**
@@ -103,7 +138,7 @@ public class ACLSecurityTest extends BaseLocalServiceTestCase {
             service.apply(s);
             Assertions.fail();
         } catch (AccessDeniedException ex) {
-            Assertions.assertEquals("Access is denied", ex.getMessage());
+            Assertions.assertEquals("Access Denied", ex.getMessage());
         }
 
         // Now adding just an ACL access
@@ -120,7 +155,7 @@ public class ACLSecurityTest extends BaseLocalServiceTestCase {
             Assertions.fail();
 
         } catch (AccessDeniedException ex) {
-            Assertions.assertEquals("Access is denied", ex.getMessage());
+            Assertions.assertEquals("Access Denied", ex.getMessage());
         }
     }
 
@@ -152,6 +187,11 @@ public class ACLSecurityTest extends BaseLocalServiceTestCase {
 
         service.getObject(s.getId());
         service.apply(s);
+
+        MultiValueMap<Sid, Permission> map = acls.getPermissions(s);
+        Assertions.assertEquals(1, map.size());
+        Assertions.assertEquals(list(BasePermission.READ, BasePermission.WRITE),
+                map.get(new GrantedAuthoritySid("ROLE_USER")));
     }
 
     /**
@@ -174,6 +214,9 @@ public class ACLSecurityTest extends BaseLocalServiceTestCase {
     @Autowired
     private MyDao myDao;
 
+    @Autowired
+    private SecuredRepository securedDao;
+
     /**
      * Filtering the pages
      */
@@ -189,7 +232,7 @@ public class ACLSecurityTest extends BaseLocalServiceTestCase {
         Assertions.assertEquals(2, p.getContent().size());
         Assertions.assertTrue(p.getContent().containsAll(list(s1, s2)));
 
-        List<Samples> rs = myDao.filter(p);
+        List<Samples> rs = securedDao.filterSecured(p);
         Assertions.assertEquals(1, rs.size());
         Assertions.assertTrue(rs.contains(s1));
         Assertions.assertFalse(rs.contains(s2));
@@ -197,7 +240,7 @@ public class ACLSecurityTest extends BaseLocalServiceTestCase {
         // Access granted via ACL
         acls.grant(s2, new PrincipalSid("user"), BasePermission.READ);
 
-        rs = myDao.filter(p);
+        rs = securedDao.filterSecured(p);
         Assertions.assertEquals(2, rs.size());
         Assertions.assertTrue(rs.containsAll(list(s1, s2)));
     }
@@ -212,15 +255,15 @@ public class ACLSecurityTest extends BaseLocalServiceTestCase {
         dao.find(Samples.class, s.getId()); // No security required
 
         try {
-            dao.findSecured(Samples.class, s.getId());
+            securedDao.findSecured(Samples.class, s.getId());
             Assertions.fail();
         } catch (AccessDeniedException ex) {
-            Assertions.assertEquals("Access is denied", ex.getMessage());
+            Assertions.assertEquals("Access Denied", ex.getMessage());
         }
 
         s.setName("read");
 
-        Samples sx = dao.findSecured(Samples.class, s.getId());
+        Samples sx = securedDao.findSecured(Samples.class, s.getId());
         Assertions.assertEquals(s, sx);
 
         Samples sxx = dao.find(Samples.class, s.getId());

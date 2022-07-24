@@ -18,10 +18,15 @@ package ru.anr.base.services.security;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.acls.domain.ObjectIdentityImpl;
 import org.springframework.security.acls.model.*;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import ru.anr.base.domain.BaseEntity;
 import ru.anr.base.services.BaseDataAwareServiceImpl;
+
+import java.util.List;
 
 /**
  * An implementation of {@link ACLManager}.
@@ -48,14 +53,81 @@ public class ACLManagerImpl extends BaseDataAwareServiceImpl implements ACLManag
         ObjectIdentity oi = new ObjectIdentityImpl(entityClass(e), e.getId());
         logger.debug("Granting for ObjectIdentity: {} - {}", oi.getType(), oi.getIdentifier());
 
-        MutableAcl acl = null;
-        try {
-            acl = (MutableAcl) acls.readAclById(oi);
-        } catch (NotFoundException ex) {
-            acl = acls.createAcl(oi);
-        }
+        MutableAcl acl = getAcl(e);
+        if (acl == null) acl = acls.createAcl(oi);
 
         acl.insertAce(acl.getEntries().size(), permission, sid, true);
         acls.updateAcl(acl);
     }
+
+
+    @Override
+    public void revokeAll(BaseEntity e) {
+
+        ObjectIdentity oi = new ObjectIdentityImpl(entityClass(e), e.getId());
+        logger.debug("Revoking permissions for {} - {}", oi.getType(), oi.getIdentifier());
+
+        acls.deleteAcl(oi, true);
+    }
+
+    @Override
+    public void revoke(BaseEntity entity, Sid sid) {
+
+        MutableAcl acl = getAcl(entity);
+        if (acl == null) return; // nothing to revoke
+
+        try {
+
+            int size = acl.getEntries().size();
+            for (int idx = 0; idx < size; idx++) {
+                if (acl.getEntries().get(idx).getSid().equals(sid)) {
+                    acl.deleteAce(idx);
+                }
+            }
+        } catch (NotFoundException ex) {
+            throw new AccessDeniedException("No permissions to delete ACLs");
+        }
+        acls.updateAcl(acl);
+    }
+
+    private MutableAcl getAcl(BaseEntity entity) {
+
+        ObjectIdentity oi = new ObjectIdentityImpl(entityClass(entity), entity.getId());
+        logger.debug("Granting for ObjectIdentity: {} - {}", oi.getType(), oi.getIdentifier());
+
+        MutableAcl acl;
+        try {
+            acl = (MutableAcl) acls.readAclById(oi);
+        } catch (NotFoundException ex) {
+            acl = null;
+        }
+        return acl;
+    }
+
+    @Override
+    public boolean isGranted(BaseEntity entity, Sid sid, List<Permission> permissions) {
+        MutableAcl acl = getAcl(entity);
+        if (acl == null) return false;
+        try {
+            return acl.isGranted(permissions, list(sid), false);
+        } catch (NotFoundException ex) {
+            return false;
+        }
+    }
+
+    @Override
+    public MultiValueMap<Sid, Permission> getPermissions(BaseEntity entity) {
+
+        MutableAcl acl = getAcl(entity);
+        MultiValueMap<Sid, Permission> rs = new LinkedMultiValueMap<>();
+
+        if (acl != null) {
+            for (int idx = 0; idx < acl.getEntries().size(); idx++) {
+                AccessControlEntry ace = acl.getEntries().get(idx);
+                rs.add(ace.getSid(), ace.getPermission());
+            }
+        }
+        return rs;
+    }
+
 }

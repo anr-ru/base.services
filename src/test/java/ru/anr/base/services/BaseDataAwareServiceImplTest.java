@@ -19,9 +19,6 @@ import ru.anr.base.samples.services.TestDataService;
  */
 public class BaseDataAwareServiceImplTest extends BaseLocalServiceTestCase {
 
-    /**
-     *
-     */
     @Autowired
     @Qualifier("baseData")
     private BaseService service;
@@ -97,7 +94,7 @@ public class BaseDataAwareServiceImplTest extends BaseLocalServiceTestCase {
             testService.save(ex);
             Assertions.fail();
         } catch (AccessDeniedException exp) {
-            Assertions.assertEquals("Access is denied", exp.getMessage());
+            Assertions.assertEquals("Access Denied", exp.getMessage());
         }
 
         e = new Samples();
@@ -108,7 +105,7 @@ public class BaseDataAwareServiceImplTest extends BaseLocalServiceTestCase {
             testService.save(e);
             Assertions.fail();
         } catch (AccessDeniedException exp) {
-            Assertions.assertEquals("Access is denied", exp.getMessage());
+            Assertions.assertEquals("Access Denied", exp.getMessage());
         }
 
     }
