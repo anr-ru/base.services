@@ -57,7 +57,6 @@ public interface SecuredRepository {
      *
      * @param entity The entity
      * @param <S>    The type of entity
-     * @return The resulted entity
      */
     @PreAuthorize("hasPermission(#o,'delete') or hasPermission(#o,'access_delete') or hasRole('ROLE_ROOT')")
     <S extends BaseEntity> void deleteSecured(@Param("o") S entity);
