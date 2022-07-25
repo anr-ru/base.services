@@ -15,9 +15,18 @@
  */
 package ru.anr.base.dao.config.repository;
 
+import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.query.EscapeCharacter;
+import org.springframework.data.jpa.repository.query.JpaQueryMethodFactory;
+import org.springframework.data.jpa.repository.support.JpaRepositoryFactory;
+import org.springframework.data.jpa.repository.support.JpaRepositoryFactoryBean;
 import org.springframework.data.mapping.context.MappingContext;
+import org.springframework.data.querydsl.EntityPathResolver;
+import org.springframework.data.querydsl.SimpleEntityPathResolver;
 import org.springframework.data.repository.core.support.RepositoryFactorySupport;
 import org.springframework.data.repository.core.support.TransactionalRepositoryFactoryBeanSupport;
+import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 import ru.anr.base.dao.repository.BaseRepository;
 import ru.anr.base.domain.BaseEntity;
@@ -25,7 +34,12 @@ import ru.anr.base.domain.BaseEntity;
 import javax.persistence.EntityManager;
 
 /**
- * A multiUnit version of the repository factory.
+ * An overridable version of Persistent Unit factory for the case if we have multiple
+ * of persistent units defined in the application.
+ * <p></p>
+ * We have to copy-n-paste the {@link JpaRepositoryFactoryBean} implementation here
+ * because there is no way to extend it properly.
+ * <p></p>
  *
  * @param <T> The type of entity
  * @author Alexey Romanchuk
@@ -35,9 +49,13 @@ import javax.persistence.EntityManager;
 public class MultiUnitRepositoryFactoryBean<T extends BaseEntity>
         extends TransactionalRepositoryFactoryBeanSupport<BaseRepository<T>, T, Long> {
 
+    private @Nullable EntityManager entityManager;
+    private EntityPathResolver entityPathResolver;
+    private EscapeCharacter escapeCharacter = EscapeCharacter.DEFAULT;
+    private JpaQueryMethodFactory queryMethodFactory;
+
     /**
-     * Creates a new {@link MultiUnitRepositoryFactoryBean} for the given
-     * repository interface.
+     * Creates a new {@link JpaRepositoryFactoryBean} for the given repository interface.
      *
      * @param repositoryInterface must not be {@literal null}.
      */
@@ -46,12 +64,8 @@ public class MultiUnitRepositoryFactoryBean<T extends BaseEntity>
     }
 
     /**
-     * A reference to the current {@link EntityManager}
-     */
-    private EntityManager entityManager;
-
-    /**
-     * The {@link EntityManager} to be used.
+     * The {@link EntityManager} to be used and must be overridden to inject a proper persistent
+     * unit.
      *
      * @param entityManager the entityManager to set
      */
@@ -59,8 +73,9 @@ public class MultiUnitRepositoryFactoryBean<T extends BaseEntity>
         this.entityManager = entityManager;
     }
 
-    /**
-     * {@inheritDoc}
+    /*
+     * (non-Javadoc)
+     * @see org.springframework.data.repository.core.support.RepositoryFactoryBeanSupport#setMappingContext(org.springframework.data.mapping.context.MappingContext)
      */
     @Override
     public void setMappingContext(MappingContext<?, ?> mappingContext) {
@@ -68,19 +83,70 @@ public class MultiUnitRepositoryFactoryBean<T extends BaseEntity>
     }
 
     /**
-     * {@inheritDoc}
+     * Configures the {@link EntityPathResolver} to be used. Will expect a canonical bean to be present but fallback to
+     * {@link SimpleEntityPathResolver#INSTANCE} in case none is available.
+     *
+     * @param resolver must not be {@literal null}.
      */
-    @Override
-    protected RepositoryFactorySupport doCreateRepositoryFactory() {
-        return new InternalRepositoryFactory<T>(entityManager);
+    @Autowired
+    public void setEntityPathResolver(ObjectProvider<EntityPathResolver> resolver) {
+        this.entityPathResolver = resolver.getIfAvailable(() -> SimpleEntityPathResolver.INSTANCE);
     }
 
     /**
-     * {@inheritDoc}
+     * Configures the {@link JpaQueryMethodFactory} to be used. Will expect a canonical bean to be present but will
+     * fallback to {@link org.springframework.data.jpa.repository.query.DefaultJpaQueryMethodFactory} in case none is
+     * available.
+     *
+     * @param factory may be {@literal null}.
+     */
+    @Autowired
+    public void setQueryMethodFactory(@Nullable JpaQueryMethodFactory factory) {
+
+        if (factory != null) {
+            this.queryMethodFactory = factory;
+        }
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see org.springframework.data.repository.core.support.TransactionalRepositoryFactoryBeanSupport#doCreateRepositoryFactory()
+     */
+    @Override
+    protected RepositoryFactorySupport doCreateRepositoryFactory() {
+
+        Assert.state(entityManager != null, "EntityManager must not be null!");
+
+        return createRepositoryFactory(entityManager);
+    }
+
+    /**
+     * Returns a {@link RepositoryFactorySupport}.
+     */
+    protected RepositoryFactorySupport createRepositoryFactory(EntityManager entityManager) {
+
+        JpaRepositoryFactory jpaRepositoryFactory = new InternalRepositoryFactory<T>(entityManager);
+        jpaRepositoryFactory.setEntityPathResolver(entityPathResolver);
+        jpaRepositoryFactory.setEscapeCharacter(escapeCharacter);
+
+        if (queryMethodFactory != null) {
+            jpaRepositoryFactory.setQueryMethodFactory(queryMethodFactory);
+        }
+
+        return jpaRepositoryFactory;
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see org.springframework.beans.factory.InitializingBean#afterPropertiesSet()
      */
     @Override
     public void afterPropertiesSet() {
-        Assert.notNull(entityManager, "EntityManager must not be null!");
+        Assert.state(entityManager != null, "EntityManager must not be null!");
         super.afterPropertiesSet();
+    }
+
+    public void setEscapeCharacter(char escapeCharacter) {
+        this.escapeCharacter = EscapeCharacter.of(escapeCharacter);
     }
 }
