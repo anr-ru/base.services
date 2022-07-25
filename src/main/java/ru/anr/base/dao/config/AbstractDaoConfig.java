@@ -74,7 +74,7 @@ public abstract class AbstractDaoConfig extends BaseSpringParent implements Tran
 
         EhCacheManagerFactoryBean factory = new EhCacheManagerFactoryBean();
         factory.setAcceptExisting(true);
-        factory.setShared(false);
+        factory.setShared(true); // a single ehcache configuration is preferable
         factory.setConfigLocation(new ClassPathResource("ehcache.xml"));
 
         factory.afterPropertiesSet();
