@@ -351,6 +351,9 @@ public class APICommandFactoryImpl extends BaseServiceImpl implements APICommand
 
         if (m instanceof ResponseModel && ((ResponseModel) m).code == null) {
             ((ResponseModel) m).code = 0;
+        } else if (m instanceof ResponseModel && ((ResponseModel) m).code == Integer.MAX_VALUE) {
+            // A way to reset the code value if code=0 is not required
+            ((ResponseModel) m).code = null;
         }
 
         Serializer s = getSerializer(cmd.getResponseFormat());

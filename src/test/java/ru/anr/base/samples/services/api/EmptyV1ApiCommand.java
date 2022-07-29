@@ -21,6 +21,6 @@ public class EmptyV1ApiCommand extends AbstractApiCommandStrategyImpl {
      */
     @Override
     public ResponseModel get(APICommand cmd) {
-        return null;
+        return cmd.getRequest();
     }
 }

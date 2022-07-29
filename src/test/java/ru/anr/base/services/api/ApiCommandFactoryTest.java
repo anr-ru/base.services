@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import ru.anr.base.domain.api.APICommand;
 import ru.anr.base.domain.api.APIException;
 import ru.anr.base.domain.api.RawFormatTypes;
+import ru.anr.base.domain.api.models.RequestModel;
 import ru.anr.base.domain.api.models.ResponseModel;
 import ru.anr.base.samples.services.api.EmptyV1ApiCommand;
 import ru.anr.base.services.BaseLocalServiceTestCase;
@@ -132,6 +133,27 @@ public class ApiCommandFactoryTest extends BaseLocalServiceTestCase {
 
         Assertions.assertEquals(0, m.code);
     }
+
+    /**
+     * Use case : A command with a deliberately set code value to prevent its generation.
+     */
+    @Test
+    public void testEmptyContentCommandWithResettingCode() {
+
+        APICommand ping = new APICommand("Empty", "v1");
+        ping.setRequestFormat(null);
+        ping.setResponseFormat(null);
+
+        ping = ping.method(GET);
+        ping.setRequest(new RequestModel());
+        ping.getRequest().code = Integer.MAX_VALUE;
+
+        APICommand rs = factory.process(ping);
+        ResponseModel m = rs.getResponse();
+
+        Assertions.assertNull(m.code);
+    }
+
 
     /**
      * Use case : Ping command

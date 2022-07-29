@@ -19,6 +19,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.acls.model.NotFoundException;
@@ -66,7 +67,7 @@ public class BaseDataAwareServiceImpl extends BaseServiceImpl implements BaseDat
     /**
      * {@inheritDoc}
      */
-    @PreAuthorize("hasPermission(#o,'write') or hasPermission(#o,'access_write')")
+    @PreAuthorize("hasPermission(#o,'write') or hasPermission(#o,'access_write') or hasRole('ROLE_ROOT')")
     @Override
     public <S extends BaseEntity> S save(@P("o") S object) {
 
@@ -132,12 +133,14 @@ public class BaseDataAwareServiceImpl extends BaseServiceImpl implements BaseDat
      */
     @Autowired
     @Qualifier("BaseRepository")
+    @Lazy
     public void setDao(BaseRepository<BaseEntity> dao) {
         this.repository = dao;
     }
 
     @Autowired
     @Qualifier("SecuredRepository")
+    @Lazy
     public void setSecuredDao(SecuredRepository dao) {
         this.securedRepository = dao;
     }
