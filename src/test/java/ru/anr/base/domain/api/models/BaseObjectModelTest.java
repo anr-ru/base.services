@@ -6,8 +6,6 @@ import org.springframework.test.context.ContextConfiguration;
 import ru.anr.base.domain.BaseEntity;
 import ru.anr.base.tests.BaseTestCase;
 
-import java.util.GregorianCalendar;
-
 /**
  * Description ...
  *
@@ -25,18 +23,18 @@ public class BaseObjectModelTest extends BaseTestCase {
 
         BaseEntity o = new BaseEntity();
         o.setId(25L);
-        o.setCreated(GregorianCalendar.from(now().plusMinutes(1)));
-        o.setModified(GregorianCalendar.from(now().plusMinutes(2)));
+        o.setCreated(now().plusMinutes(1));
+        o.setModified(now().plusMinutes(2));
         o.setState("Basic");
-        o.setStateChanged(GregorianCalendar.from(now().plusMinutes(3)));
+        o.setStateChanged(now().plusMinutes(3));
 
         BaseObjectModel m = new BaseObjectModel(o);
 
         Assertions.assertEquals(o.getId(), m.id);
         Assertions.assertEquals(o.getState(), m.state);
-        Assertions.assertEquals(o.getCreated(), m.created);
-        Assertions.assertEquals(o.getModified(), m.modified);
-        Assertions.assertEquals(o.getStateChanged(), m.stateChanged);
+        Assertions.assertEquals(calendar(o.getCreated()), m.created);
+        Assertions.assertEquals(calendar(o.getModified()), m.modified);
+        Assertions.assertEquals(calendar(o.getStateChanged()), m.stateChanged);
 
         BaseObjectModel mx = new BaseObjectModel(m);
 

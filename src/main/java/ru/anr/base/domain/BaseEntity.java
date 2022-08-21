@@ -28,7 +28,7 @@ import ru.anr.base.dao.EntityUtils;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.Calendar;
+import java.time.ZonedDateTime;
 import java.util.UUID;
 
 /**
@@ -63,12 +63,12 @@ public class BaseEntity extends BaseParent implements Serializable, Accessible {
     /**
      * Time of creation
      */
-    private Calendar created;
+    private ZonedDateTime created;
 
     /**
      * Time of modification
      */
-    private Calendar modified;
+    private ZonedDateTime modified;
 
     /**
      * The state
@@ -78,7 +78,7 @@ public class BaseEntity extends BaseParent implements Serializable, Accessible {
     /**
      * The time when the state has been changed
      */
-    private Calendar stateChanged;
+    private ZonedDateTime stateChanged;
 
     /**
      * The information on the last transition to the state or object updates errors, warning, etc.
@@ -90,7 +90,7 @@ public class BaseEntity extends BaseParent implements Serializable, Accessible {
      */
     @PrePersist
     public void prePersist() {
-        setCreated(calendar(now()));
+        setCreated(now());
     }
 
     /**
@@ -98,7 +98,7 @@ public class BaseEntity extends BaseParent implements Serializable, Accessible {
      */
     @PreUpdate
     public void preUpdate() {
-        setModified(calendar(now()));
+        setModified(now());
     }
 
     /**
@@ -124,7 +124,7 @@ public class BaseEntity extends BaseParent implements Serializable, Accessible {
 
         if (!this.hasState(newState)) {
             setState(newState);
-            setStateChanged(calendar(now()));
+            setStateChanged(now());
         }
         return oldState;
     }
@@ -239,15 +239,14 @@ public class BaseEntity extends BaseParent implements Serializable, Accessible {
      * @return the created
      */
     @Column(name = "i_created")
-    @Temporal(TemporalType.TIMESTAMP)
-    public Calendar getCreated() {
+    public ZonedDateTime getCreated() {
         return cloneObject(created);
     }
 
     /**
      * @param created the created to set
      */
-    public void setCreated(Calendar created) {
+    public void setCreated(ZonedDateTime created) {
         this.created = cloneObject(created);
     }
 
@@ -255,7 +254,7 @@ public class BaseEntity extends BaseParent implements Serializable, Accessible {
      * @return the modified
      */
     @Column(name = "i_modified")
-    public Calendar getModified() {
+    public ZonedDateTime getModified() {
         return cloneObject(modified);
     }
 
@@ -278,21 +277,21 @@ public class BaseEntity extends BaseParent implements Serializable, Accessible {
      * @return the stateChanged
      */
     @Column(name = "i_state_changed")
-    public Calendar getStateChanged() {
+    public ZonedDateTime getStateChanged() {
         return cloneObject(stateChanged);
     }
 
     /**
      * @param stateChanged the stateChanged to set
      */
-    public void setStateChanged(Calendar stateChanged) {
+    public void setStateChanged(ZonedDateTime stateChanged) {
         this.stateChanged = cloneObject(stateChanged);
     }
 
     /**
      * @param modified the modified to set
      */
-    public void setModified(Calendar modified) {
+    public void setModified(ZonedDateTime modified) {
         this.modified = cloneObject(modified);
     }
 
@@ -305,9 +304,9 @@ public class BaseEntity extends BaseParent implements Serializable, Accessible {
         this.stateInfo = stateInfo;
     }
 
-    // /////////////////////////////////////////////////////////////////////////
-    // /// some functions
-    // /////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////
+    ///// some functions
+    ///////////////////////////////////////////////////////////////////////////
 
     /**
      * Returns the effective ID. We use some random GUID before the object stored. This allows to distinct

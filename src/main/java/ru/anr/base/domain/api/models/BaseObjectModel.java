@@ -15,6 +15,7 @@
  */
 package ru.anr.base.domain.api.models;
 
+import ru.anr.base.BaseParent;
 import ru.anr.base.domain.BaseEntity;
 
 import javax.xml.bind.annotation.XmlAttribute;
@@ -81,10 +82,10 @@ public class BaseObjectModel extends RequestModel {
         BaseEntity o = nullSafe(object, BaseEntity.class);
 
         this.id = o.getId();
-        this.created = o.getCreated();
-        this.modified = o.getModified();
+        this.created = nullSafe(o.getCreated(), BaseParent::calendar).orElse(null);
+        this.modified = nullSafe(o.getModified(), BaseParent::calendar).orElse(null);
         this.state = o.getState();
-        this.stateChanged = o.getStateChanged();
+        this.stateChanged = nullSafe(o.getStateChanged(), BaseParent::calendar).orElse(null);
     }
 
     /**
