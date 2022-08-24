@@ -22,6 +22,7 @@ import ru.anr.base.samples.domain.TestStates;
 import ru.anr.base.samples.services.ACLSecured;
 import ru.anr.base.samples.services.TestDataService;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
@@ -225,5 +226,27 @@ public class BaseServiceImplTest extends BaseLocalServiceTestCase {
 
         Samples s = dao.save(new Samples());
         Assertions.assertTrue(BaseServiceImpl.isDefined(new SampleModel(s)));
+    }
+
+    /**
+     * Tests for {@link BaseServiceImpl#parseAndCheckParam(String, String, Class)}
+     */
+    @Test
+    public void testCheckAndParseParam() {
+
+        BaseServiceImpl service = target(bean(BaseServiceImpl.class));
+
+
+        Assertions.assertEquals(d("3.14"),
+                service.parseAndCheckParam("3.14", "num", BigDecimal.class));
+        Assertions.assertEquals(10L,
+                service.parseAndCheckParam("10", "num", Long.class));
+
+        assertException(x -> service.parseAndCheckParam("x2", "num", Long.class),
+                "Wrong parameter `num` = x2");
+        assertException(x -> service.parseAndCheckParam("x2", "num", BigDecimal.class),
+                "Wrong parameter `num` = x2");
+        assertException(x -> service.parseAndCheckParam(null, "num", BigDecimal.class),
+                "Parameter `num` is null");
     }
 }

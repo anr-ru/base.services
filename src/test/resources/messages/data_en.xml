@@ -5,6 +5,8 @@
     <entry key="hello.world">Hello, world!</entry>
     <entry key="api.errorcode.1">A system error</entry>
     <entry key="api.errorcode.-1">A validation error</entry>
+    <entry key="api.param.is.wrong">Wrong parameter `{0}` = {1}</entry>
+    <entry key="api.param.is.null">Parameter `{0}` is null</entry>
 
     <!-- Validation -->
     <entry key="not.null.value">The value is expected to be NOT NULL</entry>

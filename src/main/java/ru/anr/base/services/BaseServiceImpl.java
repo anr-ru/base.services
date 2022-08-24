@@ -570,6 +570,23 @@ public class BaseServiceImpl extends BaseSpringParent implements BaseService {
     }
 
     /**
+     * Checks and parses the given string parameter value as the given class. This is widely used
+     * scenario when you need to get the parse number with applied all necessary checks.
+     *
+     * @param str       The original string value
+     * @param paramName The parameter's name
+     * @param clazz     The number class to parse
+     * @param <S>       The type of the value
+     * @return The resulted parsed number value
+     */
+    public <S extends Number> S parseAndCheckParam(String str, String paramName, Class<S> clazz) {
+        checkParamNotNull(str, paramName);
+        S num = parse(str, clazz);
+        checkParamWrong(num != null, paramName, str);
+        return num;
+    }
+
+    /**
      * 1. Checks whether the given value has precision less than is allowed by the
      * given scale. For example, if a currency allows the minimum value to be
      * 0.00001, then this function return true for all values which are less
