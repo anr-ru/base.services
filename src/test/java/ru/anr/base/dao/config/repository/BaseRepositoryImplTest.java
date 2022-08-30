@@ -18,8 +18,8 @@ public class BaseRepositoryImplTest extends AbstractDaoTestCase {
     @Test
     public void testNativeSQL() {
 
-        create(Samples.class, "name", "x1");
-        create(Samples.class, "name", "x2");
+        Samples s1 = create(Samples.class, "name", "x1");
+        Samples s2 = create(Samples.class, "name", "x2");
 
         // No params
         List<Map<String, Object>> rs = sampleDao.executeSQLQuery("select id,name from samples",
@@ -36,5 +36,12 @@ public class BaseRepositoryImplTest extends AbstractDaoTestCase {
         Assertions.assertEquals(1, rs.size());
         Assertions.assertEquals(2, rs.get(0).size());
         Assertions.assertEquals("x1", rs.get(0).get("NAME"));
+
+
+        // SQL Update
+        Assertions.assertEquals(1,
+                sampleDao.executeSQL("update samples set name = :n where id = :i", toMap("i", s2.getId(), "n", "TTTT")));
+        sampleDao.refresh(s2);
+        Assertions.assertEquals("TTTT", s2.getName());
     }
 }

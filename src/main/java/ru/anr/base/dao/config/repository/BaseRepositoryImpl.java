@@ -102,16 +102,7 @@ public class BaseRepositoryImpl<T extends BaseEntity> extends SimpleJpaRepositor
             logger.debug("SQL: {}, params: {}", sql, params);
         }
 
-        Query query = entityManager.createNativeQuery(sql);
-
-        if (params != null) {
-            for (Parameter<?> qp : query.getParameters()) {
-                if (params.containsKey(qp.getName())) {
-                    query.setParameter(qp.getName(), params.get(qp.getName()));
-                }
-            }
-        }
-
+        Query query = buildNativeQuery(sql, params);
         if (page != null) {
             query.setFirstResult((int) page.getOffset());
             query.setMaxResults(page.getPageSize());
@@ -136,5 +127,23 @@ public class BaseRepositoryImpl<T extends BaseEntity> extends SimpleJpaRepositor
             }
         }
         return q.executeUpdate();
+    }
+
+    @Override
+    public int executeSQL(String sql, Map<String, Object> params) {
+        Query query = buildNativeQuery(sql, params);
+        return query.executeUpdate();
+    }
+
+    private Query buildNativeQuery(String sql, Map<String, Object> params) {
+        Query query = entityManager.createNativeQuery(sql);
+        if (params != null) {
+            for (Parameter<?> qp : query.getParameters()) {
+                if (params.containsKey(qp.getName())) {
+                    query.setParameter(qp.getName(), params.get(qp.getName()));
+                }
+            }
+        }
+        return query;
     }
 }

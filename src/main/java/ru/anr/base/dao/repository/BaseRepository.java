@@ -53,13 +53,22 @@ public interface BaseRepository<T extends BaseEntity> extends JpaRepository<T, L
     <S> List<S> query(String queryStr, Object... params);
 
     /**
-     * Executes the query (UPDATE or DELETE).
+     * Executes a query (UPDATE or DELETE).
      *
      * @param queryStr The query
      * @param params   The parameters
      * @return The number of processed object
      */
     int execute(String queryStr, Object... params);
+
+    /**
+     * Executes a native SQL UPDATE or DELETE query.
+     *
+     * @param sql    The query
+     * @param params The parameters
+     * @return The number of processed object
+     */
+    int executeSQL(String sql, Map<String, Object> params);
 
     /**
      * Searches an entity by class and id.
