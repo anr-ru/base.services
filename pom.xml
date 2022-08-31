@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.anrruf</groupId>
         <artifactId>base.platform.parent</artifactId>
-        <version>2.0.0-SNAPSHOT-991587b</version>
+        <version>2.0.3</version>
     </parent>
 
     <artifactId>base.services</artifactId>
@@ -50,15 +50,7 @@
                 </executions>
             </plugin>
         </plugins>
-        <extensions>
-            <extension>
-                <groupId>io.packagecloud.maven.wagon</groupId>
-                <artifactId>maven-packagecloud-wagon</artifactId>
-                <version>0.0.6</version>
-            </extension>
-        </extensions>
     </build>
-
 
     <dependencies>
         <!-- Spring framework base -->
@@ -202,12 +194,12 @@
         <dependency>
             <groupId>org.anrruf</groupId>
             <artifactId>base.utils</artifactId>
-            <version>2.0.0-SNAPSHOT-84d1b9e</version>
+            <version>2.0.1</version>
         </dependency>
         <dependency>
             <groupId>org.anrruf</groupId>
             <artifactId>base.tests</artifactId>
-            <version>2.0.0-SNAPSHOT-c19b9fd</version>
+            <version>2.0.1</version>
         </dependency>
 
         <!-- TESTS -->

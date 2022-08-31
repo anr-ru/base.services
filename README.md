@@ -4,7 +4,7 @@
 
 # Base.Services
 
-**Base.Service** was created as a framework for fast creating business logic
+**Base.Services** was created as a framework for fast creating business logic
 operations.
 
 It contains the following ready prototypes:
@@ -22,6 +22,6 @@ It contains the following ready prototypes:
 
 4. A convenient way for extensions of services by adding different plug-ins.
 
-5. A configuration for easy managing the DEV/QA/CI/PROD configuration stages in the code.
+5. A configuration for easy managing the DEV/QA/CI/PROD stages in the code.
 
 6. Authentication/Authorization prototypes with ACL and role-based authorization models.
