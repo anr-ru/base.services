@@ -5,7 +5,7 @@
     <parent>
         <groupId>ru.anr</groupId>
         <artifactId>base.platform.parent</artifactId>
-        <version>1.0.0</version>
+        <version>1.1.0</version>
     </parent>
 
     <artifactId>base.services</artifactId>
@@ -197,7 +197,7 @@
         <dependency>
             <groupId>ru.anr</groupId>
             <artifactId>base.tests</artifactId>
-            <version>1.0.0</version>
+            <version>${base.tests.version}</version>
         </dependency>
 
         <!-- TESTS -->
@@ -218,11 +218,12 @@
 
         <dbx.url>jdbc:hsqldb:mem:testdb</dbx.url>
         <dbx.user>sa</dbx.user>
-        <dbx.password></dbx.password>
+        <dbx.password/>
         <dbx.driverClass>org.hsqldb.jdbcDriver</dbx.driverClass>
         <dbx.hibernateDialect>org.hibernate.dialect.HSQLDialect</dbx.hibernateDialect>
 
-        <base.utils.version>1.0.1-SNAPSHOT-99fd047</base.utils.version>
+        <base.utils.version>1.1.0</base.utils.version>
+        <base.tests.version>1.2.0</base.tests.version>
 
     </properties>
 
