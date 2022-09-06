@@ -205,8 +205,8 @@ public class BaseEntity extends BaseParent implements Serializable, Accessible {
      * @return the id
      */
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "hseq")
-    @SequenceGenerator(name = "hseq", allocationSize = 50)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "hibernate_sequence")
+    @SequenceGenerator(name = "hibernate_sequence", initialValue = 1000, allocationSize = 50)
     @Column(name = "id")
     public Long getId() {
         return id;
