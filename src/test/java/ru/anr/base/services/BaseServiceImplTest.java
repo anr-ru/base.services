@@ -135,8 +135,9 @@ public class BaseServiceImplTest extends BaseLocalServiceTestCase {
 
     @Test
     public void testExtensions() {
-        Assertions.assertEquals("[1, 2]", nullSafe(service.doExtension(null)));
+        Assertions.assertEquals("[3, 1]", nullSafe(service.doExtension(null)));
         Assertions.assertEquals("[2]", nullSafe(service.doExtension("test")));
+        Assertions.assertEquals("[3, 1]", nullSafe(service.doExtension("default")));
     }
 
     @Autowired

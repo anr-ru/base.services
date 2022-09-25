@@ -21,6 +21,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.NoSuchMessageException;
 import org.springframework.context.support.MessageSourceAccessor;
+import org.springframework.core.OrderComparator;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.AnnotationAwareOrderComparator;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.security.access.AccessDeniedException;
@@ -29,6 +32,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.util.MultiValueMap;
+import org.springframework.util.comparator.Comparators;
 import ru.anr.base.ApplicationException;
 import ru.anr.base.BaseSpringParent;
 import ru.anr.base.dao.EntityUtils;
@@ -136,7 +140,7 @@ public class BaseServiceImpl extends BaseSpringParent implements BaseService {
     protected void registerExtensions(Object extId, List<Strategy<Object>> extensions) {
         extensionFactories.put(extId, new StrategyFactoryImpl(extensions));
         if (notEmpty(extensions)) {
-            logger.info("Initializing {} extensions for {}", extensions.size(), target(this));
+            logger.info("Initializing {} {} extensions for {}", extId, extensions.size(), target(this));
         }
     }
 
@@ -362,7 +366,8 @@ public class BaseServiceImpl extends BaseSpringParent implements BaseService {
     }
 
     /**
-     * Loads extensions marked with the given annotation type
+     * Loads extensions marked with the given annotation type. Also, the resulted list of strategies is
+     * sorted in accordance with the {@link Ordered} annotation if it is defined for each strategy.
      *
      * @param marker The marker annotation
      * @return The list of found extensions
@@ -373,6 +378,33 @@ public class BaseServiceImpl extends BaseSpringParent implements BaseService {
     }
 
     /**
+     * Loads extensions marked with the given annotation type. Also, the resulted list of strategies is
+     * sorted in accordance with the {@link Ordered} annotation if it is defined for each strategy.
+     * This function filters out the strategies that has the given extensionId and the fixed annotation.
+     *
+     * @param marker The marker annotation
+     * @param extensionId The extension ID that needs to be used for selecting extensions.
+     * @return The list of found extensions
+     */
+    protected List<Strategy<Object>> loadExtensions(Class<ExtensionMarker> marker, String extensionId) {
+        logger.info("Loading: '{}' extensions by : {} of {}",extensionId, marker.getSimpleName(), target(this));
+        return loadExtensions(s -> {
+            ExtensionMarker a = AnnotationUtils.findAnnotation(target(s).getClass(), marker);
+            return a != null && safeEquals(extensionId, a.value());
+        });
+    }
+
+    Map<String, Strategy<Object>> cachedBeans;
+
+    // Loading all strategies in order to avoid taking them several times from Spring.
+    private synchronized Map<String, Strategy<Object>> getBeanCandidate() {
+        if (cachedBeans == null) {
+            cachedBeans = ctx.getBeansOfType(getClazz()); // Loading all 'Strategies'
+        }
+        return cachedBeans;
+    }
+
+    /**
      * Loads extensions selecting them based on the given callback's result
      *
      * @param callback The callback to determine the condition of selection
@@ -380,9 +412,14 @@ public class BaseServiceImpl extends BaseSpringParent implements BaseService {
      */
     protected List<Strategy<Object>> loadExtensions(Function<Strategy<Object>, Boolean> callback) {
 
-        Map<String, Strategy<Object>> beans = ctx.getBeansOfType(getClazz());
-        List<Strategy<Object>> extensions = list(beans.values().stream().filter(callback::apply));
+        Map<String, Strategy<Object>> beans = getBeanCandidate();
+        List<Strategy<Object>> extensions = beans.values()
+                .stream()
+                .filter(callback::apply)
+                .sorted(new AnnotationAwareOrderComparator()) // if an extension has the 'Ordered' annotation.
+                .collect(Collectors.toList());
 
+        logger.trace("Loaded strategies: {}", extensions);
         logger.info("Loaded: {} extensions for the: {}", extensions.size(), target(this));
         return extensions;
     }

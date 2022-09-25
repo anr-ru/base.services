@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import ru.anr.base.samples.domain.Samples;
 import ru.anr.base.services.BaseDataAwareServiceImpl;
+import ru.anr.base.services.ExtensionMarker;
 
 import javax.annotation.PostConstruct;
 
@@ -22,8 +23,8 @@ public class TestDataServiceImpl extends BaseDataAwareServiceImpl implements Tes
 
     @PostConstruct
     public void init() {
-        registerExtensions("default", loadExtensions(ServiceExt1.class)); // 2 extensions
-        registerExtensions("test", loadExtensions(ServiceExt2.class)); // 1 extensions
+        registerExtensions("default", loadExtensions(ExtensionMarker.class, "default")); // 2 extensions
+        registerExtensions("test", loadExtensions(ExtensionMarker.class, "test")); // 1 extensions
     }
 
     @Override

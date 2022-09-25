@@ -4,6 +4,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import ru.anr.base.samples.services.ServiceExt1;
 import ru.anr.base.samples.services.ServiceExt2;
+import ru.anr.base.services.ExtensionMarker;
 import ru.anr.base.services.pattern.Strategy;
 import ru.anr.base.services.pattern.StrategyConfig;
 
@@ -12,8 +13,7 @@ import ru.anr.base.services.pattern.StrategyConfig;
  * @created May 11, 2022
  */
 @Component
-@ServiceExt1
-@ServiceExt2
+@ExtensionMarker("test")
 @Order(10)
 public class SecondExtension implements Strategy<Object> {
 
