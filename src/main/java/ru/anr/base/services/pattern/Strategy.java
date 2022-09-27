@@ -15,6 +15,8 @@
  */
 package ru.anr.base.services.pattern;
 
+import ru.anr.base.dao.EntityUtils;
+
 /**
  * A simple strategy pattern.
  *
@@ -42,4 +44,34 @@ public interface Strategy<T> {
      * @return Resulted (possibly, updated) object
      */
     T process(T o, StrategyConfig cfg);
+
+    /**
+     * A special function to determine the class of certain parameters.
+     *
+     * @param clazz  The class to determine
+     * @param index  The parameter's index
+     * @param params The array of parameters
+     * @return true, if the given parameter has the given class
+     */
+    default boolean hasParamOf(Class<?> clazz, int index, Object... params) {
+        return (params != null &&
+                params.length > index &&
+                params[index] != null &&
+                EntityUtils.ofClass(params[index], clazz));
+    }
+
+    /**
+     * Returns the value of the given parameter casting it to the given class.
+     *
+     * @param clazz  The class to cast
+     * @param index  The parameter's index
+     * @param params The array of parameters
+     * @param <S>    The type
+     * @return The parameter's value, or null, if the given parameter does not have
+     * the given class
+     */
+    @SuppressWarnings("unchecked")
+    default <S> S getParam(Class<S> clazz, int index, Object... params) {
+        return hasParamOf(clazz, index, params) ? (S) params[index] : null;
+    }
 }

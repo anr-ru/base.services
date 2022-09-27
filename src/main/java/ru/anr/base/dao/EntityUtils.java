@@ -17,7 +17,7 @@
 package ru.anr.base.dao;
 
 import org.hibernate.proxy.HibernateProxy;
-import ru.anr.base.domain.BaseEntity;
+import ru.anr.base.BaseParent;
 
 /**
  * Entity Utils
@@ -39,9 +39,9 @@ public final class EntityUtils {
      * @return The entity's class
      */
     @SuppressWarnings("unchecked")
-    public static <S extends BaseEntity> Class<S> entityClass(S entity) {
+    public static <S> Class<S> entityClass(S entity) {
         S r = entity(entity);
-        return (Class<S>) r.getClass();
+        return (Class<S>) BaseParent.nullSafe(r, x -> x.getClass()).orElse(null);
     }
 
     /**
@@ -53,7 +53,7 @@ public final class EntityUtils {
      * @return The resulted pure entity
      */
     @SuppressWarnings("unchecked")
-    public static <S extends BaseEntity> S entity(S entity) {
+    public static <S> S entity(S entity) {
 
         S r = entity;
 
@@ -62,5 +62,17 @@ public final class EntityUtils {
             r = (S) proxy.getHibernateLazyInitializer().getImplementation();
         }
         return r;
+    }
+
+    /**
+     * A shortcut function for fast-checks of the class of the given object.
+     *
+     * @param o     The object to check (can be null)
+     * @param clazz The class, cannot be null
+     * @return true, if the object (possible a JPA entity) has the given class.
+     */
+    public static boolean ofClass(Object o, Class<?> clazz) {
+        Class<?> entityClass = EntityUtils.entityClass(o);
+        return BaseParent.nullSafe(entityClass, clazz::isAssignableFrom).orElse(false);
     }
 }
