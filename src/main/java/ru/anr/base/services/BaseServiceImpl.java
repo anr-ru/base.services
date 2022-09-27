@@ -21,7 +21,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.NoSuchMessageException;
 import org.springframework.context.support.MessageSourceAccessor;
-import org.springframework.core.OrderComparator;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.AnnotationAwareOrderComparator;
 import org.springframework.core.annotation.AnnotationUtils;
@@ -32,7 +31,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.util.MultiValueMap;
-import org.springframework.util.comparator.Comparators;
 import ru.anr.base.ApplicationException;
 import ru.anr.base.BaseSpringParent;
 import ru.anr.base.dao.EntityUtils;
@@ -171,7 +169,7 @@ public class BaseServiceImpl extends BaseSpringParent implements BaseService {
     protected List<Object> processParametrizedExtensions(Object extId, Object object, Object... params) {
         StrategyStatistic stat = extensionFactories.containsKey(extId) ? extensionFactories.get(extId).process(object, params) : null;
         if (stat == null) {
-            logger.warn("No extensions defined for '{}'" + nullSafe(extId));
+            logger.warn("No extensions defined for '{}'", nullSafe(extId));
         } else {
             if (logger.isDebugEnabled()) {
                 logger.debug("List of applied strategies: {}", stat.getAppliedStrategies());
@@ -382,12 +380,12 @@ public class BaseServiceImpl extends BaseSpringParent implements BaseService {
      * sorted in accordance with the {@link Ordered} annotation if it is defined for each strategy.
      * This function filters out the strategies that has the given extensionId and the fixed annotation.
      *
-     * @param marker The marker annotation
+     * @param marker      The marker annotation
      * @param extensionId The extension ID that needs to be used for selecting extensions.
      * @return The list of found extensions
      */
     protected List<Strategy<Object>> loadExtensions(Class<ExtensionMarker> marker, String extensionId) {
-        logger.info("Loading: '{}' extensions by : {} of {}",extensionId, marker.getSimpleName(), target(this));
+        logger.info("Loading: '{}' extensions by : {} of {}", extensionId, marker.getSimpleName(), target(this));
         return loadExtensions(s -> {
             ExtensionMarker a = AnnotationUtils.findAnnotation(target(s).getClass(), marker);
             return a != null && safeEquals(extensionId, a.value());

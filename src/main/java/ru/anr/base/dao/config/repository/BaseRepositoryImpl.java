@@ -146,4 +146,9 @@ public class BaseRepositoryImpl<T extends BaseEntity> extends SimpleJpaRepositor
         }
         return query;
     }
+
+    @Override
+    public EntityManager getEntityManager() {
+        return entityManager;
+    }
 }

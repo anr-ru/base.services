@@ -44,7 +44,7 @@ public interface BaseDataAwareService extends BaseService {
      * @param <T>    The type of the entity
      * @return The reloaded object
      */
-    <T extends BaseEntity> T reload(T entity);
+    <T> T reload(T entity);
     
     /**
      * A way to roll back the current transaction if we are launching something in the 'dry-run' mode.

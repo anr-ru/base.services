@@ -90,14 +90,19 @@ public class BaseDataAwareServiceImpl extends BaseServiceImpl implements BaseDat
      * @return The reloaded object
      */
     @Override
-    public <T extends BaseEntity> T reload(T entity) {
-        T o = dao().find(EntityUtils.entityClass(entity), entity.getId());
-        if (o == null) {
-            logger.error("The object {} not found, probably, it was deleted", entity);
-            //throw new ApplicationException("Deleted object");
-            o = entity; // try to use the same object
+    public <T> T reload(T entity) {
+        if (entity instanceof BaseEntity) {
+            BaseEntity o = dao().find(EntityUtils.entityClass((BaseEntity)entity), ((BaseEntity)entity).getId());
+            if (o == null) {
+                logger.error("The object {} not found, probably, it was deleted", entity);
+                //throw new ApplicationException("Deleted object");
+                o = (BaseEntity) entity; // try to use the same object
+            }
+            return (T)o;
         }
-        return o;
+         else {
+             return entity;
+        }
     }
 
     /**
