@@ -135,7 +135,7 @@ public class BaseServiceImpl extends BaseSpringParent implements BaseService {
     private final Map<Object, StrategyFactory> extensionFactories = toMap();
 
 
-    protected void registerExtensions(Object extId, List<Strategy<Object>> extensions) {
+    public void registerExtensions(Object extId, List<Strategy<Object>> extensions) {
         extensionFactories.put(extId, new StrategyFactoryImpl(extensions));
         if (notEmpty(extensions)) {
             logger.info("Initializing {} {} extensions for {}", extId, extensions.size(), target(this));
@@ -392,16 +392,6 @@ public class BaseServiceImpl extends BaseSpringParent implements BaseService {
         });
     }
 
-    Map<String, Strategy<Object>> cachedBeans;
-
-    // Loading all strategies in order to avoid taking them several times from Spring.
-    private synchronized Map<String, Strategy<Object>> getBeanCandidate() {
-        if (cachedBeans == null) {
-            cachedBeans = ctx.getBeansOfType(getClazz()); // Loading all 'Strategies'
-        }
-        return cachedBeans;
-    }
-
     /**
      * Loads extensions selecting them based on the given callback's result
      *
@@ -410,7 +400,7 @@ public class BaseServiceImpl extends BaseSpringParent implements BaseService {
      */
     protected List<Strategy<Object>> loadExtensions(Function<Strategy<Object>, Boolean> callback) {
 
-        Map<String, Strategy<Object>> beans = getBeanCandidate();
+        Map<String, Strategy<Object>> beans = ctx.getBeansOfType(getClazz()); // Loading all 'Strategies'
         List<Strategy<Object>> extensions = beans.values()
                 .stream()
                 .filter(callback::apply)
