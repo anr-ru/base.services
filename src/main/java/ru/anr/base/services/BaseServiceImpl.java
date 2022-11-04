@@ -138,7 +138,7 @@ public class BaseServiceImpl extends BaseSpringParent implements BaseService {
     public void registerExtensions(Object extId, List<Strategy<Object>> extensions) {
         extensionFactories.put(extId, new StrategyFactoryImpl(extensions));
         if (notEmpty(extensions)) {
-            logger.info("Initializing {} {} extensions for {}", extId, extensions.size(), target(this));
+            logger.info("Initializing '{}' {} extensions for {}", extId, extensions.size(), target(this));
         }
     }
 
@@ -167,7 +167,16 @@ public class BaseServiceImpl extends BaseSpringParent implements BaseService {
      * processing.
      */
     protected List<Object> processParametrizedExtensions(Object extId, Object object, Object... params) {
-        StrategyStatistic stat = extensionFactories.containsKey(extId) ? extensionFactories.get(extId).process(object, params) : null;
+
+        // We use lazy loading for extensions
+        if ((extId instanceof String) && !extensionFactories.containsKey(extId)) {
+            registerExtensions(extId, loadExtensions(ExtensionMarker.class, (String) extId));
+        }
+
+        StrategyStatistic stat = extensionFactories.containsKey(extId) ?
+                extensionFactories.get(extId).process(object, params) :
+                null;
+
         if (stat == null) {
             logger.warn("No extensions defined for '{}'", nullSafe(extId));
         } else {
@@ -371,8 +380,7 @@ public class BaseServiceImpl extends BaseSpringParent implements BaseService {
      * @return The list of found extensions
      */
     protected List<Strategy<Object>> loadExtensions(Class<? extends Annotation> marker) {
-        logger.info("Loading: extensions by : {} of {}", marker.getSimpleName(), target(this));
-        return loadExtensions(s -> AnnotationUtils.isAnnotationDeclaredLocally(marker, target(s).getClass()));
+        return loadExtensions(s -> AnnotationUtils.findAnnotation(target(s).getClass(), marker) != null, "default");
     }
 
     /**
@@ -385,11 +393,10 @@ public class BaseServiceImpl extends BaseSpringParent implements BaseService {
      * @return The list of found extensions
      */
     protected List<Strategy<Object>> loadExtensions(Class<ExtensionMarker> marker, String extensionId) {
-        logger.info("Loading: '{}' extensions by : {} of {}", extensionId, marker.getSimpleName(), target(this));
         return loadExtensions(s -> {
             ExtensionMarker a = AnnotationUtils.findAnnotation(target(s).getClass(), marker);
             return a != null && safeEquals(extensionId, a.value());
-        });
+        }, extensionId);
     }
 
     /**
@@ -398,17 +405,20 @@ public class BaseServiceImpl extends BaseSpringParent implements BaseService {
      * @param callback The callback to determine the condition of selection
      * @return The list of found extensions
      */
-    protected List<Strategy<Object>> loadExtensions(Function<Strategy<Object>, Boolean> callback) {
+    protected List<Strategy<Object>> loadExtensions(Function<Strategy<Object>, Boolean> callback, String extensionId) {
 
         Map<String, Strategy<Object>> beans = ctx.getBeansOfType(getClazz()); // Loading all 'Strategies'
+        if (logger.isTraceEnabled()) {
+            logger.trace("All 'strategy' beans: {}", beans);
+        }
         List<Strategy<Object>> extensions = beans.values()
                 .stream()
                 .filter(callback::apply)
                 .sorted(new AnnotationAwareOrderComparator()) // if an extension has the 'Ordered' annotation.
                 .collect(Collectors.toList());
 
-        logger.trace("Loaded strategies: {}", extensions);
-        logger.info("Loaded: {} extensions for the: {}", extensions.size(), target(this));
+        logger.info("Loaded: {} extensions for the: {}/{}", extensions.size(), extensionId, target(this));
+        logger.trace("Loaded '{}' strategies: {}", extensionId, extensions);
         return extensions;
     }
 
