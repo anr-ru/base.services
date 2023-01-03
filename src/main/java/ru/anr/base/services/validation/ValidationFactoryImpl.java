@@ -54,27 +54,26 @@ public class ValidationFactoryImpl extends BaseSpringParent implements Validatio
     };
 
     /**
-     * The initialization procedure
-     *
-     * @param beans All validators
-     */
-    @SuppressWarnings("unchecked")
-    public void init(Map<String, Object> beans) {
-
-        beans.forEach((name, bean) -> validators.add(((BaseValidator<?>) bean).getSupported(), (Strategy<Object>) bean));
-
-        /*
-         * Sorting the lists of validators according to their order
-         */
-        validators.forEach((name, list) -> list.sort(ORDER_SORTING));
-        logger.info("Loaded {} validators", validators.size());
-    }
-
-    /**
      * {@inheritDoc}
      */
+    @SuppressWarnings("unchecked")
     @Override
     public List<Strategy<Object>> getValidators(Class<?> clazz) {
+
+        if (validators.isEmpty()) {
+            // Load all them once only
+            Map<String, Object> beans = ctx.getBeansWithAnnotation(ru.anr.base.services.validation.Validator.class);
+            beans.forEach((name, bean) -> validators.add(((BaseValidator<?>) bean).getSupported(), (Strategy<Object>) bean));
+
+            /*
+             * Sorting the lists of validators according to their order
+             */
+            validators.forEach((name, list) -> list.sort(ORDER_SORTING));
+
+            logger.info("Loaded {} validators", validators.size());
+            logger.debug("Loaded validators: {}", validators);
+        }
+
         return validators.get(clazz);
     }
 }

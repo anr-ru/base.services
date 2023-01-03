@@ -81,10 +81,6 @@ public class ValidationConfig extends BaseSpringParent {
      */
     @Bean(name = "ValidationFactory")
     public ValidationFactory factory() {
-
-        ValidationFactoryImpl factory = new ValidationFactoryImpl();
-        factory.init(ctx.getBeansWithAnnotation(ru.anr.base.services.validation.Validator.class));
-
-        return factory;
+        return new ValidationFactoryImpl();
     }
 }
