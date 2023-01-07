@@ -73,6 +73,12 @@ public interface ApiCommandStrategy {
      */
     ApiStrategy config();
 
+    /**
+     * The initialization procedure before the command execution. This allows to
+     * make some preliminary actions, i.e. to set up the thread context.
+     *
+     * @param cmd The API command
+     */
     default void init(APICommand cmd) {
     }
 }
