@@ -58,7 +58,6 @@ public interface ApiCommandStrategy {
      */
     Object patch(APICommand cmd);
 
-
     /**
      * DELETE method
      *
@@ -73,4 +72,7 @@ public interface ApiCommandStrategy {
      * @return The annotation (it's cached)
      */
     ApiStrategy config();
+
+    default void init(APICommand cmd) {
+    }
 }

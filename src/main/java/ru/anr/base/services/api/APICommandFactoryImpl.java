@@ -142,6 +142,9 @@ public class APICommandFactoryImpl extends BaseServiceImpl implements APICommand
         Object rs;
         logger.trace("Invoking {} method for {}/{}", cmd.getType(), cmd.getCommandId(), cmd.getVersion());
 
+        // Possible initialization of the context if applicable
+        s.init(cmd);
+
         switch (cmd.getType()) {
             case Get:
                 rs = s.get(cmd);
