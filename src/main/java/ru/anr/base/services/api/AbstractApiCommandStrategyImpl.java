@@ -119,7 +119,7 @@ public class AbstractApiCommandStrategyImpl extends BaseDataAwareServiceImpl imp
      * @param properties Names of properties used for sorting
      * @return The resulted new {@link Pageable}
      */
-    protected static Pageable safePageable(APICommand cmd, Direction direction, String... properties) {
+    protected Pageable safePageable(APICommand cmd, Direction direction, String... properties) {
 
         logger.trace("Page parameters: {}:{}", cmd.getRequest().page, cmd.getRequest().perPage);
 
@@ -142,7 +142,7 @@ public class AbstractApiCommandStrategyImpl extends BaseDataAwareServiceImpl imp
      * @param sortOrder The default sort order if not field is provided
      * @return The resulted {@link Pageable}
      */
-    protected static Pageable buildPager(APICommand cmd, String field, SortModel.SortDirection sortOrder) {
+    protected Pageable buildPager(APICommand cmd, String field, SortModel.SortDirection sortOrder) {
 
         RequestModel rq = cmd.getRequest();
         if (isEmpty(rq.sorted)) {
