@@ -62,6 +62,8 @@ public interface BaseDataAwareService extends BaseService {
      * @param o        The main object to be processed
      * @param params   The additional parameters
      * @param <T>      The type of the object
+     * @param <R>      The type of the resulted value
+     * @return The resulted value
      */
-    <T> void execute(ExecutionWrapper<T> executor, T o, Object... params);
+    <T, R> R execute(ExecutionWrapper<T, R> executor, T o, Object... params);
 }

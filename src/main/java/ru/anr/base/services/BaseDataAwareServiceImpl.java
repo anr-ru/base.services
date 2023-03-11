@@ -173,10 +173,10 @@ public class BaseDataAwareServiceImpl extends BaseServiceImpl implements BaseDat
     }
 
     @Override
-    public <T> void execute(ExecutionWrapper<T> executor, T o, Object... params) {
+    public <T, R> R execute(ExecutionWrapper<T, R> executor, T o, Object... params) {
         try {
 
-            this.doWork(executor, o, params);
+            return this.doWork(executor, o, params);
 
         } catch (Throwable e) {
 
@@ -185,24 +185,24 @@ public class BaseDataAwareServiceImpl extends BaseServiceImpl implements BaseDat
             logger.error("Execution exception: {}", error.getMessage());
             logger.error("Execution exception details: " + error.getMessage(), error);
 
-            this.doError(executor, o, error, params);
+            return this.doError(executor, o, error, params);
         }
     }
 
-    private <T> void doWork(ExecutionWrapper<T> executor, T object, Object... params) {
+    private <T, R> R doWork(ExecutionWrapper<T, R> executor, T object, Object... params) {
         if (isProdMode()) {
             logger.trace("Executed a production branch for {}", executor);
-            executor.process(object, params);
+            return executor.process(object, params);
         } else {
-            executor.processForTests(object, params);
+            return executor.processForTests(object, params);
         }
     }
 
-    private <T> void doError(ExecutionWrapper<T> executor, T object, Throwable exception, Object... params) {
+    private <T, R> R doError(ExecutionWrapper<T, R> executor, T object, Throwable exception, Object... params) {
         if (isProdMode()) {
-            executor.error(object, exception, params);
+            return executor.error(object, exception, params);
         } else {
-            executor.errorForTests(object, exception, params);
+            return executor.errorForTests(object, exception, params);
         }
     }
 }

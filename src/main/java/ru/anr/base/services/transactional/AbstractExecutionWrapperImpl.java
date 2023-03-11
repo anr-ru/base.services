@@ -11,39 +11,39 @@ import ru.anr.base.services.BaseDataAwareServiceImpl;
  *
  * @created Mar 11, 2023
  */
-public abstract class AbstractExecutionWrapperImpl<T>
-        extends BaseDataAwareServiceImpl implements ExecutionWrapper<T> {
+public abstract class AbstractExecutionWrapperImpl<T, R>
+        extends BaseDataAwareServiceImpl implements ExecutionWrapper<T, R> {
 
     private static final Logger logger = LoggerFactory.getLogger(AbstractExecutionWrapperImpl.class);
 
     @Override
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void process(T document, Object... params) {
+    public R process(T document, Object... params) {
         // We have to reload the object because it is in a new transaction
-        onProcess(reload(document), params);
+        return onProcess(reload(document), params);
     }
 
     // For overriding in particular executors
-    abstract protected void onProcess(T object, Object... params);
+    abstract protected R onProcess(T object, Object... params);
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
-    public void processForTests(T object, Object... params) {
-        onProcess(object, params);
+    public R processForTests(T object, Object... params) {
+        return onProcess(object, params);
     }
 
     @Override
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void error(T object, Throwable exception, Object... params) {
-        this.errorForTests(object, exception, params);
+    public R error(T object, Throwable exception, Object... params) {
+        return this.errorForTests(object, exception, params);
     }
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
-    public void errorForTests(T object, Throwable exception, Object... params) {
-        onError(object, exception, params);
+    public R errorForTests(T object, Throwable exception, Object... params) {
+        return onError(object, exception, params);
     }
 
     // For overriding in particular executors
-    abstract protected void onError(T object, Throwable exception, Object... params);
+    abstract protected R onError(T object, Throwable exception, Object... params);
 }

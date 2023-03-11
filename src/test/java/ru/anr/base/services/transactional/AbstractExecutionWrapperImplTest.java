@@ -9,6 +9,8 @@ import ru.anr.base.samples.domain.Samples;
 import ru.anr.base.samples.services.TestDataService;
 import ru.anr.base.services.BaseLocalServiceTestCase;
 
+import java.util.List;
+
 public class AbstractExecutionWrapperImplTest extends BaseLocalServiceTestCase {
 
     @Autowired
@@ -16,16 +18,18 @@ public class AbstractExecutionWrapperImplTest extends BaseLocalServiceTestCase {
     private TestDataService service;
 
 
-    private static class MainExecution extends AbstractExecutionWrapperImpl<Samples> {
+    private static class MainExecution extends AbstractExecutionWrapperImpl<Samples, List<Samples>> {
         @Override
-        protected void onProcess(Samples object, Object... params) {
+        protected List<Samples> onProcess(Samples object, Object... params) {
             if ("ERROR".equals(object.getName())) throw new ApplicationException("ERROR RAISED");
             object.setName("DONE");
+            return list(object);
         }
 
         @Override
-        protected void onError(Samples object, Throwable exception, Object... params) {
+        protected List<Samples> onError(Samples object, Throwable exception, Object... params) {
             object.setName(exception.getMessage());
+            return list();
         }
     }
 
@@ -38,14 +42,17 @@ public class AbstractExecutionWrapperImplTest extends BaseLocalServiceTestCase {
         // 1. Normal execution
         Samples s = dao.save(new Samples());
 
-        service.execute(main, s);
+        List<Samples> rs = service.execute(main, s);
         Assertions.assertEquals("DONE", s.getName());
+        Assertions.assertEquals(1, rs.size());
+        Assertions.assertEquals(s, rs.get(0));
 
         // 2. Error execution
         s = dao.save(new Samples());
         s.setName("ERROR");
 
-        service.execute(main, s);
+        rs = service.execute(main, s);
         Assertions.assertEquals("ERROR RAISED", s.getName());
+        Assertions.assertEquals(0, rs.size());
     }
 }

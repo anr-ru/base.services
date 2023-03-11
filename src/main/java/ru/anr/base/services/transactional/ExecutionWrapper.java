@@ -11,9 +11,11 @@ package ru.anr.base.services.transactional;
  * in the same transaction/in a new transaction amd error catching in the same
  * transaction/in a new transaction).
  *
+ * @param <T> The type of the object to process
+ * @param <R> The type of the resulted value
  * @created Mar 11, 2023
  */
-public interface ExecutionWrapper<T> {
+public interface ExecutionWrapper<T, R> {
 
     /**
      * Processes the object in a new transaction.
@@ -21,7 +23,7 @@ public interface ExecutionWrapper<T> {
      * @param object The object
      * @param params The parameters
      */
-    void process(T object, Object... params);
+    R process(T object, Object... params);
 
     /**
      * Processes the object in the test mode (when we need to have the same transaction).
@@ -29,7 +31,7 @@ public interface ExecutionWrapper<T> {
      * @param object The object
      * @param params The parameters
      */
-    void processForTests(T object, Object... params);
+    R processForTests(T object, Object... params);
 
     /**
      * Covers the error processing in a new transaction
@@ -38,7 +40,7 @@ public interface ExecutionWrapper<T> {
      * @param exception The exception
      * @param params    The parameters
      */
-    void error(T object, Throwable exception, Object... params);
+    R error(T object, Throwable exception, Object... params);
 
     /**
      * Covers the error processing in the same transaction
@@ -47,5 +49,5 @@ public interface ExecutionWrapper<T> {
      * @param exception The exception
      * @param params    The parameters
      */
-    void errorForTests(T object, Throwable exception, Object... params);
+    R errorForTests(T object, Throwable exception, Object... params);
 }
