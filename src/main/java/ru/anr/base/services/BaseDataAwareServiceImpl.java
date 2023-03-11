@@ -30,11 +30,13 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 import org.springframework.util.Assert;
+import ru.anr.base.ApplicationException;
 import ru.anr.base.dao.EntityUtils;
 import ru.anr.base.dao.SecuredPageImpl;
 import ru.anr.base.dao.repository.BaseRepository;
 import ru.anr.base.dao.repository.SecuredRepository;
 import ru.anr.base.domain.BaseEntity;
+import ru.anr.base.services.transactional.ExecutionWrapper;
 
 /**
  * A parent class for all business logic services, which need a database access.
@@ -92,16 +94,15 @@ public class BaseDataAwareServiceImpl extends BaseServiceImpl implements BaseDat
     @Override
     public <T> T reload(T entity) {
         if (entity instanceof BaseEntity) {
-            BaseEntity o = dao().find(EntityUtils.entityClass((BaseEntity)entity), ((BaseEntity)entity).getId());
+            BaseEntity o = dao().find(EntityUtils.entityClass((BaseEntity) entity), ((BaseEntity) entity).getId());
             if (o == null) {
                 logger.error("The object {} not found, probably, it was deleted", entity);
                 //throw new ApplicationException("Deleted object");
                 o = (BaseEntity) entity; // try to use the same object
             }
-            return (T)o;
-        }
-         else {
-             return entity;
+            return (T) o;
+        } else {
+            return entity;
         }
     }
 
@@ -169,5 +170,39 @@ public class BaseDataAwareServiceImpl extends BaseServiceImpl implements BaseDat
      */
     protected SecuredRepository securedDao() {
         return securedRepository;
+    }
+
+    @Override
+    public <T> void execute(ExecutionWrapper<T> executor, T o, Object... params) {
+        try {
+
+            this.doWork(executor, o, params);
+
+        } catch (Throwable e) {
+
+            Throwable error = new ApplicationException(e).getMostSpecificCause();
+
+            logger.error("Execution exception: {}", error.getMessage());
+            logger.error("Execution exception details: " + error.getMessage(), error);
+
+            this.doError(executor, o, error, params);
+        }
+    }
+
+    private <T> void doWork(ExecutionWrapper<T> executor, T object, Object... params) {
+        if (isProdMode()) {
+            logger.trace("Executed a production branch for {}", executor);
+            executor.process(object, params);
+        } else {
+            executor.processForTests(object, params);
+        }
+    }
+
+    private <T> void doError(ExecutionWrapper<T> executor, T object, Throwable exception, Object... params) {
+        if (isProdMode()) {
+            executor.error(object, exception, params);
+        } else {
+            executor.errorForTests(object, exception, params);
+        }
     }
 }

@@ -16,6 +16,7 @@
 package ru.anr.base.services;
 
 import ru.anr.base.domain.BaseEntity;
+import ru.anr.base.services.transactional.ExecutionWrapper;
 
 /**
  * An interface with database specific functions.
@@ -45,9 +46,22 @@ public interface BaseDataAwareService extends BaseService {
      * @return The reloaded object
      */
     <T> T reload(T entity);
-    
+
     /**
      * A way to roll back the current transaction if we are launching something in the 'dry-run' mode.
      */
     void markAsRollback();
+
+    /**
+     * An implementation of a service that allows to run a new transaction or the same transaction
+     * based on the current mode - development or production. This may be useful when you need
+     * to run something in a new transaction but in the development mode you cannot use it as
+     * all unit tests are rolled back usually.
+     *
+     * @param executor The executor service
+     * @param o        The main object to be processed
+     * @param params   The additional parameters
+     * @param <T>      The type of the object
+     */
+    <T> void execute(ExecutionWrapper<T> executor, T o, Object... params);
 }
