@@ -182,6 +182,10 @@ public class APICommandFactoryImpl extends BaseServiceImpl implements APICommand
         String id = cmd.getCommandId().toLowerCase();
         String v = cmd.getVersion().toLowerCase();
 
+        if (!commands.containsKey(id)) {
+            this.registerApi(ctx.getBeansOfType(ApiCommandStrategy.class));
+        }
+
         Assert.isTrue(commands.containsKey(id), "Command '" + id + "' not found");
         Map<String, ApiCommandStrategy> versions = commands.get(id);
 

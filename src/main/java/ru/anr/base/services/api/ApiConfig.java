@@ -41,12 +41,6 @@ public class ApiConfig extends BaseSpringParent {
      */
     @Bean(name = "apiCommandFactory")
     public APICommandFactory factory() {
-
-        APICommandFactoryImpl impl = new APICommandFactoryImpl();
-
-        Map<String, ApiCommandStrategy> beans = ctx.getBeansOfType(ApiCommandStrategy.class);
-        impl.registerApi(beans);
-
-        return impl;
+       return new APICommandFactoryImpl();
     }
 }
