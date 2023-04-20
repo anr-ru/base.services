@@ -87,15 +87,18 @@ public class APICommandFactoryImpl extends BaseServiceImpl implements APICommand
      */
     public void registerApi(Map<String, ApiCommandStrategy> beans) {
 
-        logger.info("Registering '{}' api command beans", beans.size());
+        synchronized (this) {
 
-        for (Entry<String, ApiCommandStrategy> e : beans.entrySet()) {
-            ApiStrategy a = e.getValue().config();
-            if (a != null) {
-                register(a, e.getValue());
+            logger.info("Registering '{}' api command beans", beans.size());
+
+            for (Entry<String, ApiCommandStrategy> e : beans.entrySet()) {
+                ApiStrategy a = e.getValue().config();
+                if (a != null) {
+                    register(a, e.getValue());
+                }
             }
+            logger.debug("API Command registry: {}", commands);
         }
-        logger.debug("API Command registry: {}", commands);
     }
 
     /**
@@ -111,7 +114,10 @@ public class APICommandFactoryImpl extends BaseServiceImpl implements APICommand
 
         Map<String, ApiCommandStrategy> versions = commands.computeIfAbsent(aId, k -> new HashMap<>());
 
-        Assert.isTrue(!versions.containsKey(aV), "Duplicate version " + aV + " for " + aId);
+        if (versions.containsKey(aV)) {
+            logger.warn("Duplicate version " + aV + " for " + aId + ", ignore it.");
+        }
+        // Allow to override
         versions.put(aV, s);
     }
 
