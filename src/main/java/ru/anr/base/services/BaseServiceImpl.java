@@ -132,7 +132,7 @@ public class BaseServiceImpl extends BaseSpringParent implements BaseService {
     /**
      * Factories that include some extensions.
      */
-    private final Map<Object, StrategyFactory> extensionFactories = toMap();
+    protected final Map<Object, StrategyFactory> extensionFactories = toMap();
 
 
     public void registerExtensions(Object extId, List<Strategy<Object>> extensions) {
