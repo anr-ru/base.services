@@ -80,6 +80,11 @@ public class ACLConfig {
 
     /**
      * Construction of the configuration
+     *
+     * @param aclCacheName       The ACL cache name
+     * @param aclManageRole      The ACL role
+     * @param classIdentityQuery The identity query
+     * @param sidIdentityQuery   The sid identity query
      */
     public ACLConfig(String aclManageRole, String aclCacheName,
                      String classIdentityQuery, String sidIdentityQuery) {

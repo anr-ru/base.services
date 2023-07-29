@@ -36,10 +36,10 @@ import javax.persistence.EntityManager;
 /**
  * An overridable version of Persistent Unit factory for the case if we have multiple
  * of persistent units defined in the application.
- * <p></p>
+ * <p>
  * We have to copy-n-paste the {@link JpaRepositoryFactoryBean} implementation here
  * because there is no way to extend it properly.
- * <p></p>
+ * <p>
  *
  * @param <T> The type of entity
  * @author Alexey Romanchuk
@@ -122,6 +122,9 @@ public class MultiUnitRepositoryFactoryBean<T extends BaseEntity>
 
     /**
      * Returns a {@link RepositoryFactorySupport}.
+     *
+     * @param entityManager The entity manager
+     * @return The {@link RepositoryFactorySupport} object
      */
     protected RepositoryFactorySupport createRepositoryFactory(EntityManager entityManager) {
 

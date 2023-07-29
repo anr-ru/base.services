@@ -304,8 +304,9 @@ public class BaseServiceImpl extends BaseSpringParent implements BaseService {
     /**
      * Validates an object
      *
-     * @param o   The object to be validated
-     * @param <S> The type of the object
+     * @param o      The object to be validated
+     * @param <S>    The type of the object
+     * @param params Additional parameters
      */
     protected <S> void validate(S o, Object... params) {
 
@@ -402,7 +403,8 @@ public class BaseServiceImpl extends BaseSpringParent implements BaseService {
     /**
      * Loads extensions selecting them based on the given callback's result
      *
-     * @param callback The callback to determine the condition of selection
+     * @param callback    The callback to determine the condition of selection
+     * @param extensionId The extension identifier
      * @return The list of found extensions
      */
     protected List<Strategy<Object>> loadExtensions(Function<Strategy<Object>, Boolean> callback, String extensionId) {
@@ -450,6 +452,7 @@ public class BaseServiceImpl extends BaseSpringParent implements BaseService {
      * @param callback The callback to use
      * @param args     The arguments
      * @param <S>      The type of the result
+     * @param <O>      The resulted values for the argument array
      * @return The callback's result
      */
     @SafeVarargs
@@ -471,6 +474,7 @@ public class BaseServiceImpl extends BaseSpringParent implements BaseService {
      * @param token    The token to apply
      * @param callback The non-return callback
      * @param args     The arguments to pass
+     * @param <O>      The resulted values for rge argument array
      */
     @SafeVarargs
     protected final <O> void runAs(Authentication token, Consumer<O[]> callback, O... args) {
@@ -561,6 +565,7 @@ public class BaseServiceImpl extends BaseSpringParent implements BaseService {
      * @param method   The method
      * @param request  The request model
      * @param contexts The command context and parameters
+     * @param <S>      The resulted value type
      * @return The resulted command
      */
     protected <S> S api(Class<? extends ApiCommandStrategy> clazz, MethodTypes method, RequestModel request,
@@ -599,6 +604,7 @@ public class BaseServiceImpl extends BaseSpringParent implements BaseService {
      * Checks the given value satisfies the given scale value
      *
      * @param value The value
+     * @param scale The scale of the value
      */
     public void checkLessThanScale(int scale, BigDecimal value) {
         checkIsTrue(verifyLessThanScale(scale, value), "number.scale", value.toString(), scale);
@@ -656,6 +662,7 @@ public class BaseServiceImpl extends BaseSpringParent implements BaseService {
      * the code for doing this kind of checks.
      *
      * @param service The service to check.
+     * @return true, if the service is supported
      */
     protected static boolean isSupported(SupportableService service) {
         return service != null && service.isSupported();

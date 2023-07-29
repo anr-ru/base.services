@@ -53,7 +53,8 @@ public class BaseValidatorImpl<T extends BaseEntity> extends BaseServiceImpl imp
     /**
      * The validation
      *
-     * @param o The object to validate
+     * @param o      The object to validate
+     * @param params The parameters
      */
     protected void validate(T o, Object... params) {
 

@@ -38,6 +38,7 @@ public interface AbstractRepository<T> extends JpaRepository<T, Long> {
      * Refreshes (loads) object from the database
      *
      * @param object Object
+     * @param <S>    The resulted value type
      */
     <S extends T> void refresh(S object);
 

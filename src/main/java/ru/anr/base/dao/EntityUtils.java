@@ -36,6 +36,7 @@ public final class EntityUtils {
      * proxied hibernate entity. The implementation is Hibernate-specific.
      *
      * @param entity The entity
+     * @param <S>    The resulted value type
      * @return The entity's class
      */
     @SuppressWarnings("unchecked")

@@ -22,6 +22,7 @@ public interface ExecutionWrapper<T, R> {
      *
      * @param object The object
      * @param params The parameters
+     * @return The resulted value
      */
     R process(T object, Object... params);
 
@@ -30,6 +31,7 @@ public interface ExecutionWrapper<T, R> {
      *
      * @param object The object
      * @param params The parameters
+     * @return The resulted value
      */
     R processForTests(T object, Object... params);
 
@@ -39,6 +41,7 @@ public interface ExecutionWrapper<T, R> {
      * @param object    The object
      * @param exception The exception
      * @param params    The parameters
+     * @return The resulted value
      */
     R error(T object, Throwable exception, Object... params);
 
@@ -48,6 +51,7 @@ public interface ExecutionWrapper<T, R> {
      * @param object    The document
      * @param exception The exception
      * @param params    The parameters
+     * @return The resulted value
      */
     R errorForTests(T object, Throwable exception, Object... params);
 }

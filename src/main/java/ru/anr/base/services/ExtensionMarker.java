@@ -5,7 +5,7 @@ import java.lang.annotation.*;
 /**
  * A marker for loaded extensions of services. Each marker should have
  * the value to be set for selecting the required extension category.
- * <p></p>
+ * <p>
  * If you need to set the order for loading groups of extensions.
  *
  * @author Alexey Romanchuk
@@ -17,6 +17,7 @@ import java.lang.annotation.*;
 public @interface ExtensionMarker {
     /**
      * The extension category marker.
+     *
      * @return The resulted value
      */
     String value();
