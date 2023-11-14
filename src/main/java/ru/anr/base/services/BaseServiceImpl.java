@@ -107,7 +107,7 @@ public class BaseServiceImpl extends BaseSpringParent implements BaseService {
         try {
             txt = messages.getMessage(code, args);
         } catch (NoSuchMessageException ex) {
-            logger.error("Message resource error: {}", ex.getMessage());
+            logger.debug("Message resource error: {}", ex.getMessage());
             txt = String.format(MSG_ERROR_DECORATION, code);
         }
         return txt;
@@ -123,7 +123,7 @@ public class BaseServiceImpl extends BaseSpringParent implements BaseService {
         try {
             txt = messages.getMessage(code, args, l);
         } catch (NoSuchMessageException ex) {
-            logger.error("Message resource error: {}", ex.getMessage());
+            logger.debug("Message resource error: {}", ex.getMessage());
             txt = String.format(MSG_ERROR_DECORATION, code);
         }
         return txt;
