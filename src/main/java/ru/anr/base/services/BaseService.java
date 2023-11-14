@@ -65,7 +65,7 @@ public interface BaseService {
 
     /**
      * Retrieves a text message from resource with provided code and locale. If
-     * no message found with specified code, it returns a spring in format
+     * no message is found with specified code, it returns a spring in format
      * [xxxCODExxx].
      *
      * @param code   A Message code
