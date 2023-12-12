@@ -61,19 +61,22 @@ public class ValidationFactoryImpl extends BaseSpringParent implements Validatio
     public List<Strategy<Object>> getValidators(Class<?> clazz) {
 
         if (validators.isEmpty()) {
-            // Load all them once only
-            Map<String, Object> beans = ctx.getBeansWithAnnotation(ru.anr.base.services.validation.Validator.class);
-            beans.forEach((name, bean) -> validators.add(((BaseValidator<?>) bean).getSupported(), (Strategy<Object>) bean));
+            synchronized (this.validators) {
+                if (validators.isEmpty()) {
+                    // Load all them once only
+                    Map<String, Object> beans = ctx.getBeansWithAnnotation(ru.anr.base.services.validation.Validator.class);
+                    beans.forEach((name, bean) -> validators.add(((BaseValidator<?>) bean).getSupported(), (Strategy<Object>) bean));
 
-            /*
-             * Sorting the lists of validators according to their order
-             */
-            validators.forEach((name, list) -> list.sort(ORDER_SORTING));
+                    /*
+                     * Sorting the lists of validators according to their order
+                     */
+                    validators.forEach((name, list) -> list.sort(ORDER_SORTING));
 
-            logger.info("Loaded {} validators", validators.size());
-            logger.debug("Loaded validators: {}", validators);
+                    logger.info("Loaded {} validator sets", validators.size());
+                    logger.debug("Loaded validators: {}", validators);
+                }
+            }
         }
-
         return validators.get(clazz);
     }
 }
