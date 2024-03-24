@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2022 the original author or authors.
+ * Copyright 2014-2024 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -21,8 +21,6 @@ import org.springframework.context.annotation.Import;
 import ru.anr.base.BaseSpringParent;
 import ru.anr.base.services.serializer.SerializationConfig;
 
-import java.util.Map;
-
 /**
  * The configuration for API commands and the factory. Exports
  * the {@link APICommandFactoryImpl} factory bean.
@@ -41,6 +39,6 @@ public class ApiConfig extends BaseSpringParent {
      */
     @Bean(name = "apiCommandFactory")
     public APICommandFactory factory() {
-       return new APICommandFactoryImpl();
+        return new APICommandFactoryImpl();
     }
 }
