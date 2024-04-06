@@ -129,4 +129,18 @@ public class BaseEntityTest extends AbstractDaoTestCase {
         e.setStateInfo(guid());
         Assertions.assertNotNull(e.getStateInfo());
     }
+
+
+    /**
+     * A use case: we wish to print a short class name only
+     */
+    @Test
+    public void testToStringStyle() {
+
+        Samples a = new Samples();
+        Assertions.assertEquals("Samples[id=" + a.internalId() + "]", a.toString());
+
+        Samples b = dao.save(new Samples());
+        Assertions.assertEquals("Samples[id=" + b.getId() + ",v=0]", b.toString());
+    }
 }

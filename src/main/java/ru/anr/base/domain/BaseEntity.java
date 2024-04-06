@@ -353,7 +353,7 @@ public class BaseEntity extends BaseParent implements Serializable, Accessible {
     @Override
     public String toString() {
 
-        ToStringBuilder b = new ToStringBuilder(this, ToStringStyle.DEFAULT_STYLE)
+        ToStringBuilder b = new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
                 .append("id", internalId());
 
         if (getVersion() != null) {
