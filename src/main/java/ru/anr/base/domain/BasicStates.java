@@ -51,5 +51,13 @@ public enum BasicStates {
     /**
      * Some error state
      */
-    Failed
+    Failed,
+    /**
+     * The operations with the object have been suspended
+     */
+    Suspended,
+    /**
+     * The 'deleted' usually means the object should not be considered anymore
+     */
+    Deleted
 }
