@@ -245,6 +245,31 @@ public class ACLSecurityTest extends BaseLocalServiceTestCase {
         Assertions.assertTrue(rs.containsAll(list(s1, s2)));
     }
 
+    /**
+     * A use case: filtering lists
+     */
+    @Test
+    public void testListFilteredByAccessible() {
+
+        authenticate("user");
+
+        Samples s1 = create(Samples.class, "name", "read");
+        Samples s2 = create(Samples.class, "name", "write");
+
+        List<Samples> rs = securedDao.filterSecured(list(s1, s2));
+        Assertions.assertEquals(1, rs.size());
+        Assertions.assertTrue(rs.contains(s1));
+        Assertions.assertFalse(rs.contains(s2));
+
+        // Access granted via ACL
+        acls.grant(s2, new PrincipalSid("user"), BasePermission.READ);
+
+        rs = securedDao.filterSecured(list(s1, s2));
+        Assertions.assertEquals(2, rs.size());
+        Assertions.assertTrue(rs.containsAll(list(s1, s2)));
+    }
+
+
     @Test
     public void testAccessToEntity() {
 

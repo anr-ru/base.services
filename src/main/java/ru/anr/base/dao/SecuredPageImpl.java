@@ -18,8 +18,11 @@ package ru.anr.base.dao;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import ru.anr.base.dao.repository.SecuredRepository;
 import ru.anr.base.domain.BaseEntity;
+
+import java.util.List;
 
 /**
  * A secured implementation of the page with a filtration on the loaded content
@@ -43,5 +46,17 @@ public class SecuredPageImpl<T extends BaseEntity> extends PageImpl<T> {
     public SecuredPageImpl(SecuredRepository repository, Page<T> pages) {
         // We cannot determine the total number of elements here
         super(repository.filterSecured(pages), pages.getPageable(), pages.getTotalElements());
+    }
+
+    /**
+     * A constructor to imitate the pages object with applied security filters.
+     *
+     * @param repository Some repository bean
+     * @param list The list
+     * @param pager The pager
+     * @param totalElements the total elements
+     */
+    public SecuredPageImpl(SecuredRepository repository, List<T> list, Pageable pager, long totalElements) {
+        super(repository.filterSecured(list), pager, totalElements);
     }
 }

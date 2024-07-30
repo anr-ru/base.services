@@ -70,4 +70,14 @@ public interface SecuredRepository {
      */
     @PostFilter("hasPermission(filterObject,'read') or hasPermission(filterObject,'access_read') or hasRole('ROLE_ROOT')")
     <S extends BaseEntity> List<S> filterSecured(Page<S> page);
+
+    /**
+     * Performs a permission-based filtration of the given list
+     *
+     * @param list The list that needs to be filtered
+     * @param <S>  The type of item in the list
+     * @return The resulted list with applied security {@link PostFilter}.
+     */
+    @PostFilter("hasPermission(filterObject,'read') or hasPermission(filterObject,'access_read') or hasRole('ROLE_ROOT')")
+    <S extends BaseEntity> List<S> filterSecured(List<S> list);
 }

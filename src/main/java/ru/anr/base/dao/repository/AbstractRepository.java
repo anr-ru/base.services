@@ -17,6 +17,7 @@ package ru.anr.base.dao.repository;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.repository.NoRepositoryBean;
 
 import javax.persistence.EntityManager;
@@ -32,7 +33,7 @@ import java.util.Map;
  * @created Nov 6, 2014
  */
 @NoRepositoryBean
-public interface AbstractRepository<T> extends JpaRepository<T, Long> {
+public interface AbstractRepository<T> extends JpaRepository<T, Long>, JpaSpecificationExecutor<T> {
 
     /**
      * Refreshes (loads) object from the database

@@ -8,6 +8,8 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.acls.domain.BasePermission;
+import org.springframework.security.acls.domain.PrincipalSid;
 import org.springframework.security.authentication.TestingAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -21,6 +23,7 @@ import ru.anr.base.samples.domain.Samples;
 import ru.anr.base.samples.domain.TestStates;
 import ru.anr.base.samples.services.ACLSecured;
 import ru.anr.base.samples.services.TestDataService;
+import ru.anr.base.services.security.ACLManager;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -166,6 +169,39 @@ public class BaseServiceImplTest extends BaseLocalServiceTestCase {
         Assertions.assertEquals(2, pages.getContent().size());
         Assertions.assertEquals(1, new SecuredPageImpl<>(securedDao, pages).getContent().size());
     }
+
+    @Autowired
+    private ACLManager acls;
+
+    /**
+     * Use case: check the filtration of object when using the secured pages with list
+     */
+    @Test
+    public void testSecuredPagesFromList() {
+
+        authenticate(new TestingAuthenticationToken("test", "password", "ROLE_USER"));
+
+        Samples s1 = mydao.save(new Samples());
+        s1.setName("read");
+        Samples s2 = mydao.save(new Samples());
+        s2.setName("write");
+
+        // Update it
+        PageRequest pager = PageRequest.of(0, 100);
+
+        Page<Samples> page = new SecuredPageImpl<>(securedDao, list(s1, s2), pager, 2);
+        Assertions.assertEquals(1, page.getContent().size());
+        Assertions.assertEquals(list(s1), page.getContent());
+        Assertions.assertEquals(1, page.getTotalElements()); // corrected to 1
+
+        acls.grant(s2, new PrincipalSid("test"), BasePermission.READ);
+
+        page = new SecuredPageImpl<>(securedDao, list(s1, s2), pager, 2);
+        Assertions.assertEquals(2, page.getContent().size());
+        Assertions.assertEquals(list(s1, s2), page.getContent());
+        Assertions.assertEquals(2, page.getTotalElements());
+    }
+
 
     @Autowired
     protected ACLSecured secured;

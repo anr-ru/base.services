@@ -54,6 +54,11 @@ public class SecuredRepositoryImpl extends BaseSpringParent implements SecuredRe
         return list(page.getContent());
     }
 
+    @Override
+    public <S extends BaseEntity> List<S> filterSecured(List<S> list) {
+        return list;
+    }
+
     public void setDao(BaseRepository<BaseEntity> dao) {
         this.dao = dao;
     }
