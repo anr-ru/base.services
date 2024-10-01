@@ -301,7 +301,7 @@ public class BaseEntity extends BaseParent implements Serializable, Accessible {
     }
 
     public void setStateInfo(String stateInfo) {
-        this.stateInfo = stateInfo;
+        this.stateInfo = abbreviate(stateInfo, 512);
     }
 
     ///////////////////////////////////////////////////////////////////////////

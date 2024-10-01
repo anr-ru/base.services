@@ -1,5 +1,6 @@
 package ru.anr.base.domain;
 
+import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import ru.anr.base.dao.AbstractDaoTestCase;
@@ -142,5 +143,29 @@ public class BaseEntityTest extends AbstractDaoTestCase {
 
         Samples b = dao.save(new Samples());
         Assertions.assertEquals("Samples[id=" + b.getId() + ",v=0]", b.toString());
+    }
+
+    /**
+     * A use case: a long state info string
+     */
+    @Test
+    public void testLongStateInfo() {
+
+        Samples a = new Samples();
+        a.setStateInfo(StringUtils.repeat("x", 520));
+        a = dao.saveAndFlush(a);
+        Assertions.assertEquals(StringUtils.repeat("x", 512), a.getStateInfo());
+
+        a.setStateInfo(StringUtils.repeat("x", 220));
+        a = dao.saveAndFlush(a);
+        Assertions.assertEquals(StringUtils.repeat("x", 220), a.getStateInfo());
+
+        a.setStateInfo("");
+        a = dao.saveAndFlush(a);
+        Assertions.assertEquals("", a.getStateInfo());
+
+        a.setStateInfo(null);
+        a = dao.saveAndFlush(a);
+        Assertions.assertNull(a.getStateInfo());
     }
 }
