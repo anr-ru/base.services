@@ -23,6 +23,8 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
+import java.util.LinkedHashMap;
+import java.util.List;
 
 /**
  * A base content model of the response's body (parsed from JSON or XML). It
@@ -92,6 +94,10 @@ public class ResponseModel extends BaseParent implements Serializable {
      */
     @XmlAttribute(name = "query_id")
     public String queryId;
+
+    // Some additional attributes
+    @XmlElement(name = "attrs")
+    public LinkedHashMap<String, List<Object>> attrs;
 
     ///////////////////////////////////////////////////////////////////////////
     ///// getters/setters
