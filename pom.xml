@@ -246,7 +246,7 @@
         <jackson.version>2.15.4</jackson.version>
         <jackson.databind.version>2.15.4</jackson.databind.version>
 
-        <base.utils.version>2.6.1</base.utils.version>
+        <base.utils.version>2.6.2</base.utils.version>
         <base.tests.version>2.6.1</base.tests.version>
     </properties>
 
