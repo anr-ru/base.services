@@ -236,7 +236,7 @@
         <dbx.hibernateDialect>org.hibernate.dialect.HSQLDialect</dbx.hibernateDialect>
 
         <hsqldb.version>2.7.2</hsqldb.version>
-        <c3p0.version>0.9.5.5</c3p0.version>
+        <c3p0.version>0.12.0</c3p0.version>
 
         <jsr250-api.version>1.3.2</jsr250-api.version>
         <javax.el-api.version>3.0.0</javax.el-api.version>
