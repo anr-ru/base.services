@@ -243,7 +243,7 @@
         <glassfish.javax.el.version>3.0.4</glassfish.javax.el.version>
         <javax.validation>2.0.1.Final</javax.validation>
 
-        <jackson.version>2.15.4</jackson.version>
+        <jackson.version>2.18.6</jackson.version>
         <jackson.databind.version>2.15.4</jackson.databind.version>
 
         <base.utils.version>2.6.2</base.utils.version>
